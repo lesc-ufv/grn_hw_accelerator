@@ -1,0 +1,1 @@
+( ( JNK  ) AND NOT ( Mdm2  ) )  OR ( ( DNADamageEvent  ) AND NOT ( Mdm2  ) ) 

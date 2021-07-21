@@ -1,0 +1,1 @@
+( PP2A AND ( ( ( Raf_Rest ) )  AND ( ( NOT Raf_DeP ) ) )    )  OR ( Raf_DeP AND ( ( ( NOT Raf_Loc ) ) )    ) 

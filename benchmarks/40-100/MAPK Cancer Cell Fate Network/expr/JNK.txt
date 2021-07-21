@@ -1,0 +1,1 @@
+( TAK1 AND ( ( ( TAOK ) ) )    )  OR ( MAP3K1_3 AND ( ( ( NOT DUSP1 ) ) )    )  OR ( MTK1 AND ( ( ( NOT DUSP1 ) ) )    )  OR ( TAOK AND ( ( ( MTK1 ) ) )    ) 

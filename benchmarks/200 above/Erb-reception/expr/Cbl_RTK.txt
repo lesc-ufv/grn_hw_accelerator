@@ -1,0 +1,1 @@
+( ( ( Grb2 AND ( ( ( Src ) ) )     ) AND NOT ( EGFR_T654  )  ) AND NOT ( CIN85 AND ( ( ( Spry2 ) ) )     ) )  OR ( ( ( EGFR_Y1045 AND ( ( ( Src ) ) )     ) AND NOT ( EGFR_T654  )  ) AND NOT ( CIN85 AND ( ( ( Spry2 ) ) )     ) ) 

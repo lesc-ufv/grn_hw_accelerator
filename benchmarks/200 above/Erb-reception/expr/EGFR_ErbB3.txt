@@ -1,0 +1,1 @@
+( EGF AND ( ( ( NOT EGFR_T654 ) )  AND ( ( EGFR_Free ) )  AND ( ( NOT ErbB2_Free ) )  AND ( ( NRG ) )  AND ( ( ErbB3_Free ) ) )    ) 

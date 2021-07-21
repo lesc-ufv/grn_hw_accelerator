@@ -1,0 +1,1 @@
+( ( ( FGFR3_stimulus  ) AND NOT ( GRB2  )  ) AND NOT ( PKC  ) ) 

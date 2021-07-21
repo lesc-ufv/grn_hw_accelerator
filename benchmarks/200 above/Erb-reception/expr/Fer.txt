@@ -1,0 +1,1 @@
+( E_cadherin AND ( ( ( p120_catenin ) ) )    ) 

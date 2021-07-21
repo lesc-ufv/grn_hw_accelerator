@@ -1,0 +1,1 @@
+( ( Gal4p  ) AND NOT ( Mig1p  ) )  OR ( Gal11p ) 

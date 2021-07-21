@@ -1,0 +1,1 @@
+( ( BID  ) AND NOT ( BclX  ) ) 

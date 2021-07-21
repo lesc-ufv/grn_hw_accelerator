@@ -1,0 +1,1 @@
+( ( Stress )  OR ( PTP3 AND ( ( ( NOT PTP2  AND NOT Stress ) ) )    )  OR ( PTP2 AND ( ( ( NOT PTP3  AND NOT Stress ) ) )    )  ) OR  NOT ( PTP3 OR PTP2 OR Stress ) 

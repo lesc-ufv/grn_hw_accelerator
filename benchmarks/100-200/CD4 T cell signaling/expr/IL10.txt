@@ -1,0 +1,1 @@
+( NFAT AND ( ( ( GATA3  OR STAT3 )  AND (  ( ( proliferation ) ) ) ) )    ) 

@@ -1,0 +1,1 @@
+( GAK AND ( ( ( EGFR_EGFR_TGFa_CCV  OR EGFR_EGFR_EGF_CCV ) ) )    )  OR ( EGFR_EGFR_TGFa_CCP AND ( ( ( Clathrin  OR Dynamin  OR AP2 ) ) )    )  OR ( EGFR_EGFR_EGF_CCP AND ( ( ( Clathrin  OR Dynamin  OR AP2 ) ) )    ) 

@@ -1,0 +1,1 @@
+( DIABLOmitochondria AND ( ( ( BAX  OR tBID  OR BAK1 ) ) )    ) 

@@ -1,0 +1,1 @@
+( ( ( pi3k  ) AND NOT ( ship2d  )  ) AND NOT ( ptend  ) ) 

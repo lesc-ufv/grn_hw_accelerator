@@ -1,0 +1,1 @@
+( CyclinD AND ( ( ( NOT CDKN2A ) )  OR ( ( NOT CDKN1A ) ) )    ) 

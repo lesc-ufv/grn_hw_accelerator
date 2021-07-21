@@ -1,0 +1,1 @@
+(  NOT ( ( camk24 )  OR ( mk2 ) ) ) OR  NOT ( mk2 OR camk24 ) 

@@ -1,0 +1,1 @@
+( ( ( IFNG  ) AND NOT ( Stimuli2  )  ) AND NOT ( Apoptosis  ) )  OR ( ( ( P2  ) AND NOT ( Stimuli2  )  ) AND NOT ( Apoptosis  ) ) 

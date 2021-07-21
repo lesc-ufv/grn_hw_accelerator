@@ -1,0 +1,1 @@
+( JAK3 AND ( ( ( NOT SOCS1 ) ) )    )  OR ( IL2R AND ( ( ( NOT SOCS1 ) ) )    ) 

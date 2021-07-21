@@ -1,0 +1,1 @@
+( AgAb_Bacterium AND ( ( ( Th1I_Bacterium  AND MPI_Bacterium ) )  AND ( ( Bb ) ) )    )  OR ( IgG_Bacterium AND ( ( ( Bb ) )  AND ( ( Cb ) )  AND ( ( Th1I_Bacterium  AND MPI_Bacterium ) ) )    ) 

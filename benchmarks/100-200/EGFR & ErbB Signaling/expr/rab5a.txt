@@ -1,0 +1,1 @@
+( ( rin1  ) AND NOT ( rntre  ) ) 

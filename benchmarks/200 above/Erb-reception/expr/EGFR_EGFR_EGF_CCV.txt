@@ -1,0 +1,1 @@
+( ( EGFR_EGFR_EGF_CCP AND ( ( ( Actin  AND Dynamin ) ) )     ) AND NOT ( EGFR_EGFR_EGF_End  ) )  OR ( ( EGFR_EGFR_EGF_CCV  ) AND NOT ( EGFR_EGFR_EGF_End  ) ) 

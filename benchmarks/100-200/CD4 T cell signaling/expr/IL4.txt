@@ -1,0 +1,1 @@
+( IRF4 )  OR ( ( ( ( GATA3 AND ( ( ( proliferation  AND NFAT ) ) )     ) AND NOT ( FOXP3  )  ) AND NOT ( TBET AND ( ( ( RUNX3 ) ) )     )  ) AND NOT ( IRF1  ) ) 

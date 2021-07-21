@@ -1,0 +1,1 @@
+(  NOT ( ( socs1 )  OR ( shp2 )  OR ( shp2_a )  OR ( socs3 ) ) ) OR  NOT ( shp2 OR socs1 OR shp2_a OR socs3 ) 

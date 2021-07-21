@@ -1,0 +1,1 @@
+( TrI_Bacterium )  OR ( MPI_Bacterium )  OR ( Th2I_Bacterium AND ( ( ( TTSSI ) ) )    ) 

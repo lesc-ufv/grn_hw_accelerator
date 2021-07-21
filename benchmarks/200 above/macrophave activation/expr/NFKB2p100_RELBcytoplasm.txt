@@ -1,0 +1,1 @@
+( NFKB2p100 AND ( ( ( RELB  AND CHUK_CHUK ) ) )    ) 

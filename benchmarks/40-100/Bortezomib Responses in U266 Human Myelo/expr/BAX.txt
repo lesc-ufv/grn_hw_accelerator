@@ -1,0 +1,1 @@
+( ( ( BID  ) AND NOT ( Bclxl  )  ) AND NOT ( BCL2  ) )  OR ( ( ( p53  ) AND NOT ( Bclxl  )  ) AND NOT ( BCL2  ) ) 

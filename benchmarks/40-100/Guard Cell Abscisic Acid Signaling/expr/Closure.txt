@@ -1,0 +1,1 @@
+( ( KOUT AND ( ( ( Actin ) )  AND ( ( AnionEM ) ) )     ) AND NOT ( Malate  ) )  OR ( ( KAP AND ( ( ( Actin ) )  AND ( ( AnionEM ) ) )     ) AND NOT ( Malate  ) ) 

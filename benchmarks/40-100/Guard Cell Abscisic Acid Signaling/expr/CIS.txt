@@ -1,0 +1,1 @@
+( InsP3 AND ( ( ( InsP6 ) ) )    )  OR ( cGMP AND ( ( ( cADPR ) ) )    ) 

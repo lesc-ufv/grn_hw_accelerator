@@ -1,0 +1,1 @@
+( ( ( B_catenin AND ( ( ( ExtE_cadherin ) ) )     ) AND NOT ( Hakai AND ( ( ( NOT p120_catenin ) ) )     )  ) AND NOT ( IQGAP1 AND ( ( ( NOT Rac  AND NOT Cdc42 ) ) )     ) ) 

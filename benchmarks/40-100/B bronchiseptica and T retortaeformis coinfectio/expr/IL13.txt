@@ -1,0 +1,1 @@
+( Th2I_Bacterium )  OR ( Th2I_TRetortaeformis )  OR ( EL2 )  OR ( EL AND ( ( ( IS ) ) )    ) 

@@ -1,0 +1,1 @@
+( ( DNAdam )  ) OR  NOT ( DNAdam OR Prot ) 

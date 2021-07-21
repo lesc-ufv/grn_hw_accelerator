@@ -1,0 +1,1 @@
+( EFGR AND ( ( ( NOT Lapatinib ) ) )    )  OR ( ERBB2/3 AND ( ( ( NOT Lapatinib ) ) )    )  OR ( EGFR/ERBB2 AND ( ( ( NOT Lapatinib ) ) )    )  OR ( IGFR1A/B ) 

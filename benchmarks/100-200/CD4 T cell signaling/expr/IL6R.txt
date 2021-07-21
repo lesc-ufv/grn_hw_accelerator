@@ -1,0 +1,1 @@
+( GP130 AND ( ( ( IL6_e  AND IL6RA ) ) )    ) 

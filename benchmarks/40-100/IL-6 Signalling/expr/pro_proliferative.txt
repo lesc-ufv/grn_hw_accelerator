@@ -1,0 +1,1 @@
+( ( stat3_ta )  OR ( p70s6k )  OR ( camk24 )  OR ( erk12 )  ) OR  NOT ( cebpb OR stat3_ta OR p70s6k OR fkhr OR erk12 OR camk24 ) 

@@ -1,0 +1,1 @@
+( ( PKA AND ( ( ( cAMP ) ) )     ) AND NOT ( PP2A AND ( ( ( PKA ) ) )     ) )  OR ( ( PDK1 AND ( ( ( cAMP ) ) )     ) AND NOT ( PP2A AND ( ( ( PKA ) ) )     ) ) 

@@ -1,0 +1,1 @@
+( Mekk4 AND ( ( ( ASK1 ) ) )    )  OR ( MLK1 AND ( ( ( ASK1 ) ) )    )  OR ( MLK2 AND ( ( ( ASK1 ) ) )    )  OR ( MLK3 AND ( ( ( ASK1 ) ) )    )  OR ( TAK1 AND ( ( ( ASK1 ) ) )    )  OR ( Mekk1 AND ( ( ( ASK1 ) ) )    )  OR ( Tpl2 AND ( ( ( ASK1 ) ) )    )  OR ( Mekk2 AND ( ( ( ASK1 ) ) )    )  OR ( Mekk3 AND ( ( ( ASK1 ) ) )    ) 

@@ -1,0 +1,1 @@
+( ( ( ( NFAT AND ( ( ( STAT3  AND NFKB  AND proliferation  AND RORGT ) ) )     ) AND NOT ( STAT1 AND ( ( ( FOXP3 ) ) )     )  ) AND NOT ( STAT6 AND ( ( ( FOXP3 ) ) )     )  ) AND NOT ( STAT5 AND ( ( ( FOXP3 ) ) )     ) ) 

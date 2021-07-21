@@ -1,0 +1,1 @@
+( ( Depolar  ) AND NOT ( Ca2_c AND ( ( ( pH ) ) )     ) ) 

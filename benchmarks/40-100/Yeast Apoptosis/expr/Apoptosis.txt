@@ -1,0 +1,1 @@
+( CU2 AND ( ( ( CPR3 ) ) )    )  OR ( ROS-CYT )  OR ( ( YCA1  ) AND NOT ( BIR1  ) )  OR ( H2O2 AND ( ( ( NOT POR1-2 ) ) )    )  OR ( DNA-Frag )  OR ( AceticAcid AND ( ( ( NOT POR1-2 ) ) )    ) 

@@ -1,0 +1,1 @@
+( ( ( ABH1 AND ( ( ( NOT ERA1 ) ) )     ) AND NOT ( Depolar  ) )  OR ( ( ERA1 AND ( ( ( NOT ABH1 ) ) )     ) AND NOT ( Depolar  ) )  OR ( ( ROS  ) AND NOT ( Depolar  ) )  ) OR  NOT ( ERA1 OR ROS OR Depolar OR ABH1 ) 

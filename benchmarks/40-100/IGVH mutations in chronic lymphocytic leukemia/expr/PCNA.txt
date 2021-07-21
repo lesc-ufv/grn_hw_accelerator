@@ -1,0 +1,1 @@
+( ( CSDA AND ( ( ( HSP90AA1 ) ) )     ) AND NOT ( RFC5  ) ) 

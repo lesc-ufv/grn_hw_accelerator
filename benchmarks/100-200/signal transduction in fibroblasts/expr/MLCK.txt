@@ -1,0 +1,1 @@
+( ( ( CaM AND ( ( ( NOT PAK ) )  AND ( ( NOT PKA ) ) )     ) AND NOT ( PKA  )  ) AND NOT ( PAK  ) )  OR ( ( ( Erk AND ( ( ( NOT PKA ) )  AND ( ( NOT PAK ) ) )     ) AND NOT ( PKA  )  ) AND NOT ( PAK  ) ) 

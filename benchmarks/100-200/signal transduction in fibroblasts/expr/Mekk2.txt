@@ -1,0 +1,1 @@
+( PI3K AND ( ( ( NOT Mekk2 ) )  AND ( ( EGFR ) ) )    )  OR ( Src AND ( ( ( EGFR ) )  AND ( ( NOT Mekk2 ) ) )    )  OR ( PLC_g AND ( ( ( EGFR ) )  AND ( ( NOT Mekk2 ) ) )    )  OR ( Grb2 AND ( ( ( NOT Mekk2 ) )  AND ( ( EGFR ) ) )    ) 

@@ -1,0 +1,1 @@
+( ( ( STRESS  ) AND NOT ( BCL2  )  ) AND NOT ( Bclxl  ) )  OR ( ( ( Cas8  ) AND NOT ( BCL2  )  ) AND NOT ( Bclxl  ) )  OR ( ( ( Fas  ) AND NOT ( BCL2  )  ) AND NOT ( Bclxl  ) ) 

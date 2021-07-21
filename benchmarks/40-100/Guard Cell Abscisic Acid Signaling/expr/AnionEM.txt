@@ -1,0 +1,1 @@
+( pH AND ( ( ( NOT ABI1 ) )  OR ( ( Ca2_c ) ) )    )  OR ( Ca2_c AND ( ( ( pH ) )  OR ( ( NOT ABI1 ) ) )    ) 

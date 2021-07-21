@@ -1,0 +1,1 @@
+( ( ( ( pSTAT3  ) AND NOT ( BAD  )  ) AND NOT ( BAX  )  ) AND NOT ( p53  ) )  OR ( ( ( ( pNFKB  ) AND NOT ( BAD  )  ) AND NOT ( BAX  )  ) AND NOT ( p53  ) ) 

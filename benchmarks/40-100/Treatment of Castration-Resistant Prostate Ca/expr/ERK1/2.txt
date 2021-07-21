@@ -1,0 +1,1 @@
+( MEK1 AND ( ( ( NOT AZD6244 ) ) )    ) 

@@ -1,0 +1,1 @@
+( STAT1_STAT1nucleus_p2 )  OR ( ISGF3nucleus )  OR ( IRF3_IRF3nucleus )  OR ( IRF1_IRF1nucleus )  OR ( IRF5_IRF5nucleus )  OR ( RELAp65_NFBK1p50nucleus AND ( ( ( IRF3_IRF3nucleus  AND IRF3_IRF7nucleus  AND ATF2  AND CBP ) ) )    ) 

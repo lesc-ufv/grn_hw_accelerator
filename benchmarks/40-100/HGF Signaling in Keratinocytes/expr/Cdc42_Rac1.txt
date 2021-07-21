@@ -1,0 +1,1 @@
+( Akt AND ( ( ( DOCK180  AND Ras ) ) )    ) 

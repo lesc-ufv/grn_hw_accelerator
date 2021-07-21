@@ -1,0 +1,1 @@
+( ( ( dum_mtorc1_or_pkcd_stat3_ta AND ( ( ( stat3_py ) ) )     ) AND NOT ( slim  )  ) AND NOT ( pias3  ) ) 

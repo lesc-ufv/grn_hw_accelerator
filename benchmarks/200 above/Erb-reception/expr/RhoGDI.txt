@@ -1,0 +1,1 @@
+(  NOT ( ( AA )  OR ( PKC )  OR ( PIP2_45 ) ) ) OR  NOT ( AA OR PKC OR PIP2_45 ) 

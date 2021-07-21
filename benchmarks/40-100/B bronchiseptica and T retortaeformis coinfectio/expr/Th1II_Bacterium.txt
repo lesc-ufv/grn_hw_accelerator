@@ -1,0 +1,1 @@
+( DCII_Bacterium AND ( ( ( IL12II  AND T0 ) ) )    ) 

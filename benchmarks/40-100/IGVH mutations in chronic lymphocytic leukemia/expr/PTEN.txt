@@ -1,0 +1,1 @@
+( ( ( ( ( ( FRK AND ( ( ( ILK  AND TNF  AND EGR1  AND IFNGR2  AND INPP5D  AND BMI1  AND RRM1 ) ) )     ) AND NOT ( TGFBR3  )  ) AND NOT ( CSNK2A2  )  ) AND NOT ( AEBP1  )  ) AND NOT ( BMI1  )  ) AND NOT ( ADM  ) )  OR ( ( ( ( EGR1 AND ( ( ( ILK  AND INPP5D  AND BMI1  AND FRK  AND RRM1 ) ) )     ) AND NOT ( TGFBR3  )  ) AND NOT ( AEBP1  )  ) AND NOT ( BMI1  ) ) 

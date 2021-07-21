@@ -1,0 +1,1 @@
+( ( Cas AND ( ( ( Fak  OR Src ) ) )     ) AND NOT ( PTPPEST  ) ) 

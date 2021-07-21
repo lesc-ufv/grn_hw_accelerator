@@ -1,0 +1,1 @@
+( ( ( IFNGR2  ) AND NOT ( CUL5  ) )  ) OR  NOT ( IFNGR2 OR CUL5 ) 

@@ -1,0 +1,1 @@
+( ( Fak AND ( ( ( PIP2_45  OR Nck  OR Grb2 ) )  AND ( ( Crk  AND Cdc42 ) ) )     ) AND NOT ( PTPPEST  ) )  OR ( ( Src AND ( ( ( Crk  AND Cdc42 ) )  AND ( ( PIP2_45  OR Nck  OR Grb2 ) ) )     ) AND NOT ( PTPPEST  ) )  OR ( ( Cdc42 AND ( ( ( NOT PTPPEST  AND NOT Crk ) )  AND ( ( Fak  OR Src ) )  AND ( ( PIP2_45  OR Nck  OR Grb2 ) ) )     ) AND NOT ( PTPPEST  ) ) 

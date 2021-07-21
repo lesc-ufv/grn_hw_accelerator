@@ -1,0 +1,1 @@
+( ( ( ( ( STAT3  ) AND NOT ( GZMB  )  ) AND NOT ( BID  )  ) AND NOT ( Apoptosis  )  ) AND NOT ( DISC  ) )  OR ( ( ( ( ( NFKB  ) AND NOT ( GZMB  )  ) AND NOT ( BID  )  ) AND NOT ( Apoptosis  )  ) AND NOT ( DISC  ) ) 

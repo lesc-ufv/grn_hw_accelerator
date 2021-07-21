@@ -1,0 +1,1 @@
+( ( JAK2 AND ( ( ( STAT3  AND JAK1 )  AND (  ( ( NOT IKK ) ) ) ) )     ) AND NOT ( JNK  ) )  OR ( JAK1 AND ( ( ( STAT3  AND JAK2 ) ) )    ) 

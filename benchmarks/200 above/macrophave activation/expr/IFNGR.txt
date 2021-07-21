@@ -1,0 +1,1 @@
+( IFNG AND ( ( ( IFNGR1  AND IFNGR2  AND JAK2 ) ) )    ) 

@@ -1,0 +1,1 @@
+( TLR3_TICAM1_TICAM2_RIPK1 AND ( ( ( RIPK3 ) ) )    ) 

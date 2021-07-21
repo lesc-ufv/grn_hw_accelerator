@@ -1,0 +1,1 @@
+( ( ( ( stat3_ta  ) AND NOT ( gsk3  )  ) AND NOT ( casp9  )  ) AND NOT ( bad  ) ) 

@@ -1,0 +1,1 @@
+( EGFR_EGFR_EGF_MVB AND ( ( ( Alix ) )  AND ( ( Rab7 ) )  AND ( ( Eps15  OR VPS4 ) ) )    )  OR ( ESCRT_III AND ( ( ( Alix ) )  AND ( ( Rab7 ) )  AND ( ( Eps15  OR VPS4 ) ) )    ) 

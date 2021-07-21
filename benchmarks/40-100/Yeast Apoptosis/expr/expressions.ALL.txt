@@ -1,0 +1,73 @@
+MT-Frag = ( ( H2O2  ) and not ( DRE2_TAH18  ) )  or ( MT-ALT )  or ( ( MDV1  ) and not ( FIS1  ) ) 
+CAMP = ( AdenylateCyclase )  or ( TOR1 ) 
+NUC1-NUC = ( KAP123 ) 
+STE20-CYT = ( MAPK ) 
+HOS3 = ( H2O2 ) 
+STE20-NUC = ( STE20-CYT ) 
+AIF1-MT = ( HK ) 
+RLM1 = ( HOG1 )  or ( SLT2 ) 
+MT-ALT = ( RAS2 )  or ( MMI1 )  or ( MT-Frag )  or ( PKA ) 
+RAS2 = ( TOR1 )  or ( RedActinDyn ) 
+CytC-CYT = ( CDC48 )  or ( CytC-MT ) 
+POR1-2 = ( HK ) 
+CDC6 = ( Adozelesin ) 
+MMI1 = ( HK ) 
+MEC1 = ( AbnormalTelomer ) 
+YCA1 = ( ( Salt  ) and not ( SRO7  ) )  or ( MT-Frag )  or ( MEC1 )  or ( ROS-CYT )  or ( RedActinDyn )  or ( CytC-CYT ) 
+MSN2-4 = ( PKA ) 
+KAP123 = ( NUC1-MT ) 
+BIR1 =  not ( ( NMA111-NUC ) )
+SOD1 = ( Heat ) 
+DNA-Frag = ( ( Tat-D )  ) or  not ( Tat-D or STM1-NUC ) 
+DRE2_TAH18 = ( HK ) 
+ROS-CYT = ( Salt )  or ( CDC48 )  or ( RAS2 )  or ( DesCyclinCCDK8 )  or ( NDI1 )  or ( RedActinDyn )  or ( ( ( H2O2  ) and not ( EMC4  )  ) and not ( SVF1  ) )  or ( ( AceticAcid  ) and not ( SVF1  ) )  or ( ESP1 )  or ( SOD1 ) 
+NUC1-MT = ( H2O2 ) 
+HOG1 = ( ( Stress )  or ( PTP3 and ( ( ( not PTP2  and not Stress ) ) )    )  or ( PTP2 and ( ( ( not PTP3  and not Stress ) ) )    )  ) or  not ( PTP3 or PTP2 or Stress ) 
+HOG1-Dep = ( HOG1 ) 
+MCD1-NUC = ( ESP1 ) 
+MAPK = ( Mating ) 
+TOR1 = ( Stress ) 
+SDP1 = ( MSN2-4 ) 
+FVY10 = ( HK ) 
+SRO7 = ( HK ) 
+H2B = ( RPD3 )  or ( STE20-NUC )  or ( AIF1-NUC )  or ( HOS3 )  or ( NUC1-NUC ) 
+PKA = ( RAS2 )  or ( Heat ) 
+PTP2 = ( RLM1 ) 
+NMA111-CYT = ( Heat ) 
+Apoptosis = ( CU2 and ( ( ( CPR3 ) ) )    )  or ( ROS-CYT )  or ( ( YCA1  ) and not ( BIR1  ) )  or ( H2O2 and ( ( ( not POR1-2 ) ) )    )  or ( DNA-Frag )  or ( AceticAcid and ( ( ( not POR1-2 ) ) )    ) 
+PTP3 = ( HOG1-Dep ) 
+DesCyclinCCDK8 =  not ( ( SLT2 ) )
+CytC-MT = ( MCD1-MT )  or ( AceticAcid ) 
+STM1-NUC = ( ( STM1-CYT  ) and not ( Protosom  ) ) 
+ROS-MT = ( NDI1 and ( ( ( not SOD2 ) ) )    ) 
+Tat-D = ( MG2 ) 
+AIF1-NUC = ( AIF1-MT ) 
+NMA111-NUC = ( NMA111-CYT ) 
+SVF1 = ( HK ) 
+FIS1 = ( HK ) 
+SOD2 = ( HK ) 
+STM1-CYT = ( HK ) 
+RPD3 = ( Stress ) 
+EMC4 = ( HK ) 
+NDI1 = ( HK ) 
+MCD1-MT = ( HK ) 
+SNO1 = ( HK ) 
+ESP1 = ( H2O2 ) 
+AdenylateCyclase = ( RAS2 )  or ( Stress ) 
+SLT2 = ( ( RLM1 )  or ( Heat )  or ( PTP2 and ( ( ( not Heat  and not SDP1  and not Stress  and not RLM1 ) ) )    )  or ( SDP1 and ( ( ( not PTP2  and not Heat  and not Stress  and not RLM1 ) ) )    )  or ( Stress and ( ( ( SDP1 )  and (  ( ( not PTP2  and not Heat  and not RLM1 ) ) ) ) )    )  ) or  not ( PTP2 or SDP1 or Heat or Stress or RLM1 ) 
+MDV1 = ( HK ) 
+Protosom = ( CDC6 ) 
+CDC48 = ( HK ) 
+HK
+Stress
+CU2
+H2O2
+AceticAcid
+CPR3
+Adozelesin
+Mating
+AbnormalTelomer
+Heat
+RedActinDyn
+Salt
+MG2

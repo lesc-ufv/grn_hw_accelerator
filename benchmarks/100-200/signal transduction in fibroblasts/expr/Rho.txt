@@ -1,0 +1,1 @@
+( Rho AND ( ( ( NOT Graf  AND NOT p190RhoGAP  AND NOT PKA ) ) )    )  OR ( p115RhoGEF AND ( ( ( NOT RhoGDI  AND NOT Rho ) ) )    ) 

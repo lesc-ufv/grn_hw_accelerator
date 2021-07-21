@@ -1,0 +1,1 @@
+( ( ( Bb  ) AND NOT ( IgG_Bacterium  )  ) AND NOT ( IgA_Bacterium  ) ) 

@@ -1,0 +1,1 @@
+( ( grb2_sos  ) AND NOT ( ras_gap  ) ) 

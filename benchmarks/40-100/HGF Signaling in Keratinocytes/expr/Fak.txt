@@ -1,0 +1,1 @@
+( ( Integrins AND ( ( ( Rap1 ) ) )     ) AND NOT ( PTEN  ) ) 

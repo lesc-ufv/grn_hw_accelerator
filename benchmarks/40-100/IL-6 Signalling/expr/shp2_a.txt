@@ -1,0 +1,1 @@
+( ( ( gab1_mem_p AND ( ( ( shp2 ) ) )     ) AND NOT ( sirp1a  )  ) AND NOT ( ros  ) ) 

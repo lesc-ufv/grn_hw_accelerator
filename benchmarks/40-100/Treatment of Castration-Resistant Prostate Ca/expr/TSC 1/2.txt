@@ -1,0 +1,1 @@
+ NOT ( ( AKT AND ( ( ( NOT AZD5363 ) ) )    ) )

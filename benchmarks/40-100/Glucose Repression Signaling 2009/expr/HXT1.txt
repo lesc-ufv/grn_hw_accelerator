@@ -1,0 +1,1 @@
+ NOT ( ( Std1p )  OR ( Rgt1p )  OR ( Mth1p ) )

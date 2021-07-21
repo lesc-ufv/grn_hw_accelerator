@@ -1,0 +1,1 @@
+(  NOT ( ( STAT5_HIGH ) ) ) OR  NOT ( STAT5_HIGH ) 
