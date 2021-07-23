@@ -1,14 +1,13 @@
 import math
-
 from veriloggen import *
-
 from create_control_fifo_data_in import make_control_fifo_data_in
-from make_control_gnr import make_control_gnr
-from make_fifo import make_fifo
-from gnr_graph import maker_graph
+from src.hw.components import Components
+from src.hw.utils import readFile
 
 
 def make_regulator_network(num_units, functions, fifo_in_size, fifo_out_size):
+    components = Components()
+
     m = Module("regulator_network")
     data_width = 29
     ID = m.Parameter('ID', 0)
@@ -34,11 +33,11 @@ def make_regulator_network(num_units, functions, fifo_in_size, fifo_out_size):
     s1 = m.Wire('s1', width)
     start_s0 = m.Wire('start_s0')
     start_s1 = m.Wire('start_s1')
-    reset_nos = m.Wire('reset_nos')
+    rst_nos = m.Wire('rst_nos')
     init_state = m.Wire('init_state', width)
 
     fifo_out_we = m.Wire('fifo_out_we')
-    fifo_out_data_in = m.Wire('fifo_out_data_in',(data_width + data_width + width))
+    fifo_out_data_in = m.Wire('fifo_out_data_in', (data_width + data_width + width))
     fifo_out_empty = m.Wire('fifo_out_empty')
     fifo_out_full = m.Wire('fifo_out_full')
     fifo_out_full_almostfull = m.Wire('fifo_out_full_almostfull')
@@ -62,14 +61,14 @@ def make_regulator_network(num_units, functions, fifo_in_size, fifo_out_size):
 
     m.Instance(control_fifo_data_in, 'control_fifo_data_in_', param, con)
 
-    fifo = make_fifo()
+    fifo = components.create_fifo()
     con = [('clk', clk), ('rst', rst), ('we', fifo_in_we), ('din', fifo_in_data_in),
            ('re', fifo_in_re), ('dout', fifo_in_data_out), ('empty', fifo_in_empty),
            ('almostempty', fifo_in_almostempty), ('full', fifo_in_full), ('almostfull', fifo_in_full_almostfull)]
 
-    param = [('FIFO_WIDTH', width_data_in - id_width), ('FIFO_DEPTH_BITS', fifo_in_depth_bits),
-             ('FIFO_ALMOSTFULL_THRESHOLD', fifo_in_size - 2),
-             ('FIFO_ALMOSTEMPTY_THRESHOLD', 2)]
+    param = [('fifo_width', width_data_in - id_width), ('fifo_depth_bits', fifo_in_depth_bits),
+             ('fifo_almost_full_threshold', fifo_in_size - 2),
+             ('fifo_almost_empty_threshold', 2)]
 
     m.Instance(fifo, 'fifo_in', param, con)
 
@@ -77,24 +76,28 @@ def make_regulator_network(num_units, functions, fifo_in_size, fifo_out_size):
            ('re', read_data_en), ('dout', data_out), ('empty', fifo_out_empty),
            ('almostempty', has_lst3_data_out), ('full', fifo_out_full), ('almostfull', fifo_out_full_almostfull)]
 
-    param = [('FIFO_WIDTH', (data_width + data_width + width)),
-             ('FIFO_DEPTH_BITS', fifo_out_depth_bits),
-             ('FIFO_ALMOSTFULL_THRESHOLD', fifo_out_size - 2),
-             ('FIFO_ALMOSTEMPTY_THRESHOLD', 2)]
+    param = [('fifo_width', (data_width + data_width + width)),
+             ('fifo_depth_bits', fifo_out_depth_bits),
+             ('fifo_almost_full_threshold', fifo_out_size - 2),
+             ('fifo_almost_empty_threshold', 2)]
 
     m.Instance(fifo, 'fifo_out', param, con)
 
-    control = make_control_gnr(len(functions))
-    con = [('clk', clk), ('rst', rst), ('start', start), ('s0', s0), ('s1', s1), ('fifo_out_full', fifo_out_full),
+    control = components.create_gnr_control(functions)
+    con = [('clk', clk), ('rst', rst), ('start', start), ('fifo_out_full', fifo_out_full),
            ('fifo_in_empty', fifo_in_empty), ('fifo_data_in', fifo_in_data_out), ('end_data_in', end_data_in),
            ('fifo_in_re', fifo_in_re),
-           ('start_s0', start_s0), ('start_s1', start_s1), ('reset_nos', reset_nos), ('init_state', init_state),
            ('data_out', fifo_out_data_in), ('fifo_out_we', fifo_out_we), ('fifo_out_empty', fifo_out_empty),
            ('done', task_done)]
 
     m.Instance(control, 'control_gnr', control.get_params(), con)
 
-    graph = maker_graph(functions)
-    m.Instance(graph, 'network_graph', graph.get_params(), graph.get_ports())
+    graph = components.create_gnr_graph(functions)
+    m.Instance(graph, graph.name, graph.get_params(), graph.get_ports())
 
     return m
+
+path = '../../benchmarks/Benchmark_5.txt'
+functions = readFile(path)
+m = make_regulator_network(1, functions, 16, 16)
+m.to_verilog(m.name+".v")

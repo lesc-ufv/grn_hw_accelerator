@@ -1,8 +1,5 @@
 import math
-
 from veriloggen import *
-
-from make_fifo import make_fifo
 
 
 def make_control_fifo_data_in(num_units, width_data_in):
@@ -21,12 +18,12 @@ def make_control_fifo_data_in(num_units, width_data_in):
 
     m.Always(Posedge(clk))(
         If(rst)(
-            fifo_in_we(Int(0,1,2)),
-            fifo_in_data(Int(0,fifo_in_data.width,10))
+            fifo_in_we(Int(0, 1, 2)),
+            fifo_in_data(Int(0, fifo_in_data.width, 10))
         ).Elif(start)(
-            fifo_in_we(Int(0,1,2)),
-            If(AndList(data_in_valid,(data_in[:id_width] == ID),(~fifo_in_full)))(
-                fifo_in_we(Int(1,1,2)),
+            fifo_in_we(Int(0, 1, 2)),
+            If(AndList(data_in_valid, (data_in[:id_width] == ID), (~fifo_in_full)))(
+                fifo_in_we(Int(1, 1, 2)),
                 fifo_in_data(data_in[id_width:])
             )
         )

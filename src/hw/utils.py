@@ -1,4 +1,5 @@
 import re
+from veriloggen import *
 
 
 def readFile(path):
@@ -18,6 +19,7 @@ def readFile(path):
                 ff = re.sub('  ', ' ', f)
             functions.append(f)
     return functions
+
 
 def initialize_regs(module, values=None):
     regs = []
