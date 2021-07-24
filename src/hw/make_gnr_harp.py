@@ -4,7 +4,7 @@ from veriloggen import *
 
 from create_control_data_in import make_control_data_in
 from create_control_data_out import make_control_data_out
-from make_regulator_network import make_regulator_network
+from create_regulator_network import make_regulator_network
 
 
 def make_gnr_harp(num_units, functions, fifo_in_size, fifo_out_size):

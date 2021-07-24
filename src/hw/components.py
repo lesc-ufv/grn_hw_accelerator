@@ -149,7 +149,7 @@ class Components:
         request_index = m.Wire('request_index', EmbeddedCode('$clog2(ports)'))
         request_mask = m.Wire('request_mask', ports)
 
-        pe = self.make_priority_encoder()
+        pe = self.create_priority_encoder()
         params = [('WIDTH', ports), ('lsb_priority', lsb_priority)]
         con = [
             ('input_unencoded', request),
@@ -157,7 +157,8 @@ class Components:
             ('output_encoded', request_index),
             ('output_unencoded', request_mask)
         ]
-        m.Instance(pe, 'priority_encoder_inst', params, con)
+        m.Instance(pe, pe.name + '_inst', params, con)
+
         mask_reg = m.Reg('mask_reg', ports)
         mask_next = m.Reg('mask_next', ports)
         masked_request_valid = m.Wire('masked_request_valid')
@@ -171,7 +172,7 @@ class Components:
             ('output_encoded', masked_request_index),
             ('output_unencoded', masked_request_mask)
         ]
-        m.Instance(pe, 'priority_encoder_masked', params, con)
+        m.Instance(pe, pe.name+'_masked', params, con)
 
         m.Always()(
             grant_next(0, blk=True),
@@ -234,6 +235,7 @@ class Components:
         self.cache[name] = m
         return m
 
+    # TODO - Ver se é possível tornar esse parâmetro num_units em parameter
     def create_control_arbiter(self, num_units):
         name = 'control_arbiter'
         if name in self.cache.keys():
@@ -273,35 +275,32 @@ class Components:
             grant_index = m.Wire('grant_index', bits)
             grant_valid = m.Wire('grant_valid')
 
-            arbiter = self.make_arbiter()
+            arbiter = self.create_arbiter()
             params = [('PORTS', num_units), ('TYPE', "ROUND_ROBIN"),
                       ('BLOCK', "NONE"), ('LSB_PRIORITY', "LOW")]
             ports = [('clk', clk), ('rst', rst), ('request', request),
-                     ('acknowledge', Int(0, num_units, 10)),
+                     ('acknowledge', 0),
                      ('grant', grant),
                      ('grant_valid', grant_valid),
                      ('grant_encoded', grant_index)]
-
-            m.Instance(arbiter, 'arbiter_inst', params, ports)
+            m.Instance(arbiter, arbiter.name+'_inst', params, ports)
 
             m.Always(Posedge(clk))(
                 If(rst)(
                     fsm_state(FSM_IDLE),
-                    request(Int(0, request.width, 10)),
-                    read_data_en(Int(0, 1, 2)),
-                    grant_index_reg(Int(0, grant_index.width, 10)),
-                    wr_fifo_out(Int(0, 1, 2)),
-                    mux_control(Int(0, mux_control.width, 10)),
+                    request(0),
+                    read_data_en(0),
+                    grant_index_reg(0),
+                    wr_fifo_out(0),
+                    mux_control(0),
                 ).Elif(start)(
-                    request(Int(0, request.width, 10)),
-                    read_data_en(Int(0, 1, 2)),
-                    wr_fifo_out(Int(0, 1, 2)),
-                    mux_control(Int(0, mux_control.width, 10)),
+                    request(0),
+                    read_data_en(0),
+                    wr_fifo_out(0),
+                    mux_control(0),
                     Case(fsm_state)(
                         When(FSM_IDLE)(
-                            If(AndList(has_data_out !=
-                                       Int(0, has_data_out.width, 10),
-                                       Not(fifo_out_full)))(
+                            If(AndList(has_data_out != 0, Not(fifo_out_full)))(
                                 request(has_data_out),
                                 fsm_state(FSM_RD_REQ)
                             )
@@ -314,7 +313,7 @@ class Components:
                             )
                         ),
                         When(FSM_WR_REQ)(
-                            wr_fifo_out(Int(1, 1, 2)),
+                            wr_fifo_out(1),
                             mux_control(grant_index_reg),
                             fsm_state(FSM_IDLE)
                         )
@@ -326,32 +325,32 @@ class Components:
             flag_rd = m.Reg('flag_rd')
             m.Always(Posedge(clk))(
                 If(rst)(
-                    wr_fifo_out(Int(0, 1, 2))
+                    wr_fifo_out(0)
                 ).Elif(start)(
                     wr_fifo_out(wr_fifo_out_reg)
                 )
             )
             m.Always(Posedge(clk))(
                 If(rst)(
-                    read_data_en(Int(0, num_units, 10)),
-                    wr_fifo_out_reg(Int(0, 1, 2)),
+                    read_data_en(0),
+                    wr_fifo_out_reg(0),
                     flag_rd(1),
                 ).Elif(start)(
-                    read_data_en(Int(0, num_units, 10)),
-                    wr_fifo_out_reg(Int(0, 1, 2)),
-                    If(AndList(has_data_out != Int(0, num_units, 10),
+                    read_data_en(0),
+                    wr_fifo_out_reg(0),
+                    If(AndList(has_data_out != 0,
                                ~fifo_out_full))(
                         If(has_lst3_data)(
                             If(flag_rd)(
                                 flag_rd(0),
-                                read_data_en(Int(1, read_data_en.width, 2)),
-                                wr_fifo_out_reg(Int(1, 1, 2)),
+                                read_data_en(1),
+                                wr_fifo_out_reg(1),
                             ).Else(
                                 flag_rd(1)
                             )
                         ).Else(
-                            read_data_en(Int(1, read_data_en.width, 2)),
-                            wr_fifo_out_reg(Int(1, 1, 2)),
+                            read_data_en(1),
+                            wr_fifo_out_reg(1),
                         )
                     )
                 )
@@ -393,75 +392,68 @@ class Components:
 
         m.Always(Posedge(clk))(
             If(rst)(
-                empty(Int(1, 1, 2)),
-                almostempty(Int(1, 1, 2)),
-                full(Int(0, 1, 2)),
-                almostfull(Int(0, 1, 2)),
+                empty(1),
+                almostempty(1),
+                full(0),
+                almostfull(0),
                 rp(0),
                 wp(0),
                 count(0)
             ).Else(
                 Case(Cat(we, re))(
-                    When(Int(3, 2, 2))(
+                    When(3)(
                         rp.inc(),
                         wp.inc(),
                     ),
-                    When(Int(2, 2, 2))(
+                    When(2)(
                         If(~full)(
                             wp.inc(),
                             count.inc(),
-                            empty(Int(0, 1, 2)),
+                            empty(0),
                             If(count == (fifo_almost_empty_threshold - 1))(
-                                almostempty(Int(0, 1, 2))
+                                almostempty(0)
                             ),
                             If(count ==
                                EmbeddedNumeric('2**fifo_depth_bits-1'))(
-                                full(Int(1, 1, 2))
+                                full(1)
                             ),
                             If(count == (fifo_almost_full_threshold - 1))(
-                                almostfull(Int(1, 1, 2))
+                                almostfull(1)
                             )
                         )
 
                     ),
-                    When(Int(1, 2, 2))(
+                    When(1)(
                         If(~empty)(
                             rp.inc(),
                             count(count - 1),
-                            full(Int(0, 1, 2)),
+                            full(0),
                             If(count == fifo_almost_full_threshold)(
-                                almostfull(Int(0, 1, 2))
+                                almostfull(0)
                             ),
                             If(count == 1)(
-                                empty(Int(1, 1, 2))
+                                empty(1)
                             ),
                             If(count == fifo_almost_empty_threshold)(
-                                almostempty(Int(1, 1, 2))
+                                almostempty(1)
                             )
 
                         )
-                    ),
-                    When()(
-
                     )
-
                 )
             )
-
         )
         m.Always(Posedge(clk))(
             If(rst)(
                 dout(0),
             ).Else(
-                If(we == Int(1, 1, 2))(
+                If(we == 1)(
                     mem[wp](din)
                 ),
-                If(re == Int(1, 1, 2))(
+                If(re == 1)(
                     dout(mem[rp])
                 )
-
             )
-
         )
 
         initialize_regs(m)
@@ -679,35 +671,35 @@ class Components:
 
         m.Always(Posedge(clk))(
             If(rst)(
-                init_state_out(Int(0, init_state_out.width, 10)),
-                start_count_period(Int(0, 1, 2)),
-                start_count_transient(Int(0, 1, 2)),
-                done(Int(0, 1, 2)),
-                start_s0(Int(0, 1, 2)),
-                start_s1(Int(0, 1, 2)),
-                fifo_out_we(Int(0, 1, 2)),
-                reset_counts(Int(0, 1, 2)),
-                state_net(Int(0, state_net.width, 10)),
-                period(Int(0, period.width, 10)),
-                transient(Int(0, transient.width, 10)),
-                end_state_reg(Int(0, end_state_reg.width, 10)),
-                fifo_in_re(Int(0, 1, 2)),
-                flag_rd(Int(0, 1, 2)),
-                flag_wr(Int(0, 1, 2)),
-                rst_nos(Int(0, 1, 2)),
-                data_out(Int(0, data_out.width, 10)),
+                init_state_out(0),
+                start_count_period(0),
+                start_count_transient(0),
+                done(0),
+                start_s0(0),
+                start_s1(0),
+                fifo_out_we(0),
+                reset_counts(0),
+                state_net(0),
+                period(0),
+                transient(0),
+                end_state_reg(0),
+                fifo_in_re(0),
+                flag_rd(0),
+                flag_wr(0),
+                rst_nos(0),
+                data_out(0),
                 fsm_state(IDLE),
-                pass_cycle_attractor(Int(1, 1, 2))
+                pass_cycle_attractor(1)
             ).Elif(start)(
-                fifo_out_we(Int(0, 1, 2)),
-                rst_nos(Int(0, 1, 2)),
-                reset_counts(Int(0, 1, 2)),
-                fifo_in_re(Int(0, 1, 2)),
+                fifo_out_we(0),
+                rst_nos(0),
+                reset_counts(0),
+                fifo_in_re(0),
                 Case(fsm_state)(
                     When(IDLE)(
                         If(~fifo_in_empty)(
-                            fifo_in_re(Int(1, 1, 2)),
-                            flag_rd(Int(0, 1, 2)),
+                            fifo_in_re(1),
+                            flag_rd(0),
                             fsm_state(GET_STATE)
                         ).Elif(end_data_in)(
                             fsm_state(DONE)
@@ -717,79 +709,81 @@ class Components:
                         If(flag_rd)(
                             init_state_out(fifo_data_in[:width]),
                             end_state_reg(fifo_data_in[width:]),
-                            flag_rd(Int(0, 1, 2)),
+                            flag_rd(0),
                             # Display("%d: ID: %d SET_STATE %d / %d", clk_count, ID, fifo_data_in[:width],
                             # fifo_data_in[width:]),
                             fsm_state(RESET_NOS)
                         ).Else(
-                            flag_rd(Int(1, 1, 2))
+                            flag_rd(1)
                         )
                     ),
                     When(RESET_NOS)(
                         # Display("%d: ID: %d SET_STATE %d / %d", clk_count, ID, init_state_out, end_state_reg),
-                        rst_nos(Int(1, 1, 2)),
-                        reset_counts(Int(1, 1, 2)),
+                        rst_nos(1),
+                        reset_counts(1),
                         fsm_state(START_NOS),
                     ),
                     When(START_NOS)(
-                        start_s0(Int(1, 1, 2)),
-                        start_s1(Int(1, 1, 2)),
-                        pass_cycle_attractor(Int(1, 1, 2)),
+                        start_s0(1),
+                        start_s1(1),
+                        pass_cycle_attractor(1),
                         fsm_state(FIND_ATTRACTOR),
                         #   Display("%d: START_NOS", clk_count)
                     ),
                     When(FIND_ATTRACTOR)(
                         If(pass_cycle_attractor)(
-                            pass_cycle_attractor(Int(0, 1, 2)),
+                            pass_cycle_attractor(0),
                             If(AndList((s0 == s1), start_count_transient))(
                                 state_net(s0),
                                 If(s0 == init_state_out)(
-                                    transient(Int(0, transient.width, 10)),
+                                    transient(0),
                                 ).Else(
                                     transient(transient_count),
                                 ),
-                                start_count_transient(Int(0, 1, 2)),
-                                start_s0(Int(0, 1, 2)),
-                                start_s1(Int(0, 1, 2)),
+                                start_count_transient(0),
+                                start_s0(0),
+                                start_s1(0),
                                 fsm_state(CALC_PERIOD_ATTRACTOR),
                                 #  Display("%d: FIND_ATTRACTOR -> CALC_PERIOD_ATTRACTOR: %x %x", clk_count, s0, s1)
 
                             ).Else(
-                                start_count_transient(Int(1, 1, 2)),
+                                start_count_transient(1),
                                 fsm_state(FIND_ATTRACTOR),
                                 #   Display("%d: FIND_ATTRACTOR -> FIND_ATTRACTOR: %x %x", clk_count, s0, s1)
                             )
                         ).Else(
-                            pass_cycle_attractor(Int(1, 1, 2))
+                            pass_cycle_attractor(1)
                         )
                     ),
                     When(CALC_PERIOD_ATTRACTOR)(
                         If(AndList((state_net == s1), start_count_period))(
-                            start_count_period(Int(0, 1, 2)),
+                            start_count_period(0),
                             period(period_count),
-                            start_s1(Int(0, 1, 2)),
+                            start_s1(0),
                             fsm_state(FIND_NEXT_ATTRACTOR),
                             # Display("%d: CALC_PERIOD_ATTRACTOR -> FIND_NEXT_ATTRACTOR %x %x %d", clk_count, state_net, s1,
                             #      period)
                         ).Else(
                             fsm_state(CALC_PERIOD_ATTRACTOR),
-                            start_count_period(Int(1, 1, 2)),
-                            start_s1(Int(1, 1, 2)),
+                            start_count_period(1),
+                            start_s1(1),
                             # Display("%d: CALC_PERIOD_ATTRACTOR -> CALC_PERIOD_ATTRACTOR %x %x %d", clk_count, state_net, s1,
                             #       period)
                         )
                     ),
                     When(FIND_NEXT_ATTRACTOR)(
                         If(~fifo_out_full)(
-                            fifo_out_we(Int(1, 1, 2)),
+                            fifo_out_we(1),
                             data_out(Cat(state_net, transient, period)),
                             If(init_state_out < end_state_reg)(
-                                init_state_out(init_state_out + Int(1, init_state_out.width, 10)),
+                                init_state_out(
+                                    init_state_out + 1),
                                 fsm_state(RESET_NOS),
                                 #    Display("%d: ID: %d FIND_NEXT_ATTRACTOR%d", clk_count, ID, init_state_out + 1)
                             ).Else(
                                 fsm_state(DONE),
-                                Display("%d: ID: %d DONE %d", 0, ID, init_state_out + 1)
+                                # Display("%d: ID: %d DONE %d", 0, ID,
+                                #        init_state_out + 1)
                             )
                         )
                     ),
@@ -798,45 +792,44 @@ class Components:
                             If(end_data_in)(
                                 If(flag_wr)(
                                     If(fifo_out_empty)(
-                                        done(Int(1, 1, 2))
+                                        done(1)
                                     ),
-                                    flag_wr(Int(0, 1, 2))
+                                    flag_wr(0)
                                 ).Else(
-                                    flag_wr(Int(1, 1, 2))
+                                    flag_wr(1)
                                 ),
                             ),
                             fsm_state(DONE)
                         ).Else(
-                            fifo_in_re(Int(1, 1, 2)),
-                            flag_rd(Int(0, 1, 2)),
-                            init_state_out(Int(0, init_state_out.width, 10)),
+                            fifo_in_re(1),
+                            flag_rd(0),
+                            init_state_out(0),
                             fsm_state(GET_STATE)
                         )
-
                     )
                 )
-
             )
         )
 
         m.Always(Posedge(clk))(
             If(reset_counts)(
-                period_count(Int(0, period.width, 10)),
-                transient_count(Int(0, transient_count.width, 10)),
-                pass_cycle(Int(1, 1, 2))
+                period_count(0),
+                transient_count(0),
+                pass_cycle(1)
             ).Else(
                 If(start_count_period)(
-                    period_count(period_count + Int(1, period_count.width, 10))
+                    period_count(period_count + 1)
                 ),
                 If(start_count_transient)(
-                    transient_count(transient_count + Cat(Int(0,transient.width - 1,2), pass_cycle))
+                    transient_count(
+                        transient_count + pass_cycle)
                 ),
                 pass_cycle(~pass_cycle),
             )
         )
 
         graph = self.create_gnr_graph(functions)
-        m.Instance(graph, graph.name, graph.get_params(), graph.get_ports())
+        m.Instance(graph, '_' + graph.name, graph.get_params(), graph.get_ports())
 
         initialize_regs(m)
         self.cache[name] = m
@@ -884,7 +877,47 @@ class Components:
                 ports_con.append((p, p2p))
             i += 1
 
-            m.Instance(no, "_%s" % no.name, no.get_params(), ports_con)
+            m.Instance(no, "_" + no.name, no.get_params(), ports_con)
+
+        initialize_regs(m)
+        self.cache[name] = m
+        return m
+
+    def create_ctrl_fifo_data_in(self):
+        name = 'control_fifo_data_in'
+        if name in self.cache.keys():
+            return self.cache[name]
+
+        m = Module(name)
+        id = m.Parameter('id', 0)
+        id_width = m.Parameter('id_width', 1)
+        width_data_in = m.Parameter('width_data_in', 10)
+        # id_width = int(math.ceil(math.log(num_units, 2))) + 1
+
+        clk = m.Input('clk')
+        rst = m.Input('rst')
+        start = m.Input('start')
+        data_in_valid = m.Input('data_in_valid')
+        data_in = m.Input('data_in', width_data_in)  # (id + BEGIN + END)
+
+        fifo_in_full = m.Input('fifo_in_full')
+        # fifo_in_amostfull = m.Input('fifo_in_amostfull')
+        fifo_in_we = m.OutputReg('fifo_in_we')
+        fifo_in_data = m.OutputReg('fifo_in_data', width_data_in - id_width)
+
+        m.Always(Posedge(clk))(
+            If(rst)(
+                fifo_in_we(0),
+                fifo_in_data(0)
+            ).Elif(start)(
+                fifo_in_we(0),
+                If(AndList(data_in_valid, (data_in[:id_width] == id), (~fifo_in_full)))(
+                    fifo_in_we(1),
+                    fifo_in_data(data_in[id_width:])
+                )
+            )
+
+        )
 
         initialize_regs(m)
         self.cache[name] = m

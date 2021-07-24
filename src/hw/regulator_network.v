@@ -2,7 +2,7 @@
 
 module regulator_network #
 (
-  parameter ID = 0
+  parameter id = 0
 )
 (
   input clk,
@@ -18,12 +18,6 @@ module regulator_network #
   output task_done
 );
 
-  wire [5-1:0] s0;
-  wire [5-1:0] s1;
-  wire start_s0;
-  wire start_s1;
-  wire rst_nos;
-  wire [5-1:0] init_state;
   wire fifo_out_we;
   wire [63-1:0] fifo_out_data_in;
   wire fifo_out_empty;
@@ -41,9 +35,11 @@ module regulator_network #
 
   control_fifo_data_in
   #(
-    .ID(ID)
+    .id(id),
+    .id_width(1),
+    .width_data_in(11)
   )
-  control_fifo_data_in_
+  _control_fifo_data_in
   (
     .clk(clk),
     .rst(rst),
@@ -51,7 +47,6 @@ module regulator_network #
     .data_in_valid(data_in_valid),
     .data_in(data_in),
     .fifo_in_full(fifo_in_full),
-    .fifo_in_amostfull(fifo_in_full_almostfull),
     .fifo_in_we(fifo_in_we),
     .fifo_in_data(fifo_in_data_in)
   );
@@ -122,55 +117,47 @@ module regulator_network #
   );
 
 
-  gnr_graph
-  gnr_graph
-  (
-    .clk(clk),
-    .rst(rst),
-    .start(start),
-    .rst_nos(rst_nos),
-    .start_s0(start_s0),
-    .start_s1(start_s1),
-    .init_state(init_state),
-    .s0(s0),
-    .s1(s1)
-  );
-
-
 endmodule
 
 
 
 module control_fifo_data_in #
 (
-  parameter ID = 0
+  parameter id = 0,
+  parameter id_width = 1,
+  parameter width_data_in = 10
 )
 (
   input clk,
   input rst,
   input start,
   input data_in_valid,
-  input [11-1:0] data_in,
+  input [width_data_in-1:0] data_in,
   input fifo_in_full,
-  input fifo_in_amostfull,
   output reg fifo_in_we,
-  output reg [10-1:0] fifo_in_data
+  output reg [width_data_in-id_width-1:0] fifo_in_data
 );
 
 
   always @(posedge clk) begin
     if(rst) begin
-      fifo_in_we <= 1'b0;
-      fifo_in_data <= 10'd0;
+      fifo_in_we <= 0;
+      fifo_in_data <= 0;
     end else begin
       if(start) begin
-        fifo_in_we <= 1'b0;
-        if(data_in_valid && (data_in[0:0] == ID) && ~fifo_in_full) begin
-          fifo_in_we <= 1'b1;
-          fifo_in_data <= data_in[10:1];
+        fifo_in_we <= 0;
+        if(data_in_valid && (data_in[id_width-1:0] == id) && ~fifo_in_full) begin
+          fifo_in_we <= 1;
+          fifo_in_data <= data_in[width_data_in-1:id_width];
         end 
       end 
     end
+  end
+
+
+  initial begin
+    fifo_in_we = 0;
+    fifo_in_data = 0;
   end
 
 
@@ -205,52 +192,50 @@ module fifo #
 
   always @(posedge clk) begin
     if(rst) begin
-      empty <= 1'b1;
-      almostempty <= 1'b1;
-      full <= 1'b0;
-      almostfull <= 1'b0;
+      empty <= 1;
+      almostempty <= 1;
+      full <= 0;
+      almostfull <= 0;
       rp <= 0;
       wp <= 0;
       count <= 0;
     end else begin
       case({ we, re })
-        2'b11: begin
+        3: begin
           rp <= rp + 1;
           wp <= wp + 1;
         end
-        2'b10: begin
+        2: begin
           if(~full) begin
             wp <= wp + 1;
             count <= count + 1;
-            empty <= 1'b0;
+            empty <= 0;
             if(count == fifo_almost_empty_threshold - 1) begin
-              almostempty <= 1'b0;
+              almostempty <= 0;
             end 
             if(count == 2**fifo_depth_bits-1) begin
-              full <= 1'b1;
+              full <= 1;
             end 
             if(count == fifo_almost_full_threshold - 1) begin
-              almostfull <= 1'b1;
+              almostfull <= 1;
             end 
           end 
         end
-        2'b1: begin
+        1: begin
           if(~empty) begin
             rp <= rp + 1;
             count <= count - 1;
-            full <= 1'b0;
+            full <= 0;
             if(count == fifo_almost_full_threshold) begin
-              almostfull <= 1'b0;
+              almostfull <= 0;
             end 
             if(count == 1) begin
-              empty <= 1'b1;
+              empty <= 1;
             end 
             if(count == fifo_almost_empty_threshold) begin
-              almostempty <= 1'b1;
+              almostempty <= 1;
             end 
           end 
-        end
-        default: begin
         end
       endcase
     end
@@ -261,10 +246,10 @@ module fifo #
     if(rst) begin
       dout <= 0;
     end else begin
-      if(we == 1'b1) begin
+      if(we == 1) begin
         mem[wp] <= din;
       end 
-      if(re == 1'b1) begin
+      if(re == 1) begin
         dout <= mem[rp];
       end 
     end
@@ -341,36 +326,36 @@ module gnr_control #
 
   always @(posedge clk) begin
     if(rst) begin
-      init_state <= 5'd0;
-      start_count_period <= 1'b0;
-      start_count_transient <= 1'b0;
-      done <= 1'b0;
-      start_s0 <= 1'b0;
-      start_s1 <= 1'b0;
-      fifo_out_we <= 1'b0;
-      reset_counts <= 1'b0;
-      state_net <= 5'd0;
-      period <= 29'd0;
-      transient <= 29'd0;
-      end_state_reg <= 5'd0;
-      fifo_in_re <= 1'b0;
-      flag_rd <= 1'b0;
-      flag_wr <= 1'b0;
-      rst_nos <= 1'b0;
-      data_out <= 63'd0;
+      init_state <= 0;
+      start_count_period <= 0;
+      start_count_transient <= 0;
+      done <= 0;
+      start_s0 <= 0;
+      start_s1 <= 0;
+      fifo_out_we <= 0;
+      reset_counts <= 0;
+      state_net <= 0;
+      period <= 0;
+      transient <= 0;
+      end_state_reg <= 0;
+      fifo_in_re <= 0;
+      flag_rd <= 0;
+      flag_wr <= 0;
+      rst_nos <= 0;
+      data_out <= 0;
       fsm_state <= IDLE;
-      pass_cycle_attractor <= 1'b1;
+      pass_cycle_attractor <= 1;
     end else begin
       if(start) begin
-        fifo_out_we <= 1'b0;
-        rst_nos <= 1'b0;
-        reset_counts <= 1'b0;
-        fifo_in_re <= 1'b0;
+        fifo_out_we <= 0;
+        rst_nos <= 0;
+        reset_counts <= 0;
+        fifo_in_re <= 0;
         case(fsm_state)
           IDLE: begin
             if(~fifo_in_empty) begin
-              fifo_in_re <= 1'b1;
-              flag_rd <= 1'b0;
+              fifo_in_re <= 1;
+              flag_rd <= 0;
               fsm_state <= GET_STATE;
             end else if(end_data_in) begin
               fsm_state <= DONE;
@@ -380,67 +365,66 @@ module gnr_control #
             if(flag_rd) begin
               init_state <= fifo_data_in[4:0];
               end_state_reg <= fifo_data_in[9:5];
-              flag_rd <= 1'b0;
+              flag_rd <= 0;
               fsm_state <= RESET_NOS;
             end else begin
-              flag_rd <= 1'b1;
+              flag_rd <= 1;
             end
           end
           RESET_NOS: begin
-            rst_nos <= 1'b1;
-            reset_counts <= 1'b1;
+            rst_nos <= 1;
+            reset_counts <= 1;
             fsm_state <= START_NOS;
           end
           START_NOS: begin
-            start_s0 <= 1'b1;
-            start_s1 <= 1'b1;
-            pass_cycle_attractor <= 1'b1;
+            start_s0 <= 1;
+            start_s1 <= 1;
+            pass_cycle_attractor <= 1;
             fsm_state <= FIND_ATTRACTOR;
           end
           FIND_ATTRACTOR: begin
             if(pass_cycle_attractor) begin
-              pass_cycle_attractor <= 1'b0;
+              pass_cycle_attractor <= 0;
               if((s0 == s1) && start_count_transient) begin
                 state_net <= s0;
                 if(s0 == init_state) begin
-                  transient <= 29'd0;
+                  transient <= 0;
                 end else begin
                   transient <= transient_count;
                 end
-                start_count_transient <= 1'b0;
-                start_s0 <= 1'b0;
-                start_s1 <= 1'b0;
+                start_count_transient <= 0;
+                start_s0 <= 0;
+                start_s1 <= 0;
                 fsm_state <= CALC_PERIOD_ATTRACTOR;
               end else begin
-                start_count_transient <= 1'b1;
+                start_count_transient <= 1;
                 fsm_state <= FIND_ATTRACTOR;
               end
             end else begin
-              pass_cycle_attractor <= 1'b1;
+              pass_cycle_attractor <= 1;
             end
           end
           CALC_PERIOD_ATTRACTOR: begin
             if((state_net == s1) && start_count_period) begin
-              start_count_period <= 1'b0;
+              start_count_period <= 0;
               period <= period_count;
-              start_s1 <= 1'b0;
+              start_s1 <= 0;
               fsm_state <= FIND_NEXT_ATTRACTOR;
             end else begin
               fsm_state <= CALC_PERIOD_ATTRACTOR;
-              start_count_period <= 1'b1;
-              start_s1 <= 1'b1;
+              start_count_period <= 1;
+              start_s1 <= 1;
             end
           end
           FIND_NEXT_ATTRACTOR: begin
             if(~fifo_out_full) begin
-              fifo_out_we <= 1'b1;
+              fifo_out_we <= 1;
               data_out <= { state_net, transient, period };
               if(init_state < end_state_reg) begin
-                init_state <= init_state + 5'd1;
+                init_state <= init_state + 1;
                 fsm_state <= RESET_NOS;
               end else begin
                 fsm_state <= DONE;
-                $display("%d: ID: %d DONE %d", 0, ID, (init_state + 1));
               end
             end 
           end
@@ -449,18 +433,18 @@ module gnr_control #
               if(end_data_in) begin
                 if(flag_wr) begin
                   if(fifo_out_empty) begin
-                    done <= 1'b1;
+                    done <= 1;
                   end 
-                  flag_wr <= 1'b0;
+                  flag_wr <= 0;
                 end else begin
-                  flag_wr <= 1'b1;
+                  flag_wr <= 1;
                 end
               end 
               fsm_state <= DONE;
             end else begin
-              fifo_in_re <= 1'b1;
-              flag_rd <= 1'b0;
-              init_state <= 5'd0;
+              fifo_in_re <= 1;
+              flag_rd <= 0;
+              init_state <= 0;
               fsm_state <= GET_STATE;
             end
           end
@@ -472,15 +456,15 @@ module gnr_control #
 
   always @(posedge clk) begin
     if(reset_counts) begin
-      period_count <= 29'd0;
-      transient_count <= 29'd0;
-      pass_cycle <= 1'b1;
+      period_count <= 0;
+      transient_count <= 0;
+      pass_cycle <= 1;
     end else begin
       if(start_count_period) begin
-        period_count <= period_count + 29'd1;
+        period_count <= period_count + 1;
       end 
       if(start_count_transient) begin
-        transient_count <= transient_count + { 28'b0, pass_cycle };
+        transient_count <= transient_count + pass_cycle;
       end 
       pass_cycle <= ~pass_cycle;
     end
