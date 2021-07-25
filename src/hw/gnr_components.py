@@ -172,7 +172,7 @@ class Components:
             ('output_encoded', masked_request_index),
             ('output_unencoded', masked_request_mask)
         ]
-        m.Instance(pe, pe.name+'_masked', params, con)
+        m.Instance(pe, pe.name + '_masked', params, con)
 
         m.Always()(
             grant_next(0, blk=True),
@@ -283,7 +283,7 @@ class Components:
                      ('grant', grant),
                      ('grant_valid', grant_valid),
                      ('grant_encoded', grant_index)]
-            m.Instance(arbiter, arbiter.name+'_inst', params, ports)
+            m.Instance(arbiter, arbiter.name + '_inst', params, ports)
 
             m.Always(Posedge(clk))(
                 If(rst)(
@@ -918,6 +918,251 @@ class Components:
             )
 
         )
+
+        initialize_regs(m)
+        self.cache[name] = m
+        return m
+
+    def create_regulator_network(self, num_units, functions, fifo_in_size,
+                                 fifo_out_size):
+        name = 'regulator_network'
+        if name in self.cache.keys():
+            return self.cache[name]
+
+        m = Module(name)
+        data_width = 29
+        id = m.Parameter('id', 0)
+        id_width = int(math.ceil(math.log(num_units, 2))) + 1
+        width_data_in = 2 * len(functions) + id_width
+        width = len(functions)
+        fifo_in_depth_bits = int(math.ceil(math.log(fifo_in_size, 2)))
+        fifo_out_depth_bits = int(math.ceil(math.log(fifo_out_size, 2)))
+
+        clk = m.Input('clk')
+        rst = m.Input('rst')
+        start = m.Input('start')
+        data_in_valid = m.Input('data_in_valid')
+        data_in = m.Input('data_in', width_data_in)  # (id + BEGIN + END)
+        end_data_in = m.Input('end_data_in')
+        read_data_en = m.Input('read_data_en')
+        has_data_out = m.Output('has_data_out')
+        has_lst3_data_out = m.Output('has_lst3_data_out')
+        data_out = m.Output('data_out', (data_width + data_width + width))
+        task_done = m.Output('task_done')
+
+        fifo_out_we = m.Wire('fifo_out_we')
+        fifo_out_data_in = m.Wire('fifo_out_data_in',
+                                  (data_width + data_width + width))
+        fifo_out_empty = m.Wire('fifo_out_empty')
+        fifo_out_full = m.Wire('fifo_out_full')
+        fifo_out_full_almostfull = m.Wire('fifo_out_full_almostfull')
+
+        fifo_in_we = m.Wire('fifo_in_we')
+        fifo_in_data_in = m.Wire('fifo_in_data_in', width_data_in - id_width)
+        fifo_in_re = m.Wire('fifo_in_re')
+        fifo_in_data_out = m.Wire('fifo_in_data_out', width_data_in - id_width)
+        fifo_in_empty = m.Wire('fifo_in_empty')
+        fifo_in_almostempty = m.Wire('fifo_in_almostempty')
+        fifo_in_full = m.Wire('fifo_in_full')
+        fifo_in_full_almostfull = m.Wire('fifo_in_full_almostfull')
+
+        has_data_out.assign(~fifo_out_empty)
+
+        control_fifo_data_in = self.create_ctrl_fifo_data_in()
+        param = [('id', id),
+                 ('id_width', int(math.ceil(math.log(num_units, 2))) + 1),
+                 ('width_data_in', width_data_in)]
+        con = [('clk', clk), ('rst', rst), ('start', start),
+               ('data_in_valid', data_in_valid), ('data_in', data_in),
+               ('fifo_in_full', fifo_in_full), ('fifo_in_we', fifo_in_we),
+               ('fifo_in_data', fifo_in_data_in)]
+        m.Instance(control_fifo_data_in, '_' + control_fifo_data_in.name,
+                   param, con)
+
+        fifo = self.create_fifo()
+        param = [('fifo_width', width_data_in - id_width),
+                 ('fifo_depth_bits', fifo_in_depth_bits),
+                 ('fifo_almost_full_threshold', fifo_in_size - 2),
+                 ('fifo_almost_empty_threshold', 2)]
+        con = [('clk', clk), ('rst', rst), ('we', fifo_in_we),
+               ('din', fifo_in_data_in), ('re', fifo_in_re),
+               ('dout', fifo_in_data_out), ('empty', fifo_in_empty),
+               ('almostempty', fifo_in_almostempty), ('full', fifo_in_full),
+               ('almostfull', fifo_in_full_almostfull)]
+        m.Instance(fifo, 'fifo_in', param, con)
+
+        param = [('fifo_width', (data_width + data_width + width)),
+                 ('fifo_depth_bits', fifo_out_depth_bits),
+                 ('fifo_almost_full_threshold', fifo_out_size - 2),
+                 ('fifo_almost_empty_threshold', 2)]
+        con = [('clk', clk), ('rst', rst), ('we', fifo_out_we),
+               ('din', fifo_out_data_in), ('re', read_data_en),
+               ('dout', data_out), ('empty', fifo_out_empty),
+               ('almostempty', has_lst3_data_out), ('full', fifo_out_full),
+               ('almostfull', fifo_out_full_almostfull)]
+        m.Instance(fifo, 'fifo_out', param, con)
+
+        control = self.create_gnr_control(functions)
+        con = [('clk', clk), ('rst', rst), ('start', start),
+               ('fifo_out_full', fifo_out_full),
+               ('fifo_in_empty', fifo_in_empty),
+               ('fifo_data_in', fifo_in_data_out),
+               ('end_data_in', end_data_in), ('fifo_in_re', fifo_in_re),
+               ('data_out', fifo_out_data_in), ('fifo_out_we', fifo_out_we),
+               ('fifo_out_empty', fifo_out_empty), ('done', task_done)]
+        m.Instance(control, '_' + control.name, control.get_params(), con)
+
+        initialize_regs(m)
+        self.cache[name] = m
+        return m
+
+    def make_control_data_in(self):
+        name = 'control_data_in'
+        if name in self.cache.keys():
+            return self.cache[name]
+
+        m = Module(name)
+
+        data_width = m.Parameter('data_width',10)
+        data_width_ext = m.Parameter('data_width_ext',512)
+        bits = m.Parameter('bits',10)
+
+        clk = m.Input('clk')
+        rst = m.Input('rst')
+        start = m.Input('start')
+        num_data_in = m.Input('num_data_in', 32)
+        has_data_in = m.Input('has_data_in')
+        has_lst3_data_in = m.Input('has_lst3_data_in')
+        data_in = m.Input('data_in', 512)
+        rd_request_en = m.OutputReg('rd_request_en')
+        data_valid = m.OutputReg('data_valid')
+        data_out = m.OutputReg('data_out', data_width)
+        done = m.OutputReg('done')
+
+        #bits = int(math.ceil(math.log((data_width_ext // (data_width)), 2)))
+        #if bits == 0:
+        #    bits = 2
+        #else:
+        #    bits = bits + 1
+
+        FSM_WAIT = m.Localparam('FSM_WAIT', 0, 3)
+        FSM_RD_DATA = m.Localparam('FSM_RD_DATA', 1, 3)
+        FSM_DONE = m.Localparam('FSM_DONE', 2, 3)
+        fsm_cs = m.Reg('fms_cs', 3)
+        cont_data = m.Reg('cont_data', 32)
+
+        if data_width < 512:
+            index_data = m.Reg('index_data', bits)
+            data = m.Reg('data', data_width_ext)
+            flag_cpy_data = m.Reg('flag_cpy_data')
+            wdata = m.Wire('wdata', data_width, data_width_ext // data_width)
+
+            i = m.Genvar('i')
+            m.GenerateFor(i(0), i < (data_width_ext // data_width), i.inc(), 'gen_1').Assign(
+                wdata[i](data[i * data_width:(i * data_width) + data_width])
+            )
+            m.Always(Posedge(clk))(
+                If(rst)(
+                    rd_request_en(Int(0, 1, 2)),
+                    index_data(Int(0, index_data.width, 10)),
+                    data(Int(0, data.width, 10)),
+                    data_out(Int(0, data_out.width, 10)),
+                    cont_data(Int(0, cont_data.width, 10)),
+                    flag_cpy_data(Int(0, 1, 2)),
+                    done(Int(0, 1, 2)),
+                    data_valid(Int(0, 1, 2)),
+                    fsm_cs(FSM_WAIT),
+                ).Elif(start)(
+                    data_valid(Int(0, 1, 2)),
+                    rd_request_en(Int(0, 1, 2)),
+                    Case(fsm_cs)(
+                        When(FSM_WAIT)(
+                            If(cont_data < num_data_in)(
+                                If(AndList((index_data < (data_width_ext // data_width)), flag_cpy_data))(
+                                    data_out(Int(0, data_out.width, 10)),
+                                    fsm_cs(FSM_RD_DATA)
+                                ).Elif(has_data_in)(
+                                    rd_request_en(Int(1, 1, 2)),
+                                    index_data(Int(0, index_data.width, 10)),
+                                    flag_cpy_data(Int(0, 1, 2)),
+                                    data_out(Int(0, data_out.width, 10)),
+                                    fsm_cs(FSM_RD_DATA)
+                                ).Else(
+                                    data_out(Int(0, data_out.width, 10)),
+                                    fsm_cs(FSM_WAIT)
+                                )
+                            ).Else(
+                                data_out(Int(0, data_out.width, 10)),
+                                fsm_cs(FSM_DONE),
+                            )
+                        ),
+                        When(FSM_RD_DATA)(
+                            If(flag_cpy_data == Int(0, 1, 2))(
+                                data(data_in),
+                                data_out(data_in[0:data_width]),
+                                flag_cpy_data(Int(1, 1, 2)),
+                                data_valid(Int(1, 1, 2)),
+                                cont_data(cont_data + Int(1, cont_data.width, 10)),
+                                index_data(index_data + Int(1, index_data.width, 10)),
+                                fsm_cs(FSM_WAIT)
+                            ).Else(
+                                data_out(wdata[index_data]),
+                                data_valid(Int(1, 1, 2)),
+                                cont_data(cont_data + Int(1, cont_data.width, 10)),
+                                index_data(index_data + Int(1, index_data.width, 10)),
+                                fsm_cs(FSM_WAIT)
+                            )
+                        ),
+                        When(FSM_DONE)(
+                            data_out(Int(0, data_out.width, 10)),
+                            fsm_cs(FSM_DONE),
+                            done(Int(1, 1, 2))
+                        )
+                    )
+                )
+            )
+        else:
+            m.Always(Posedge(clk))(
+                If(rst)(
+                    rd_request_en(Int(0, 1, 2)),
+                    data_out(Int(0, data_out.width, 10)),
+                    cont_data(Int(0, cont_data.width, 10)),
+                    done(Int(0, 1, 2)),
+                    data_valid(Int(0, 1, 2)),
+                    fsm_cs(FSM_WAIT),
+                ).Elif(start)(
+                    data_valid(Int(0, 1, 2)),
+                    rd_request_en(Int(0, 1, 2)),
+                    Case(fsm_cs)(
+                        When(FSM_WAIT)(
+                            If(cont_data < num_data_in)(
+                                If(has_data_in)(
+                                    rd_request_en(Int(1, 1, 2)),
+                                    data_out(Int(0, data_out.width, 10)),
+                                    fsm_cs(FSM_RD_DATA)
+                                ).Else(
+                                    data_out(Int(0, data_out.width, 10)),
+                                    fsm_cs(FSM_WAIT)
+                                )
+                            ).Else(
+                                data_out(Int(0, data_out.width, 10)),
+                                fsm_cs(FSM_DONE),
+                            )
+                        ),
+                        When(FSM_RD_DATA)(
+                            data_out(data_in),
+                            cont_data(cont_data + Int(1, cont_data.width, 10)),
+                            data_valid(Int(1, 1, 2)),
+                            fsm_cs(FSM_WAIT)
+                        ),
+                        When(FSM_DONE)(
+                            data_out(Int(0, data_out.width, 10)),
+                            fsm_cs(FSM_DONE),
+                            done(Int(1, 1, 2))
+                        )
+                    )
+                )
+            )
 
         initialize_regs(m)
         self.cache[name] = m

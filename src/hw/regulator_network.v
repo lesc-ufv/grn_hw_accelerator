@@ -100,7 +100,7 @@ module regulator_network #
   #(
     .ID(ID)
   )
-  control_gnr
+  _gnr_control
   (
     .clk(clk),
     .rst(rst),
@@ -472,7 +472,7 @@ module gnr_control #
 
 
   gnr_graph
-  gnr_graph
+  _gnr_graph
   (
     .clk(clk),
     .rst(rst),
