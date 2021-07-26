@@ -2,13 +2,12 @@ import math
 
 from veriloggen import *
 
-from create_control_data_in import make_control_data_in
-from create_control_data_out import make_control_data_out
-from src.hw.gnr_components import Components
+from make_control_data_in import make_control_data_in
+from make_control_data_out import make_control_data_out
+from make_regulator_network import make_regulator_network
 
 
-def create_gnr_harp(num_units, functions, fifo_in_size, fifo_out_size):
-    components = Components()
+def make_gnr_harp(num_units, functions, fifo_in_size, fifo_out_size):
     qtd_nos = len(functions)
     data_width = qtd_nos + 58  # soma 58  sendo 29 para periodo e 29 para transiente
     data_width_con = data_width
@@ -59,9 +58,10 @@ def create_gnr_harp(num_units, functions, fifo_in_size, fifo_out_size):
     con = [('clk', clk), ('rst', rst), ('start', start), ('num_data_in', num_data_in), ('has_data_in', ~fifoin_empty),
            ('has_lst3_data_in',fifoin_almost_empty),('data_in', rd_fifoin_data), ('rd_request_en', rd_fifoin_en),
            ('data_valid', data_in_valid),('data_out', data_in), ('done', end_data_in)]
+
     m.Instance(control_data_in, 'control_data_in', control_data_in.get_params(), con)
 
-    rn = components.create_regulator_network(num_units, functions, fifo_in_size, fifo_out_size)
+    rn = make_regulator_network(num_units, functions, fifo_in_size, fifo_out_size)
     for i in range(num_units):
         con = [('clk', clk), ('rst', rst), ('start', start), ('data_in_valid', data_in_valid),
                ('data_in', data_in[:data_in_width_con]),
@@ -92,10 +92,3 @@ def create_gnr_harp(num_units, functions, fifo_in_size, fifo_out_size):
     simulation.setup_waveform(m, 'gnr_harp')
 
     return m
-
-
-path = '../../benchmarks/Benchmark_5.txt'
-functions = readFile(path)
-reg_net = RegulatorNetwork()
-m = reg_net.create_regulator_network(1, functions, 16, 16)
-m.to_verilog(m.name + ".v")
