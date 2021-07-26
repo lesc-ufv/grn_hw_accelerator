@@ -1,0 +1,1 @@
+( ( Insig_SREBP_SCAP  ) AND NOT ( Statins  ) ) 

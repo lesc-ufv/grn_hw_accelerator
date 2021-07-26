@@ -1,0 +1,1 @@
+( Hip1R )  OR ( PIP3_345 )  OR ( Eps15 )  OR ( Epsin )  OR ( PIP2_45 )  OR ( EGFR_EGFR_EGF_PM )  OR ( CIN85 )  OR ( EGFR_EGFR_TGFa_PM ) 

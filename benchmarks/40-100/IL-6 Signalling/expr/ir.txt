@@ -1,0 +1,1 @@
+(  NOT ( ( socs3 )  OR ( socs1 ) ) ) OR  NOT ( socs1 OR socs3 ) 

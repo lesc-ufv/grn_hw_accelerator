@@ -1,0 +1,1 @@
+( ( KOUT AND ( ( ( NOT AnionEM  AND NOT Ca2_c  AND NOT KEV  AND NOT HTPase ) ) )    )  OR ( Ca2_c )  OR ( HTPase AND ( ( ( NOT AnionEM  AND NOT Ca2_c  AND NOT KOUT  AND NOT KEV ) ) )    )  OR ( KEV )  OR ( AnionEM )  ) OR  NOT ( AnionEM OR Ca2_c OR KOUT OR KEV OR HTPase ) 

@@ -1,0 +1,1 @@
+( ( AA AND ( ( ( Ca ) )  AND ( ( PKC_primed ) ) )     ) AND NOT ( Trx AND ( ( ( PKC ) ) )     ) )  OR ( ( PKC AND ( ( ( NOT PP2A ) )  AND ( ( NOT Trx ) ) )     ) AND NOT ( Trx AND ( ( ( PKC ) ) )     ) )  OR ( ( DAG AND ( ( ( Ca ) )  AND ( ( PKC_primed ) ) )     ) AND NOT ( Trx AND ( ( ( PKC ) ) )     ) ) 

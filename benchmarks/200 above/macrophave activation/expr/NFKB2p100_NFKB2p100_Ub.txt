@@ -1,0 +1,1 @@
+( NFKB2p100_NFKB2p100cytoplasm AND ( ( ( Ub ) ) )    ) 

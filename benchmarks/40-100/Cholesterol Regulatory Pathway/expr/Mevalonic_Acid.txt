@@ -1,0 +1,1 @@
+( HMG_CoA AND ( ( ( HMG_CoA_Reductase ) ) )    ) 

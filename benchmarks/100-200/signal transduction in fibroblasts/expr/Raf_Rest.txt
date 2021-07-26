@@ -1,0 +1,1 @@
+( ( Raf_Rest AND ( ( ( NOT Raf_DeP ) ) )    )  OR ( Raf_DeP AND ( ( ( NOT Raf  AND NOT Raf_Rest ) ) )    )  ) OR  NOT ( Raf OR Raf_DeP OR Raf_Rest ) 

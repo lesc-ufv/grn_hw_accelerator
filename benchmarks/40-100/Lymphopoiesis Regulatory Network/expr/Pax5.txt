@@ -1,0 +1,1 @@
+( Ebf1 AND ( ( ( NOT ThPOK  AND NOT Blimp1  AND NOT Irf4  AND NOT Flt3 ) ) )    )  OR ( STAT5 AND ( ( ( NOT ThPOK  AND NOT Blimp1  AND NOT Irf4 )  AND (  ( ( Ebf1 ) ) ) ) )    ) 

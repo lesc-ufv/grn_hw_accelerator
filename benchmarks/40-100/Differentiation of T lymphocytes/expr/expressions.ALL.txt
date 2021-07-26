@@ -1,0 +1,50 @@
+TGFBR = ( TGFB ) 
+Runx3 = ( ( ( Runx3  ) and not ( ThPOK  )  ) and not ( CD4  ) )  or ( ( ( STAT5  ) and not ( ThPOK  )  ) and not ( CD4  ) )  or ( ( ( CD8  ) and not ( ThPOK  )  ) and not ( CD4  ) ) 
+Tbet = ( ( ( ( Tbet  ) and not ( GATA3  )  ) and not ( RORgt  )  ) and not ( Foxp3  ) )  or ( ( ( ( STAT1  ) and not ( GATA3  )  ) and not ( RORgt  )  ) and not ( Foxp3  ) ) 
+IL2R = ( IL2 ) 
+Eomes = ( Runx3 )  or ( Tbet )  or ( IL27R ) 
+IFNBR = ( IFNB ) 
+IRAK = ( IL18R ) 
+IFNgR = ( IFNg ) 
+SMAD2 = ( TGFBR ) 
+STAT4 = ( ( IL12R  ) and not ( GATA3  ) ) 
+GATA3 = ( ( ( ( STAT6  ) and not ( RORgt  )  ) and not ( Foxp3  )  ) and not ( Tbet  ) )  or ( ( ( ( GATA3  ) and not ( RORgt  )  ) and not ( Foxp3  )  ) and not ( Tbet  ) ) 
+IL4 = ( ( GATA3  ) and not ( STAT1  ) ) 
+IL17 = ( RORgt ) 
+IL6R = ( IL6 ) 
+CD8 = ( ( ( Runx3  ) and not ( ThPOK  )  ) and not ( TCR  ) )  or ( ( ( Notch1  ) and not ( ThPOK  )  ) and not ( TCR  ) )  or ( ( ( CD8  ) and not ( ThPOK  )  ) and not ( TCR  ) ) 
+IL6 = ( RORgt ) 
+IL27R = ( IL27 ) 
+NFAT = ( TCR ) 
+IL10 = ( GATA3 ) 
+IL23R = ( IL23 ) 
+JAK3 = ( IL6R ) 
+TGFB = ( Foxp3 ) 
+JAK1 = ( IFNgR ) 
+SOCS = ( Tbet )  or ( STAT1 ) 
+IFNg = ( ( STAT4  ) and not ( STAT3  ) )  or ( ( IRAK  ) and not ( STAT3  ) )  or ( ( Eomes  ) and not ( STAT3  ) )  or ( ( Tbet  ) and not ( STAT3  ) ) 
+IL7R = ( ( IL7  ) and not ( TCR  ) ) 
+IL12R = ( ( IL12  ) and not ( STAT6  ) ) 
+STAT1 = ( IFNBR )  or ( IL27R )  or ( JAK1 ) 
+STAT5 = ( ( IL7R  ) and not ( SOCS  ) )  or ( ( IL2R  ) and not ( SOCS  ) ) 
+Foxp3 = ( ( ( ( ( SMAD2  ) and not ( STAT3  )  ) and not ( Tbet  )  ) and not ( GATA3  )  ) and not ( RORgt  ) )  or ( ( ( ( ( Foxp3  ) and not ( STAT3  )  ) and not ( Tbet  )  ) and not ( GATA3  )  ) and not ( RORgt  ) ) 
+IL18R = ( ( IL18  ) and not ( STAT6  ) ) 
+STAT6 = ( IL4R ) 
+STAT3 = ( JAK3 )  or ( IL23R )  or ( IL10R ) 
+Notch1 = ( Dll1 ) 
+ThPOK = ( ( ( ThPOK  ) and not ( CD8  )  ) and not ( Runx3  ) )  or ( ( ( CD4  ) and not ( CD8  )  ) and not ( Runx3  ) )  or ( ( ( TCR  ) and not ( CD8  )  ) and not ( Runx3  ) )  or ( ( ( RORgt  ) and not ( CD8  )  ) and not ( Runx3  ) )  or ( ( ( Tbet  ) and not ( CD8  )  ) and not ( Runx3  ) )  or ( ( ( GATA3  ) and not ( CD8  )  ) and not ( Runx3  ) )  or ( ( ( Foxp3  ) and not ( CD8  )  ) and not ( Runx3  ) ) 
+Gzmb = ( Eomes ) 
+IL10R = ( IL10 ) 
+CD4 = ( ( ThPOK  ) and not ( Runx3  ) )  or ( ( Notch1  ) and not ( Runx3  ) )  or ( ( CD4  ) and not ( Runx3  ) ) 
+RORgt = ( ( ( ( SMAD2  ) and not ( Tbet  )  ) and not ( Foxp3  )  ) and not ( GATA3  ) )  or ( ( ( ( RORgt  ) and not ( Tbet  )  ) and not ( Foxp3  )  ) and not ( GATA3  ) )  or ( ( ( ( STAT3  ) and not ( Tbet  )  ) and not ( Foxp3  )  ) and not ( GATA3  ) ) 
+IL4R = ( ( IL4  ) and not ( SOCS  ) ) 
+Prf1 = ( Eomes ) 
+TCR
+IFNB
+IL12
+IL18
+IL23
+IL27
+IL2
+IL7
+Dll1

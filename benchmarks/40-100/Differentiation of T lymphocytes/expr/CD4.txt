@@ -1,0 +1,1 @@
+( ( ThPOK  ) AND NOT ( Runx3  ) )  OR ( ( Notch1  ) AND NOT ( Runx3  ) )  OR ( ( CD4  ) AND NOT ( Runx3  ) ) 

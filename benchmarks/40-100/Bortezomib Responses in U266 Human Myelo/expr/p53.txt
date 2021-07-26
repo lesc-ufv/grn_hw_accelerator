@@ -1,0 +1,1 @@
+( ( DNAPK  ) AND NOT ( MDM AND ( ( ( Prot ) ) )     ) )  OR ( ( JNK  ) AND NOT ( MDM AND ( ( ( Prot ) ) )     ) ) 

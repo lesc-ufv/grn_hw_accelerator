@@ -1,0 +1,1 @@
+( ( Rac AND ( ( ( Grb2 ) )  OR ( ( Nck )  AND (  ( ( NOT Akt ) ) ) ) )     ) AND NOT ( PKA  ) )  OR ( ( ( Src AND ( ( ( PAK )  AND (  ( ( Rac  OR Cdc42 ) ) ) ) )     ) AND NOT ( PTP1b  )  ) AND NOT ( PKA  ) )  OR ( ( Cdc42 AND ( ( ( Grb2 ) )  OR ( ( Nck )  AND (  ( ( NOT Akt ) ) ) ) )     ) AND NOT ( PKA  ) ) 

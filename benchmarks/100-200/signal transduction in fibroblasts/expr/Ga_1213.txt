@@ -1,0 +1,1 @@
+( Ga_1213 AND ( ( ( NOT p115RhoGEF ) )  AND ( ( Gbg_1213 ) ) )    )  OR ( alpha_1213R AND ( ( ( NOT Gbg_1213  AND NOT Ga_1213 ) ) )    ) 

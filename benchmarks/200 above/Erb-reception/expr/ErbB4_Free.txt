@@ -1,0 +1,1 @@
+( ErbB4_Contr )  OR ( ( ( ( ( ErbB4_Free  ) AND NOT ( EGFR_ErbB4  )  ) AND NOT ( ErbB2_ErbB4  )  ) AND NOT ( ErbB4_ErbB4  )  ) AND NOT ( ErbB3_ErbB4  ) ) 

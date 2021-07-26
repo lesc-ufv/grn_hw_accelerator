@@ -1,0 +1,1 @@
+( CGC AND ( ( ( IL15RA  AND IL2RB  AND IL15_e ) ) )    ) 

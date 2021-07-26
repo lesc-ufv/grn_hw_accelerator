@@ -1,0 +1,1 @@
+(  NOT ( ( Stress )  OR ( EGFR AND ( ( ( EGF ) ) )    ) ) ) OR  NOT ( EGFR OR Stress OR EGF ) 

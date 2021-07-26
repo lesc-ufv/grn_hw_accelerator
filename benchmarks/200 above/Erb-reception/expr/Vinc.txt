@@ -1,0 +1,1 @@
+( Talin AND ( ( ( Src ) ) )    )  OR ( Actin AND ( ( ( Talin  AND Vinc ) )  AND ( ( NOT PIP2_45 ) ) )    ) 

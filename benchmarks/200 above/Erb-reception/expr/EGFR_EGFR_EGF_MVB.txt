@@ -1,0 +1,1 @@
+( ( EGFR_EGFR_EGF_MVB  ) AND NOT ( EGFR_EGFR_EGF_Lysosome  ) )  OR ( EGFR_EGFR_EGF_End ) 

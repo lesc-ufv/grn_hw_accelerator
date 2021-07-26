@@ -1,0 +1,1 @@
+( TNF_IKBKG_Complex AND ( ( ( NFKBIA  AND RELA_p65  AND NFKB1_p50 ) ) )    )  OR ( IKBKG_CHUK_IKBKB AND ( ( ( NFKBIA  AND RELA_p65  AND NFKB1_p50 ) ) )    ) 

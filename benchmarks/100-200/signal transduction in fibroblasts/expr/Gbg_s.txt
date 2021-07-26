@@ -1,0 +1,1 @@
+( Gas )  OR ( alpha_sR AND ( ( ( NOT Gbg_s ) )  AND ( ( NOT Gas ) ) )    ) 

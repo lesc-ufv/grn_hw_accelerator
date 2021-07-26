@@ -1,0 +1,1 @@
+( ( Gab1 AND ( ( ( PIP3_345  AND EGFR ) ) )     ) AND NOT ( SHP2  ) )  OR ( ( Grb2 AND ( ( ( EGFR )  AND (  ( ( NOT Gab1 ) ) ) ) )     ) AND NOT ( SHP2  ) ) 

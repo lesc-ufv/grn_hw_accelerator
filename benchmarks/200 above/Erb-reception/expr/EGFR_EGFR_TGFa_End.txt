@@ -1,0 +1,1 @@
+( ( EGFR_EGFR_TGFa_End  ) AND NOT ( EGFR_Free  ) )  OR ( EGFR_EGFR_TGFa_CCV AND ( ( ( PIP3_345  AND Hsc70  AND Rab5  AND EEA1 )  AND (  ( ( GAK  OR Rabaptin_5 ) ) ) ) )    ) 

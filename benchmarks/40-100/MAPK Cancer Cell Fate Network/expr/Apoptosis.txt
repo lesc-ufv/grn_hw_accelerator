@@ -1,0 +1,1 @@
+( ( ( FOXO3 AND ( ( ( p53 ) ) )     ) AND NOT ( BCL2  )  ) AND NOT ( ERK  ) ) 

@@ -1,0 +1,16 @@
+REFERENCE
+
+Grieco L, Calzone L, Bernard-Pierrot I, Radvanyi F, Kahn-Perlès B, and Thieffry D.Integrative modelling of the influence of MAPK network on cancer cell fate decision.PLoS Comput Biol 2013 Oct9; (10) e1003286.pmid:24250280
+
+Bibtext
+
+@article{grieco2013integrative,
+  title={Integrative modelling of the influence of MAPK network on cancer cell fate decision},
+  author={Grieco, Luca and Calzone, Laurence and Bernard-Pierrot, Isabelle and Radvanyi, Fran{\c{c}}ois and Kahn-Perl{\`e}s, Brigitte and Thieffry, Denis},
+  journal={PLoS computational biology},
+  volume={9},
+  number={10},
+  pages={e1003286},
+  year={2013},
+  publisher={Public Library of Science}
+}

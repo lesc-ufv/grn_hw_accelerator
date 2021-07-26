@@ -1,0 +1,1 @@
+( gab1_mem AND ( ( ( dum_gab1_kin_or_jak1_gab1_mem_p ) ) )    ) 

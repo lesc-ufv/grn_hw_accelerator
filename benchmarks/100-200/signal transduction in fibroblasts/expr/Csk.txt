@@ -1,0 +1,1 @@
+( Cbp AND ( ( ( Gbg_i  OR PKA  OR Gbg_1213  OR Gbg_q ) )  OR ( ( NOT SHP2  AND NOT Gbg_i  AND NOT PKA  AND NOT Gbg_1213  AND NOT Gbg_q ) ) )    )  OR ( ( Fak AND ( ( ( Src  AND Cbp ) ) )     ) AND NOT ( SHP2  ) ) 

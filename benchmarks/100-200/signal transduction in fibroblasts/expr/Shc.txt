@@ -1,0 +1,1 @@
+( ( EGFR AND ( ( ( Fak  AND Src ) ) )     ) AND NOT ( Shc AND ( ( ( Fak  AND EGFR  AND Src  AND PTEN ) ) )     ) ) 

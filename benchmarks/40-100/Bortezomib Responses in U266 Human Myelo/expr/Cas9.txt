@@ -1,0 +1,1 @@
+( ( ( Cytc  ) AND NOT ( XIAP  )  ) AND NOT ( AKT  ) ) 

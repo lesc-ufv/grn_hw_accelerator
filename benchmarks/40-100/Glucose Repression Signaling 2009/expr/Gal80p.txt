@@ -1,0 +1,1 @@
+( ( ( GAL80  ) AND NOT ( Gal1p  )  ) AND NOT ( Gal3p  ) ) 

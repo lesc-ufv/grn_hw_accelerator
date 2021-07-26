@@ -1,0 +1,1 @@
+( ( ( PIP3_345  ) AND NOT ( Fak  )  ) AND NOT ( Src  ) )  OR ( ( ( PIP2_34  ) AND NOT ( Fak  )  ) AND NOT ( Src  ) )  OR ( ( ( PIP2_45  ) AND NOT ( Fak  )  ) AND NOT ( Src  ) )  OR ( ( ( Ca  ) AND NOT ( Fak  )  ) AND NOT ( Src  ) )  OR ( ( ( ( EGFR  ) AND NOT ( Fak  )  ) AND NOT ( SHP2  )  ) AND NOT ( Src  ) ) 

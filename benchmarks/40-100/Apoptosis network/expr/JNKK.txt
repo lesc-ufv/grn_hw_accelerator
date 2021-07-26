@@ -1,0 +1,1 @@
+( ( MEKK1  ) AND NOT ( AKT  ) ) 

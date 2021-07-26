@@ -1,0 +1,1 @@
+( ( ( RAS  ) AND NOT ( AKT  )  ) AND NOT ( ERK  ) )  OR ( ( ( PKC  ) AND NOT ( AKT  )  ) AND NOT ( ERK  ) ) 

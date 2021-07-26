@@ -1,0 +1,1 @@
+( ( ( EGFR_EGFR_EGF_PM AND ( ( ( Cbl_RTK ) ) )     ) AND NOT ( EGFR_EGFR_EGF_CCP  )  ) AND NOT ( EGFR_EGFR_TGFa_CCP  ) )  OR ( ( ( EGFR_EGFR_TGFa_PM AND ( ( ( Cbl_RTK ) ) )     ) AND NOT ( EGFR_EGFR_EGF_CCP  )  ) AND NOT ( EGFR_EGFR_TGFa_CCP  ) ) 

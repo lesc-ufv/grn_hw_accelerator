@@ -1,0 +1,1 @@
+( ( ( Runx3  ) AND NOT ( ThPOK  )  ) AND NOT ( CD4  ) )  OR ( ( ( STAT5  ) AND NOT ( ThPOK  )  ) AND NOT ( CD4  ) )  OR ( ( ( CD8  ) AND NOT ( ThPOK  )  ) AND NOT ( CD4  ) ) 

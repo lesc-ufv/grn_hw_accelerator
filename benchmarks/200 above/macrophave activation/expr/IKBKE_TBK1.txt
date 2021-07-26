@@ -1,0 +1,1 @@
+( TLR4_TICAM1_TICAM2 AND ( ( ( IKBKE  AND TBK1 ) ) )    ) 

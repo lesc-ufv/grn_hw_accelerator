@@ -1,0 +1,1 @@
+( alpha_qR AND ( ( ( NOT Gaq )  AND (  ( ( NOT Gbg_q ) ) ) ) )    )  OR ( Gaq AND ( ( ( NOT RGS  AND NOT PLC_B ) )  AND ( ( Gbg_q ) ) )    ) 

@@ -1,0 +1,1 @@
+( Dec2 )  OR ( ( STAT6  ) AND NOT ( TBET  ) ) 

@@ -1,0 +1,1 @@
+( ( P38 AND ( ( ( Tyk2 ) ) )     ) AND NOT ( GATA3  ) )  OR ( ( JAK2  ) AND NOT ( GATA3  ) ) 

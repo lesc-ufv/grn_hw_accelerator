@@ -1,0 +1,104 @@
+nucerk12 = ( ( erk12  ) and not ( mkp  ) ) 
+p38 = ( mkk4 )  or ( mkk3 )  or ( mkk6 ) 
+erbb34 = ( ( nrg1a and ( ( ( erbb3  and erbb4 ) ) )     ) and not ( erbb2  ) )  or ( ( nrg2b and ( ( ( erbb3  and erbb4 ) ) )     ) and not ( erbb2  ) )  or ( ( nrg2a and ( ( ( erbb3  and erbb4 ) ) )     ) and not ( erbb2  ) )  or ( ( nrg1b and ( ( ( erbb3  and erbb4 ) ) )     ) and not ( erbb2  ) ) 
+shp1d = ( shp1 ) 
+aktd = ( akt ) 
+mkk6 = ( mlk3 ) 
+p70s6_1 = ( jnk )  or ( erk12 ) 
+endocyt_degrad = ( ccbl and ( ( ( rab5a ) ) )    ) 
+nck = ( erbb11 )  or ( erbb44 )  or ( erbb14 ) 
+limk1 = ( pak1 ) 
+erbb44 = ( nrg1a and ( ( ( erbb4 ) ) )    )  or ( nrg2b and ( ( ( erbb4 ) ) )    )  or ( btc and ( ( ( erbb4 ) ) )    )  or ( nrg4 and ( ( ( erbb4 ) ) )    )  or ( bir and ( ( ( erbb4 ) ) )    )  or ( nrg3 and ( ( ( erbb4 ) ) )    )  or ( nrg1b and ( ( ( erbb4 ) ) )    ) 
+p70s6_2 = ( pdk1 and ( ( ( p70s6_1  and mtor_rap ) ) )    ) 
+stat1 = ( erbb11 and ( ( ( csrc ) ) )    ) 
+tsc1_tsc2 =  not ( ( akt ) )
+pi34p2 = ( ( ship2d and ( ( ( pi3k ) ) )     ) and not ( ptend  ) ) 
+jnk = ( mkk7 and ( ( ( mkk4 ) ) )    ) 
+akt = ( ( pdk1 and ( ( ( pip3  and mtor_ric ) ) )     ) and not ( pp2a  ) )  or ( ( pi34p2 and ( ( ( pdk1  and mtor_ric ) ) )     ) and not ( pp2a  ) ) 
+creb = ( p90rsk )  or ( mk2 ) 
+plcg = ( erbb11 ) 
+mkk7 = ( mekk1 ) 
+erbb24 = ( btc and ( ( ( erbb2  and erbb4 ) ) )    )  or ( nrg1a and ( ( ( erbb2  and erbb4 ) ) )    )  or ( nrg2b and ( ( ( erbb2  and erbb4 ) ) )    )  or ( nrg2a and ( ( ( nrg4  and erbb2 ) ) )    )  or ( nrg4 and ( ( ( erbb2  and erbb4 ) ) )    )  or ( nrg3 and ( ( ( erbb2  and erbb4 ) ) )    )  or ( egf and ( ( ( erbb1  and erbb4 ) ) )    )  or ( epr and ( ( ( erbb2  and erbb4 ) ) )    )  or ( nrg1b and ( ( ( erbb2  and erbb4 ) ) )    )  or ( tgfa and ( ( ( erbb2  and erbb4 ) ) )    )  or ( bir and ( ( ( erbb2  and erbb4 ) ) )    )  or ( hbegf and ( ( ( erbb2  and erbb4 ) ) )    ) 
+gsk3 =  not ( ( p90rsk and ( ( ( akt ) ) )    ) )
+ap1 = ( cfos and ( ( ( cjun ) ) )    ) 
+mlk3 = ( raccdc42 ) 
+ccbl = ( erbb11 ) 
+erk12 = ( mek12 ) 
+pkc = ( pdk1 and ( ( ( ca  and dag ) ) )    ) 
+erbb14 = ( ( ( nrg2b and ( ( ( erbb1  and erbb4 ) ) )     ) and not ( erbb2  )  ) and not ( shp1d  ) )  or ( ( ( tgfa and ( ( ( erbb1  and erbb4 ) ) )     ) and not ( erbb2  )  ) and not ( shp1d  ) )  or ( ( ( nrg1a and ( ( ( erbb1  and erbb4 ) ) )     ) and not ( erbb2  )  ) and not ( shp1d  ) )  or ( ( ( nrg2a and ( ( ( erbb1  and erbb4 ) ) )     ) and not ( erbb2  )  ) and not ( shp1d  ) )  or ( ( ( nrg4 and ( ( ( erbb1  and erbb4 ) ) )     ) and not ( erbb2  )  ) and not ( shp1d  ) )  or ( ( ( egf and ( ( ( erbb1  and erbb4 ) ) )     ) and not ( erbb2  )  ) and not ( shp1d  ) )  or ( ( ( epr and ( ( ( erbb1  and erbb4 ) ) )     ) and not ( erbb2  )  ) and not ( shp1d  ) )  or ( ( ( nrg1b and ( ( ( erbb1  and erbb4 ) ) )     ) and not ( erbb2  )  ) and not ( shp1d  ) ) 
+mekk4 = ( raccdc42 ) 
+mek12 = ( mekk1 )  or ( raf1 ) 
+ras = ( ( sos1  ) and not ( rasgap  ) ) 
+cfos = ( ( p90rsk and ( ( ( erk12 ) ) )     ) and not ( pp2a  ) )  or ( ( jnk  ) and not ( pp2a  ) ) 
+shp2 = ( gab1 ) 
+pi3k = ( erbb13 and ( ( ( pi3kr ) ) )    )  or ( erbb23 and ( ( ( pi3kr ) ) )    )  or ( erbb34 and ( ( ( pi3kr ) ) )    )  or ( pi3kr and ( ( ( gab1 ) ) )    )  or ( ras and ( ( ( pi3kr ) ) )    ) 
+pip3 = ( ( ( pi3k  ) and not ( ship2d  )  ) and not ( ptend  ) ) 
+dag = ( plcg ) 
+shc = ( erbb11 )  or ( erbb44 )  or ( erbb24 )  or ( erbb13 )  or ( erbb12 )  or ( erbb23 )  or ( erbb34 )  or ( erbb14 ) 
+ptend = ( pten ) 
+mkk4 = ( mlk3 )  or ( mekk1 )  or ( mekk4 ) 
+raccdc42 = ( sos1esp8e3b1 )  or ( vav2 ) 
+actinreorg = ( limk1 ) 
+erbb13 = ( ( ( nrg1a and ( ( ( erbb3  and erbb1 ) ) )     ) and not ( shp1d  )  ) and not ( erbb2  ) )  or ( ( ( btc and ( ( ( erbb3  and erbb1 ) ) )     ) and not ( shp1d  )  ) and not ( erbb2  ) )  or ( ( ( tgfa and ( ( ( erbb3  and erbb1 ) ) )     ) and not ( shp1d  )  ) and not ( erbb2  ) )  or ( ( ar and ( ( ( erbb3  and erbb1 ) ) )     ) and not ( shp1d  ) )  or ( ( ( nrg2a and ( ( ( erbb3  and erbb1 ) ) )     ) and not ( shp1d  )  ) and not ( erbb2  ) )  or ( ( ( egf and ( ( ( erbb3  and erbb1 ) ) )     ) and not ( shp1d  )  ) and not ( erbb2  ) )  or ( ( ( epr and ( ( ( erbb3  and erbb1 ) ) )     ) and not ( shp1d  )  ) and not ( erbb2  ) )  or ( ( ( nrg1b and ( ( ( erbb3  and erbb1 ) ) )     ) and not ( shp1d  )  ) and not ( erbb2  ) ) 
+ca = ( ip3 ) 
+vav2 = ( erbb11 and ( ( ( pip3 ) ) )    )  or ( pi34p2 and ( ( ( erbb11 ) ) )    ) 
+cmyc = ( ( nucerk12  ) and not ( gsk3  ) ) 
+sos1esp8e3b1 = ( sos1r and ( ( ( pip3  and esp8r  and pi3kr ) ) )    ) 
+mkk3 = ( mlk3 ) 
+p90rsk = ( erk12 and ( ( ( pdk1 ) ) )    ) 
+stat5 = ( erbb24 and ( ( ( csrc ) ) )    )  or ( erbb11 and ( ( ( csrc ) ) )    ) 
+rntre = ( esp8r and ( ( ( erbb11 ) ) )    ) 
+elk1 = ( ( nucerk12  ) and not ( pp2b  ) ) 
+bad =  not ( ( pak1 and ( ( ( akt ) ) )    ) )
+rasgap = ( ( gab1  ) and not ( shp2  ) ) 
+rin1 = ( ras ) 
+mekk1 = ( raccdc42 ) 
+gab1 = ( erbb11 )  or ( pip3 )  or ( grb2 ) 
+ship2d = ( ship2 ) 
+pro_apoptotic = ( bad ) 
+mtor_ric = ( mtorr ) 
+pak1 = ( grb2 and ( ( ( raccdc42 ) ) )    )  or ( nck and ( ( ( raccdc42 ) ) )    ) 
+stat3 = ( erbb11 and ( ( ( csrc ) ) )    ) 
+grb2 = ( erbb11 )  or ( erbb44 )  or ( erbb24 )  or ( erbb13 )  or ( erbb23 )  or ( erbb34 )  or ( erbb12 )  or ( erbb14 )  or ( shc ) 
+sos1 = ( ( sos1r and ( ( ( grb2 ) ) )     ) and not ( p90rskerk12d  ) ) 
+ip3 = ( plcg ) 
+erbb12 = ( ( btc and ( ( ( erbb1  and erbb2 ) ) )     ) and not ( shp1d  ) )  or ( ( tgfa and ( ( ( erbb1  and erbb2 ) ) )     ) and not ( shp1d  ) )  or ( ( bir and ( ( ( erbb1  and erbb2 ) ) )     ) and not ( shp1d  ) )  or ( ( egf and ( ( ( erbb1  and erbb2 ) ) )     ) and not ( shp1d  ) )  or ( ( hbegf and ( ( ( erbb1  and erbb2 ) ) )     ) and not ( shp1d  ) )  or ( ( epr and ( ( ( erbb1  and erbb2 ) ) )     ) and not ( shp1d  ) ) 
+rheb =  not ( ( tsc1_tsc2 ) )
+erbb11 = ( ( ( tgfa and ( ( ( erbb1 ) ) )     ) and not ( shp1d  ) )  or ( ( btc and ( ( ( erbb1 ) ) )     ) and not ( shp1d  ) )  or ( ( ar and ( ( ( erbb1 ) ) )     ) and not ( shp1d  ) )  or ( ( bir and ( ( ( erbb1 ) ) )     ) and not ( shp1d  ) )  or ( ( egf and ( ( ( erbb1 ) ) )     ) and not ( shp1d  ) )  or ( ( hbegf and ( ( ( erbb1 ) ) )     ) and not ( shp1d  ) )  or ( ( epr and ( ( ( erbb1 ) ) )     ) and not ( shp1d  ) )  ) or  not ( btc or epr or egf or hbegf or tgfa or shp1d or ar or erbb1 or bir or endocyt_degrad ) 
+cjun = ( jnk ) 
+mk2 = ( p38 ) 
+hsp27 = ( mk2 ) 
+mtor_rap = ( rheb and ( ( ( mtorr ) ) )    ) 
+erbb23 = ( nrg1a and ( ( ( erbb3  and erbb2 ) ) )    )  or ( nrg2b and ( ( ( erbb3  and erbb2 ) ) )    )  or ( btc and ( ( ( erbb3  and erbb2 ) ) )    )  or ( bir and ( ( ( erbb3  and erbb2 ) ) )    )  or ( epr and ( ( ( erbb3  and erbb2 ) ) )    )  or ( nrg1b and ( ( ( erbb3  and erbb2 ) ) )    ) 
+raf1 = ( ( ras and ( ( ( csrc ) ) )     ) and not ( aktd  ) )  or ( ( pak1 and ( ( ( ras ) ) )     ) and not ( aktd  ) ) 
+p90rskerk12d = ( p90rsk and ( ( ( erk12 ) ) )    ) 
+shp1 = ( erbb11 ) 
+rab5a = ( ( rin1  ) and not ( rntre  ) ) 
+pdk1
+pp2a
+pp2b
+tgfa
+btc
+ar
+bir
+egf
+hbegf
+epr
+erbb1
+erbb2
+nrg1a
+nrg2a
+erbb3
+nrg1b
+nrg2b
+nrg4
+erbb4
+nrg3
+mtorr
+mkp
+pi3kr
+pten
+csrc
+esp8r
+ship2
+sos1r

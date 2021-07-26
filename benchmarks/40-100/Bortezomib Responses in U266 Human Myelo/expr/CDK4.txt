@@ -1,0 +1,1 @@
+( ( ( CYCD  ) AND NOT ( p27  )  ) AND NOT ( p21  ) ) 

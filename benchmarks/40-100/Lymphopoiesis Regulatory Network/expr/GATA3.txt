@@ -1,0 +1,1 @@
+( TCF1 AND ( ( ( NOT RORgt  AND NOT Runx1  AND NOT HEB  AND NOT Tbet  AND NOT Foxp3 ) ) )    )  OR ( STAT6 AND ( ( ( NOT RORgt  AND NOT Runx1  AND NOT HEB  AND NOT Tbet  AND NOT Foxp3 ) ) )    )  OR ( GATA3 AND ( ( ( NOT RORgt  AND NOT Runx1  AND NOT HEB  AND NOT Tbet  AND NOT Foxp3 ) ) )    ) 

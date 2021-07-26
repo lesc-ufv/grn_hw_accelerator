@@ -1,0 +1,1 @@
+( Runx3 AND ( ( ( NOT TCR  AND NOT ThPOK  AND NOT Ebf1 ) ) )    )  OR ( Notch1 AND ( ( ( NOT TCR  AND NOT ThPOK  AND NOT Ebf1 ) ) )    )  OR ( CD8 AND ( ( ( NOT TCR  AND NOT ThPOK  AND NOT Ebf1 ) ) )    ) 

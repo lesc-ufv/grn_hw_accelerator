@@ -1,0 +1,1 @@
+( ( ( IgG AND ( ( ( AD  OR IS ) ) )     ) AND NOT ( MPI_Bacterium  )  ) AND NOT ( NE_TRetortaeformis  ) ) 

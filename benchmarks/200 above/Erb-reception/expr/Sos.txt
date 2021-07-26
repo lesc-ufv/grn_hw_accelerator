@@ -1,0 +1,1 @@
+( Crk AND ( ( ( Grb2 ) )  AND ( ( NOT Erk  AND NOT PIP2_45  AND NOT Nck ) )  AND ( ( PIP3_345 ) ) )    )  OR ( ( Grb2 AND ( ( ( PIP3_345 ) ) )     ) AND NOT ( Cbl_RTK  ) )  OR ( Nck AND ( ( ( PIP3_345 ) )  AND ( ( Crk ) ) )    ) 

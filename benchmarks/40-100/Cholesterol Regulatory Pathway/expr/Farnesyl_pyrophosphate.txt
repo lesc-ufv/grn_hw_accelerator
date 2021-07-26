@@ -1,0 +1,1 @@
+( ( Geranyl_pyrophosphate  ) AND NOT ( FPP_Synthase  ) ) 

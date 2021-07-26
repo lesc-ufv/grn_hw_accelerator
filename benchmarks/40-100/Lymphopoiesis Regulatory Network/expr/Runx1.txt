@@ -1,0 +1,1 @@
+( Runx1 AND ( ( ( NOT TCR  AND NOT ThPOK  AND NOT Notch1  AND NOT Runx3 ) ) )    ) 

@@ -1,0 +1,1 @@
+( ThPOK )  OR ( TCR )  OR ( Tbet AND ( ( ( NOT Runx3 ) ) )    )  OR ( RORgt )  OR ( CD4 AND ( ( ( NOT CD8 ) ) )    )  OR ( GATA3 )  OR ( Foxp3 ) 

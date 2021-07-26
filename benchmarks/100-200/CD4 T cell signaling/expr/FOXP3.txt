@@ -1,0 +1,1 @@
+( ( ( SMAD3 AND ( ( ( STAT5  AND NFAT ) ) )     ) AND NOT ( STAT3 AND ( ( ( RORGT ) ) )     )  ) AND NOT ( STAT1  ) )  OR ( NFAT AND ( ( ( FOXP3  AND STAT5 ) ) )    ) 

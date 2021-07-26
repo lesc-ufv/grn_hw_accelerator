@@ -1,0 +1,1 @@
+( ( ( Cas3  ) AND NOT ( AKT  )  ) AND NOT ( IAP  ) )  OR ( ( ( Cas12  ) AND NOT ( AKT  )  ) AND NOT ( IAP  ) ) 

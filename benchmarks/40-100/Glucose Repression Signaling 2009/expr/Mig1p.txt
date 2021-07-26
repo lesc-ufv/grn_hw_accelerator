@@ -1,0 +1,1 @@
+( ( MIG1  ) AND NOT ( Snf1p  ) ) 

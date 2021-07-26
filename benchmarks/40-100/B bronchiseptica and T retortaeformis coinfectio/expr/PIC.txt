@@ -1,0 +1,1 @@
+( ( ( EC_TRetortaeformis  ) AND NOT ( IL10I  )  ) AND NOT ( IgA_TRetortaeformis  ) )  OR ( ( ( EC_Bacterium  ) AND NOT ( IL10I  )  ) AND NOT ( IgA_TRetortaeformis  ) )  OR ( ( ( AD  ) AND NOT ( IL10I  )  ) AND NOT ( IgA_TRetortaeformis  ) )  OR ( ( ( AP  ) AND NOT ( IL10I  )  ) AND NOT ( IgA_TRetortaeformis  ) ) 

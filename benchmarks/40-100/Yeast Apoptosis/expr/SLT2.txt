@@ -1,0 +1,1 @@
+( ( RLM1 )  OR ( Heat )  OR ( PTP2 AND ( ( ( NOT Heat  AND NOT SDP1  AND NOT Stress  AND NOT RLM1 ) ) )    )  OR ( SDP1 AND ( ( ( NOT PTP2  AND NOT Heat  AND NOT Stress  AND NOT RLM1 ) ) )    )  OR ( Stress AND ( ( ( SDP1 )  AND (  ( ( NOT PTP2  AND NOT Heat  AND NOT RLM1 ) ) ) ) )    )  ) OR  NOT ( PTP2 OR SDP1 OR Heat OR Stress OR RLM1 ) 

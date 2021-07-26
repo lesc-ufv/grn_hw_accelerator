@@ -1,0 +1,87 @@
+tdum_socs3_shp2 = ( socs3 ) 
+dum_gab1_kin_or_jak1_gab1_mem_p = ( jak1 )  or ( gab1_kin ) 
+dum_cebp_saa = ( cebpb )  or ( cebpd ) 
+gsk3 = (  not( ( akt ) ) ) or  not( akt ) 
+pip3 = ( ( pi3k  ) and not( pten  ) ) 
+stat1_py = ( ( ( ( il6rc_p and ( ( ( jak1 ) ) )     ) and not( shp2  )  ) and not( cyt_ptpe  )  ) and not( shp2_a  ) ) 
+cmyc = ( stat3_ta ) 
+ras_gap = ( ( gab1_mem_p  ) and not( shp2_a  ) ) 
+a2m_gfbg = ( ( stat3_ta  ) and not( nfkb  ) ) 
+gp80s_a = ( ( il6  ) and not( gp130s  ) ) 
+shp2 = ( ( ( ( il6rc_p and ( ( ( jak1 ) ) )     ) and not( ros  )  ) and not( socs3  )  ) and not( sirp1a  ) ) 
+cam_ca = ( ca ) 
+mekk1 = ( rac1 ) 
+dum_gp80_a_il6rc = ( gp80m_a )  or ( gp80s_a ) 
+ip3 = ( plcg ) 
+mek4 = ( mekk1 ) 
+socs3 = ( p38 )  or ( nfkb )  or ( stat3_ta )  or ( erk12 ) 
+tdum_shp2_stat1_py = ( shp2 )  or ( shp2_a ) 
+shp2_a = ( ( ( gab1_mem_p and ( ( ( shp2 ) ) )     ) and not( sirp1a  )  ) and not( ros  ) ) 
+crp = ( ( cfos and ( ( ( stat3_ta ) ) )     ) and not( nfkb  ) ) 
+akt = ( ( ( pdk1 and ( ( ( mtorc2  and pip3 ) ) )     ) and not( phlpp  )  ) and not( ship  ) ) 
+tdum_shp2_il6rc_p = ( shp2 )  or ( shp2_a ) 
+anti_apoptotic = ( ( ( ( stat3_ta  ) and not( gsk3  )  ) and not( casp9  )  ) and not( bad  ) ) 
+il6rc = ( gp130m and ( ( ( dum_gp80_a_il6rc ) ) )    ) 
+erk12 = ( mek1 ) 
+dum_pkcd_camk24_stat1_ta = ( pkcd )  or ( camk24 ) 
+raf1 = ( ras ) 
+stat3_py = ( ( ( ( il6rc_p and ( ( ( jak1 ) ) )     ) and not( shp2  )  ) and not( cyt_ptpe  )  ) and not( shp2_a  ) ) 
+junb = ( stat3_ta ) 
+tdum_socs1_vav = ( socs1 ) 
+pi3k = ( gab1_mem_p and ( ( ( notshp2_a ) ) )    )  or ( ras ) 
+stat3_ta = ( ( ( dum_mtorc1_or_pkcd_stat3_ta and ( ( ( stat3_py ) ) )     ) and not( slim  )  ) and not( pias3  ) ) 
+vav = ( ( dum_il6rc_p_or_grb2_vav  ) and not( socs1  ) ) 
+pkcd = ( mek4 ) 
+pro_hgf = ( cebpd )  or ( cebpb ) 
+dum_mtorc1_or_pkcd_stat3_ta = ( pkcd )  or ( mtorc1 ) 
+gp80m_a = ( il6 ) 
+jak1 = (  not( ( socs1 )  or ( shp2 )  or ( shp2_a )  or ( socs3 ) ) ) or  not( shp2 or socs1 or shp2_a or socs3 ) 
+cebpb = ( stat3_ta )  or ( p38 ) 
+ras = ( ( grb2_sos  ) and not( ras_gap  ) ) 
+dum_il6rc_p_or_grb2_vav = ( il6rc_p )  or ( grb2_sos ) 
+plcg = ( gab1_mem_p ) 
+grb2_sos = ( il6rc_p )  or ( shp2 ) 
+mtorc2 = ( mtor ) 
+gab1_mem_p = ( gab1_mem and ( ( ( dum_gab1_kin_or_jak1_gab1_mem_p ) ) )    ) 
+fkhr = (  not( ( akt ) ) ) or  not( akt ) 
+ca = ( ip3 ) 
+var_app = ( cebpb )  or ( cebpd ) 
+gp130s = (  not( ( camk24 )  or ( mk2 ) ) ) or  not( mk2 or camk24 ) 
+mek1 = ( raf1 ) 
+tdum_shp2_stat3_py = ( shp2 )  or ( shp2_a ) 
+mk2 = ( p38 ) 
+il6rc_p = ( ( ( il6rc and ( ( ( jak1 ) ) )     ) and not( shp2_a  )  ) and not( shp2  ) ) 
+p70s6k = ( mtorc1 )  or ( akt )  or ( erk12 ) 
+cebpd = ( stat3_ta ) 
+camk24 = ( cam_ca ) 
+casp9 = (  not( ( akt ) ) ) or  not( akt ) 
+irs1_ps = ( pkcd )  or ( erk12 ) 
+pro_proliferative = ( ( stat3_ta )  or ( p70s6k )  or ( camk24 )  or ( erk12 )  ) or  not( cebpb or stat3_ta or p70s6k or fkhr or erk12 or camk24 ) 
+rac1 = ( vav ) 
+bad = (  not( ( akt ) ) ) or  not( akt ) 
+cfos = ( stat3_ta ) 
+saa = ( dum_cebp_saa and ( ( ( nfkb  and stat3_ta ) ) )    ) 
+ir = (  not( ( socs3 )  or ( socs1 ) ) ) or  not( socs1 or socs3 ) 
+p38 = ( mek6 ) 
+mtorc1 = ( mtor ) 
+socs1 = ( stat3_ta ) 
+mek6 = ( il6rc_p ) 
+stat1_ta = ( ( ( dum_pkcd_camk24_stat1_ta and ( ( ( stat1_py ) ) )     ) and not( slim  )  ) and not( pias1  ) ) 
+irs1_py = (  not( ( irs1_ps )  or ( shp2 )  or ( shp2_a ) ) ) or  not( irs1_ps or shp2 or shp2_a ) 
+gab1_mem = ( grb2_sos )  or ( erk12 and ( ( ( pip3 ) ) )    ) 
+nfkb
+pdk1
+phlpp
+ship
+gab1_kin
+il6
+gp130m
+mtor
+notshp2_a
+pten
+ros
+sirp1a
+cyt_ptpe
+slim
+pias1
+pias3

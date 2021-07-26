@@ -1,0 +1,1 @@
+( TNFSF13B_TNFRSF17 AND ( ( ( TRAF5 ) ) )    ) 

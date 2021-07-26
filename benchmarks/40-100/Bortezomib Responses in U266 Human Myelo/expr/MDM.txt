@@ -1,0 +1,1 @@
+( ( AKT  ) AND NOT ( ATM  ) )  OR ( ( p53  ) AND NOT ( ATM  ) ) 

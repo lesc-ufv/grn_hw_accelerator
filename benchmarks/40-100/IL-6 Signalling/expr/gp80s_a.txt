@@ -1,0 +1,1 @@
+( ( il6  ) AND NOT ( gp130s  ) ) 

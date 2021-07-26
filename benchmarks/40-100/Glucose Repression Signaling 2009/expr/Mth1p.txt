@@ -1,0 +1,1 @@
+( ( ( ( MTH1  ) AND NOT ( Snf3p AND ( ( ( Rgt2p ) ) )     )  ) AND NOT ( Yck1p  )  ) AND NOT ( SCF_grr1  ) ) 

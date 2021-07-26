@@ -1,0 +1,1 @@
+( BCL3 AND ( ( ( NFKB2p52_NFKB2p52nucleus ) ) )    ) 

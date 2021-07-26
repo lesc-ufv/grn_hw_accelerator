@@ -1,0 +1,1 @@
+( ( ( EGFR_Y992  ) AND NOT ( Src  )  ) AND NOT ( Fak  ) )  OR ( ( ( PIP2_45  ) AND NOT ( Src  )  ) AND NOT ( Fak  ) )  OR ( ( ( PIP3_345  ) AND NOT ( Src  )  ) AND NOT ( Fak  ) )  OR ( ( ( PIP2_34  ) AND NOT ( Src  )  ) AND NOT ( Fak  ) ) 

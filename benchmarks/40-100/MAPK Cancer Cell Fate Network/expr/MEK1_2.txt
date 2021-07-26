@@ -1,0 +1,1 @@
+( ( ( RAF  ) AND NOT ( AP1  )  ) AND NOT ( PPP2CA  ) )  OR ( ( ( MAP3K1_3  ) AND NOT ( AP1  )  ) AND NOT ( PPP2CA  ) ) 

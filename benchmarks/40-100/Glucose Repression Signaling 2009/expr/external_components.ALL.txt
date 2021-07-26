@@ -1,0 +1,12 @@
+SNF4
+RGT2
+glucose_ext
+maltose_ext
+GRR1
+SNF1
+REG1
+YCK1_2
+RGT1
+GAL11
+GLC7
+galactose_ext

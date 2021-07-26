@@ -1,0 +1,1 @@
+( ( ( ( p53  ) AND NOT ( CDK4  )  ) AND NOT ( AKT  )  ) AND NOT ( MYC  ) ) 

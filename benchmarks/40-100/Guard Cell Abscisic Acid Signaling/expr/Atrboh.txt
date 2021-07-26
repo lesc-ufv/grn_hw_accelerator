@@ -1,0 +1,1 @@
+( ( OST1 AND ( ( ( pH  AND ROP2 ) ) )     ) AND NOT ( ABI1  ) ) 

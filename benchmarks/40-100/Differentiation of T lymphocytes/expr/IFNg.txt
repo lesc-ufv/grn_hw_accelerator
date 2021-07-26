@@ -1,0 +1,1 @@
+( ( STAT4  ) AND NOT ( STAT3  ) )  OR ( ( IRAK  ) AND NOT ( STAT3  ) )  OR ( ( Eomes  ) AND NOT ( STAT3  ) )  OR ( ( Tbet  ) AND NOT ( STAT3  ) ) 

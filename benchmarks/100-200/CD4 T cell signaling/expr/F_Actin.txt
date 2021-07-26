@@ -1,0 +1,1 @@
+( Arp2_3 AND ( ( ( G_Actin ) ) )    ) 

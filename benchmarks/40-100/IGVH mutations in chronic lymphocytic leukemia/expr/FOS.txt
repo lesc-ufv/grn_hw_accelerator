@@ -1,0 +1,1 @@
+( ( ADM AND ( ( ( TNF  AND MAP2K6  AND LMNA ) ) )     ) AND NOT ( JAK1  ) )  OR ( ( ( CNR1 AND ( ( ( TNF  AND MAP2K6  AND PCNA  AND LMNA  AND ADM ) ) )     ) AND NOT ( CREM  )  ) AND NOT ( JAK1  ) ) 

@@ -1,0 +1,1 @@
+( ( SNF1  ) AND NOT ( Glc7Reg1  ) )  OR ( ( SNF4  ) AND NOT ( Glc7Reg1  ) ) 

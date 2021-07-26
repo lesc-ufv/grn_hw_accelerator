@@ -1,0 +1,1 @@
+( ( IP3R1  ) AND NOT ( ExtPump  ) ) 

@@ -1,0 +1,1 @@
+( ( ( MKK6  ) AND NOT ( PP2A  )  ) AND NOT ( MKPs  ) )  OR ( ( ( MKK3  ) AND NOT ( PP2A  )  ) AND NOT ( MKPs  ) )  OR ( ( ( Sek1  ) AND NOT ( PP2A  )  ) AND NOT ( MKPs  ) ) 

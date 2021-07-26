@@ -1,0 +1,1 @@
+( TNF_TNFRSF1A AND ( ( ( TRADD  AND FADD ) ) )    ) 

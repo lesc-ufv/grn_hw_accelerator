@@ -1,0 +1,1 @@
+( ( PLC_B AND ( ( ( PIP2_45 ) ) )     ) AND NOT ( DGK AND ( ( ( DAG ) ) )     ) )  OR ( ( PLC_g AND ( ( ( PIP2_45 ) ) )     ) AND NOT ( DGK AND ( ( ( DAG ) ) )     ) )  OR ( DAG AND ( ( ( NOT DGK ) ) )    ) 

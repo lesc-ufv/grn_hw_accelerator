@@ -1,0 +1,1 @@
+( RGT1 AND ( ( ( Mth1p  OR Std1p ) ) )    ) 

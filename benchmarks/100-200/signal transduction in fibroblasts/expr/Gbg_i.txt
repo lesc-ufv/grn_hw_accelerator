@@ -1,0 +1,1 @@
+( alpha_iR AND ( ( ( NOT Gai ) )  AND ( ( NOT Gbg_i ) ) )    )  OR ( Gai ) 

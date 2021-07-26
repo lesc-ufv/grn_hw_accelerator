@@ -1,0 +1,1 @@
+( ( ( ( IL15 AND ( ( ( IFNGT ) ) )     ) AND NOT ( P2  )  ) AND NOT ( Apoptosis  )  ) AND NOT ( SMAD  ) )  OR ( ( ( ( IL2 AND ( ( ( IFNGT ) ) )     ) AND NOT ( P2  )  ) AND NOT ( Apoptosis  )  ) AND NOT ( SMAD  ) )  OR ( ( ( ( Stimuli AND ( ( ( IFNGT ) ) )     ) AND NOT ( P2  )  ) AND NOT ( Apoptosis  )  ) AND NOT ( SMAD  ) ) 

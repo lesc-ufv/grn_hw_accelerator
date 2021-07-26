@@ -1,0 +1,1 @@
+( RORgt AND ( ( ( NOT GATA3  AND NOT Tbet  AND NOT Foxp3 ) ) )    )  OR ( SMAD2 AND ( ( ( STAT3 ) ) )    ) 

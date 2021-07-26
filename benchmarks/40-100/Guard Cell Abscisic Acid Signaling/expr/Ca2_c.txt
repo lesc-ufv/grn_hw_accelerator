@@ -1,0 +1,1 @@
+( ( CIS  ) AND NOT ( Ca2_ATPase  ) )  OR ( ( CaIM  ) AND NOT ( Ca2_ATPase  ) ) 

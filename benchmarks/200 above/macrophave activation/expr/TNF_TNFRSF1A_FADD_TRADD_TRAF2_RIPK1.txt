@@ -1,0 +1,1 @@
+( TNF_TNFRSF1A_FADD_TRADD AND ( ( ( RIPK1  AND TRAF2cytoplasm ) ) )    ) 

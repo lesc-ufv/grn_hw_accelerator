@@ -1,0 +1,1 @@
+( ( ( NFKB  ) AND NOT ( DISC  )  ) AND NOT ( Apoptosis  ) )  OR ( ( ( CREB AND ( ( ( IFNG ) ) )     ) AND NOT ( DISC  )  ) AND NOT ( Apoptosis  ) ) 

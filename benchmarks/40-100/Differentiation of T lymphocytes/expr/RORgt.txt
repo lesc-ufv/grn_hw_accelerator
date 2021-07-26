@@ -1,0 +1,1 @@
+( ( ( ( SMAD2  ) AND NOT ( Tbet  )  ) AND NOT ( Foxp3  )  ) AND NOT ( GATA3  ) )  OR ( ( ( ( RORgt  ) AND NOT ( Tbet  )  ) AND NOT ( Foxp3  )  ) AND NOT ( GATA3  ) )  OR ( ( ( ( STAT3  ) AND NOT ( Tbet  )  ) AND NOT ( Foxp3  )  ) AND NOT ( GATA3  ) ) 

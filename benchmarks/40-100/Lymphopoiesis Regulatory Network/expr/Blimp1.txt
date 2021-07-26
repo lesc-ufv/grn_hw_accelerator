@@ -1,0 +1,1 @@
+( Irf4 AND ( ( ( NOT Pax5  AND NOT Bcl6  AND NOT Bach2 ) ) )    ) 
