@@ -1,8 +1,34 @@
-from make_gnr_harp import make_gnr_harp
-from readFile import readFile
+from src.hw.gnr_components import GnrComponents
+from utils import readFile
 
-path = 'benchmarks/Benchmark_188.txt'
+path = '../../benchmarks/Benchmark_5.txt'
 
 functions = readFile(path)
+gnr_components = GnrComponents()
+gnr_components.create_gnr_harp(10, functions, 2 ** 3, 2 ** 12).to_verilog('../../Samples/gnr_rtl_5/Benchmark_5.v')
 
-make_gnr_harp(32, functions, 2 ** 3, 2 ** 12).to_verilog('Samples/gnr_rtl_188')
+
+'''
+data_in_valid
+data_in
+data_in_done
+
+data_request
+
+
+gravar
+
+request_escrita
+data_out
+
+wr_ready
+
+
+getnumin
+
+accel
+
+acc_axi
+
+
+'''
