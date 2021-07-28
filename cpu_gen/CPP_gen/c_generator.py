@@ -48,17 +48,25 @@ def main():
     for l in lines:
         for w in l.split(' '):
             if w.lower() in all_words:
-                replace_dict[w.lower()] = "aux[" + str(all_words.index(w.lower())) + "] "      
+                replace_dict[w.lower()] = all_words.index(w.lower())
     
     code_string = ""
     for l in lines:
+        before = True
         for w in l.split(' '):
             w_lower = w.lower()
             if w_lower in replace_dict.keys():
-                code_string += replace_dict[w_lower] + " "
+                if w_lower not in all_words:
+                    code_string += replace_dict[w_lower]
+                elif(before):
+                    code_string += "aux[" + str(replace_dict[w_lower]) + "] "
+                else:
+                    code_string += "vet[" + str(replace_dict[w_lower]) + "] "
             else:
+                if(w == '='):
+                    before = False
                 code_string += w + " "
-        code_string += "; \n    "
+        code_string += ";\n    "
         
     
     ftemp = open(TEMPLATE, READ)
