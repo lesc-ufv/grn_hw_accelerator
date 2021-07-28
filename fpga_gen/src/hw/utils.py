@@ -1,4 +1,13 @@
+import math
+import subprocess
+
 from veriloggen import *
+
+def bits(n):
+    if n < 2:
+        return 1
+    else:
+        return int(math.ceil(math.log2(n)))
 
 def initialize_regs(module, values=None):
     regs = []
@@ -48,3 +57,8 @@ def readFile(path):
                 ff = re.sub('  ', ' ', f)
             functions.append(f)
     return functions
+
+def commands_getoutput(cmd):
+    byte_out = subprocess.check_output(cmd.split())
+    str_out = byte_out.decode("utf-8")
+    return str_out

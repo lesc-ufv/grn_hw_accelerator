@@ -7,6 +7,7 @@ from fpga_gen.src.hw.utils import readFile
 
 
 class GnrAccelerator:
+<<<<<<< HEAD
     def __init__(self, num_networks, gnr_arch_file):
         # constants
         self.gnr_copies_per_network = 8
@@ -18,6 +19,12 @@ class GnrAccelerator:
 
         # needed variables
         self.acc_num_networks = num_networks
+=======
+    def __init__(self, num_redes, gnr_arch_file):
+        self.axi_bus_data_width = 512
+        self.gnr_copies = 8
+        self.num_redes = num_redes
+>>>>>>> 97171914411b4077451e7f7a66d17ad494b1260a
         self.gnr_arch_file = gnr_arch_file
         self.acc_num_in = math.ceil(num_networks / self.gnr_copies_per_network)
         self.acc_num_out = self.acc_num_in
@@ -82,6 +89,7 @@ class GnrAccelerator:
             m.Instance(gnr, '%s_%d' % (gnr.name, i), par, con)
             num_redes = num_redes - self.gnr_copies_per_network
 
+<<<<<<< HEAD
         return m
 
 
@@ -89,3 +97,7 @@ path = '../../../benchmarks/Benchmark_5.txt'
 
 acc = GnrAccelerator(9, path)
 print(acc.get().to_verilog('./Benchmark_5.v'))
+=======
+        acc_user_done.assign(Uand(gnr_done))
+        return m
+>>>>>>> 97171914411b4077451e7f7a66d17ad494b1260a
