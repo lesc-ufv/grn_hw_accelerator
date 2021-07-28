@@ -9,6 +9,7 @@ from src.hw.utils import readFile
 
 class GnrAccelerator:
     def __init__(self, num_redes, gnr_arch_file):
+        self.axi_bus_data_width = 512
         self.gnr_copies = 8
         self.num_redes = num_redes
         self.gnr_arch_file = gnr_arch_file
@@ -68,11 +69,5 @@ class GnrAccelerator:
             m.Instance(gnr, '%s_%d' % (gnr.name, i), par, con)
             num_redes = num_redes - self.gnr_copies
 
-        #acc_user_done.assign(m.EmbeddedCode("&gnr_done"))
+        acc_user_done.assign(Uand(gnr_done))
         return m
-
-
-path = '../../benchmarks/Benchmark_5.txt'
-
-acc = GnrAccelerator(33, path)
-print(acc.create_gnr_accelerator().to_verilog())
