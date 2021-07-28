@@ -1,7 +1,7 @@
 import math
 from veriloggen import *
 
-from src.hw.utils import initialize_regs
+from fpga_gen.src.hw.utils import initialize_regs
 
 
 class GnrComponents:
@@ -540,30 +540,33 @@ class GnrComponents:
         self.cache[name] = m
         return m
 
-    def create_regulator_network(self, num_units, functions, fifo_in_size, fifo_out_size):
+    def create_regulator_network(self, num_units, functions, fifo_in_size, fifo_out_size, id_width, data_in_width,
+                                 data_out_width):
         name = 'regulator_network'
         if name in self.cache.keys():
             return self.cache[name]
 
-        m = Module(name)
-        data_width = 29
-        ID = m.Parameter('ID', 0)
-        id_width = int(math.ceil(math.log(num_units, 2))) + 1
-        width_data_in = 2 * len(functions) + id_width
         width = len(functions)
+
+        m = Module(name)
+
         fifo_in_depth_bits = int(math.ceil(math.log(fifo_in_size, 2)))
         fifo_out_depth_bits = int(math.ceil(math.log(fifo_out_size, 2)))
 
+        ID = m.Parameter('ID', 0)
         clk = m.Input('clk')
         rst = m.Input('rst')
         start = m.Input('start')
+        control_data_in_done = m.Input('control_data_in_done')
+
         data_in_valid = m.Input('data_in_valid')
-        data_in = m.Input('data_in', width_data_in)  # (ID + BEGIN + END)
+        data_in = m.Input('data_in', data_in_width)  # (ID + BEGIN + END)
         end_data_in = m.Input('end_data_in')
+
         read_data_en = m.Input('read_data_en')
         has_data_out = m.Output('has_data_out')
         has_lst3_data_out = m.Output('has_lst3_data_out')
-        data_out = m.Output('data_out', (data_width + data_width + width))
+        data_out = m.Output('data_out', data_out_width)
         task_done = m.Output('task_done')
 
         s0 = m.Wire('s0', width)
@@ -574,15 +577,15 @@ class GnrComponents:
         init_state = m.Wire('init_state', width)
 
         fifo_out_we = m.Wire('fifo_out_we')
-        fifo_out_data_in = m.Wire('fifo_out_data_in', (data_width + data_width + width))
+        fifo_out_data_in = m.Wire('fifo_out_data_in', data_out_width)
         fifo_out_empty = m.Wire('fifo_out_empty')
         fifo_out_full = m.Wire('fifo_out_full')
         fifo_out_full_almostfull = m.Wire('fifo_out_full_almostfull')
 
         fifo_in_we = m.Wire('fifo_in_we')
-        fifo_in_data_in = m.Wire('fifo_in_data_in', width_data_in - id_width)
+        fifo_in_data_in = m.Wire('fifo_in_data_in', data_in_width - id_width)
         fifo_in_re = m.Wire('fifo_in_re')
-        fifo_in_data_out = m.Wire('fifo_in_data_out', width_data_in - id_width)
+        fifo_in_data_out = m.Wire('fifo_in_data_out', data_in_width - id_width)
         fifo_in_empty = m.Wire('fifo_in_empty')
         fifo_in_almostempty = m.Wire('fifo_in_almostempty')
         fifo_in_full = m.Wire('fifo_in_full')
@@ -590,7 +593,7 @@ class GnrComponents:
 
         has_data_out.assign(~fifo_out_empty)
 
-        control_fifo_data_in = self.create_control_fifo_data_in(num_units, width_data_in)
+        control_fifo_data_in = self.create_control_fifo_data_in(num_units, data_in_width)
         con = [('clk', clk), ('rst', rst), ('start', start), ('data_in_valid', data_in_valid), ('data_in', data_in),
                ('fifo_in_full', fifo_in_full), ('fifo_in_amostfull', fifo_in_full_almostfull),
                ('fifo_in_we', fifo_in_we),
@@ -604,22 +607,23 @@ class GnrComponents:
                ('re', fifo_in_re), ('dout', fifo_in_data_out), ('empty', fifo_in_empty),
                ('almostempty', fifo_in_almostempty), ('full', fifo_in_full), ('almostfull', fifo_in_full_almostfull)]
 
-        param = [('FIFO_WIDTH', width_data_in - id_width), ('FIFO_DEPTH_BITS', fifo_in_depth_bits),
+        param = [('FIFO_WIDTH', data_in_width - id_width), ('FIFO_DEPTH_BITS', fifo_in_depth_bits),
                  ('FIFO_ALMOSTFULL_THRESHOLD', fifo_in_size - 2),
                  ('FIFO_ALMOSTEMPTY_THRESHOLD', 2)]
-
         m.Instance(fifo, 'fifo_in', param, con)
 
         con = [('clk', clk), ('rst', rst), ('we', fifo_out_we), ('din', fifo_out_data_in),
                ('re', read_data_en), ('dout', data_out), ('empty', fifo_out_empty),
                ('almostempty', has_lst3_data_out), ('full', fifo_out_full), ('almostfull', fifo_out_full_almostfull)]
 
+        '''
         param = [('FIFO_WIDTH', (data_width + data_width + width)),
                  ('FIFO_DEPTH_BITS', fifo_out_depth_bits),
                  ('FIFO_ALMOSTFULL_THRESHOLD', fifo_out_size - 2),
                  ('FIFO_ALMOSTEMPTY_THRESHOLD', 2)]
 
         m.Instance(fifo, 'fifo_out', param, con)
+        '''
 
         control = self.create_control_gnr(len(functions))
         con = [('clk', clk), ('rst', rst), ('start', start), ('s0', s0), ('s1', s1), ('fifo_out_full', fifo_out_full),
@@ -638,7 +642,7 @@ class GnrComponents:
         self.cache[name] = m
         return m
 
-    def create_control_data_in(self, data_width, data_width_ext):
+    def create_control_data_in(self, data_in_width):
         name = 'control_data_in'
         if name in self.cache.keys():
             return self.cache[name]
@@ -647,139 +651,42 @@ class GnrComponents:
         clk = m.Input('clk')
         rst = m.Input('rst')
         start = m.Input('start')
-        num_data_in = m.Input('num_data_in', 32)
-        has_data_in = m.Input('has_data_in')
-        has_lst3_data_in = m.Input('has_lst3_data_in')
-        data_in = m.Input('data_in', 512)
-        rd_request_en = m.OutputReg('rd_request_en')
+        gnr_read_data_valid = m.Input('gnr_read_data_valid')
+        gnr_read_data = m.Input('gnr_read_data', data_in_width)
+        gnr_done_rd_data = m.Input('gnr_done_rd_data')
+        gnr_request_read = m.OutputReg('gnr_request_read')
         data_valid = m.OutputReg('data_valid')
-        data_out = m.OutputReg('data_out', data_width)
+        data_out = m.OutputReg('data_out', data_in_width)
         done = m.OutputReg('done')
 
-        bits = int(math.ceil(math.log((data_width_ext // (data_width)), 2)))
-        if bits == 0:
-            bits = 2
-        else:
-            bits = bits + 1
+        FSM_SEND_DATA = m.Localparam('FSM_SEND_DATA', 0, 2)
+        FSM_DONE = m.Localparam('FSM_DONE', 1, 2)
+        fsm_cs = m.Reg('fms_cs', 2)
 
-        FSM_WAIT = m.Localparam('FSM_WAIT', 0, 3)
-        FSM_RD_DATA = m.Localparam('FSM_RD_DATA', 1, 3)
-        FSM_DONE = m.Localparam('FSM_DONE', 2, 3)
-        fsm_cs = m.Reg('fms_cs', 3)
-        cont_data = m.Reg('cont_data', 32)
-
-        if data_width < 512:
-            index_data = m.Reg('index_data', bits)
-            data = m.Reg('data', data_width_ext)
-            flag_cpy_data = m.Reg('flag_cpy_data')
-            wdata = m.Wire('wdata', data_width, data_width_ext // data_width)
-
-            i = m.Genvar('i')
-            m.GenerateFor(i(0), i < (data_width_ext // data_width), i.inc(), 'gen_1').Assign(
-                wdata[i](data[i * data_width:(i * data_width) + data_width])
-            )
-            m.Always(Posedge(clk))(
-                If(rst)(
-                    rd_request_en(Int(0, 1, 2)),
-                    index_data(Int(0, index_data.width, 10)),
-                    data(Int(0, data.width, 10)),
-                    data_out(Int(0, data_out.width, 10)),
-                    cont_data(Int(0, cont_data.width, 10)),
-                    flag_cpy_data(Int(0, 1, 2)),
-                    done(Int(0, 1, 2)),
-                    data_valid(Int(0, 1, 2)),
-                    fsm_cs(FSM_WAIT),
-                ).Elif(start)(
-                    data_valid(Int(0, 1, 2)),
-                    rd_request_en(Int(0, 1, 2)),
-                    Case(fsm_cs)(
-                        When(FSM_WAIT)(
-                            If(cont_data < num_data_in)(
-                                If(AndList((index_data < (data_width_ext // data_width)), flag_cpy_data))(
-                                    data_out(Int(0, data_out.width, 10)),
-                                    fsm_cs(FSM_RD_DATA)
-                                ).Elif(has_data_in)(
-                                    rd_request_en(Int(1, 1, 2)),
-                                    index_data(Int(0, index_data.width, 10)),
-                                    flag_cpy_data(Int(0, 1, 2)),
-                                    data_out(Int(0, data_out.width, 10)),
-                                    fsm_cs(FSM_RD_DATA)
-                                ).Else(
-                                    data_out(Int(0, data_out.width, 10)),
-                                    fsm_cs(FSM_WAIT)
-                                )
-                            ).Else(
-                                data_out(Int(0, data_out.width, 10)),
-                                fsm_cs(FSM_DONE),
-                            )
-                        ),
-                        When(FSM_RD_DATA)(
-                            If(flag_cpy_data == Int(0, 1, 2))(
-                                data(data_in),
-                                data_out(data_in[0:data_width]),
-                                flag_cpy_data(Int(1, 1, 2)),
-                                data_valid(Int(1, 1, 2)),
-                                cont_data(cont_data + Int(1, cont_data.width, 10)),
-                                index_data(index_data + Int(1, index_data.width, 10)),
-                                fsm_cs(FSM_WAIT)
-                            ).Else(
-                                data_out(wdata[index_data]),
-                                data_valid(Int(1, 1, 2)),
-                                cont_data(cont_data + Int(1, cont_data.width, 10)),
-                                index_data(index_data + Int(1, index_data.width, 10)),
-                                fsm_cs(FSM_WAIT)
-                            )
-                        ),
-                        When(FSM_DONE)(
-                            data_out(Int(0, data_out.width, 10)),
+        m.Always(Posedge(clk))(
+            If(rst)(
+                gnr_request_read(0),
+                done(0),
+                data_valid(0),
+                fsm_cs(FSM_SEND_DATA),
+            ).Elif(start)(
+                data_valid(0),
+                gnr_request_read(0),
+                Case(fsm_cs)(
+                    When(FSM_SEND_DATA)(
+                        If(gnr_done_rd_data)(
                             fsm_cs(FSM_DONE),
-                            done(Int(1, 1, 2))
-                        )
+                        ).Elif(gnr_read_data_valid)(
+                            data_out(gnr_read_data),
+                            gnr_request_read(1),
+                        ),
+                    ),
+                    When(FSM_DONE)(
+                        done(1)
                     )
                 )
             )
-        else:
-            m.Always(Posedge(clk))(
-                If(rst)(
-                    rd_request_en(Int(0, 1, 2)),
-                    data_out(Int(0, data_out.width, 10)),
-                    cont_data(Int(0, cont_data.width, 10)),
-                    done(Int(0, 1, 2)),
-                    data_valid(Int(0, 1, 2)),
-                    fsm_cs(FSM_WAIT),
-                ).Elif(start)(
-                    data_valid(Int(0, 1, 2)),
-                    rd_request_en(Int(0, 1, 2)),
-                    Case(fsm_cs)(
-                        When(FSM_WAIT)(
-                            If(cont_data < num_data_in)(
-                                If(has_data_in)(
-                                    rd_request_en(Int(1, 1, 2)),
-                                    data_out(Int(0, data_out.width, 10)),
-                                    fsm_cs(FSM_RD_DATA)
-                                ).Else(
-                                    data_out(Int(0, data_out.width, 10)),
-                                    fsm_cs(FSM_WAIT)
-                                )
-                            ).Else(
-                                data_out(Int(0, data_out.width, 10)),
-                                fsm_cs(FSM_DONE),
-                            )
-                        ),
-                        When(FSM_RD_DATA)(
-                            data_out(data_in),
-                            cont_data(cont_data + Int(1, cont_data.width, 10)),
-                            data_valid(Int(1, 1, 2)),
-                            fsm_cs(FSM_WAIT)
-                        ),
-                        When(FSM_DONE)(
-                            data_out(Int(0, data_out.width, 10)),
-                            fsm_cs(FSM_DONE),
-                            done(Int(1, 1, 2))
-                        )
-                    )
-                )
-            )
+        )
 
         initialize_regs(m)
         self.cache[name] = m
@@ -814,31 +721,31 @@ class GnrComponents:
         gen_if.Wire('valid2')
         gen_if.Wire('out_un', WIDTH)
         gen_if.EmbeddedCode('priority_encoder #(\n\
-                .WIDTH(W2),\n\
-                .LSB_PRIORITY(LSB_PRIORITY)\n\
-            )\n\
-            priority_encoder_inst1 (\n\
-                .input_unencoded(input_unencoded[W2-1:0]),\n\
-                .output_valid(valid1),\n\
-                .output_encoded(out1),\n\
-                .output_unencoded(out_un[W2-1:0])\n\
-            );\n\
-            priority_encoder #(\n\
-                .WIDTH(W2),\n\
-                .LSB_PRIORITY(LSB_PRIORITY)\n\
-            )\n\
-            priority_encoder_inst2 (\n\
-                .input_unencoded({{W1-WIDTH{1\'b0}}, input_unencoded[WIDTH-1:W2]}),\n\
-                .output_valid(valid2),\n\
-                .output_encoded(out2),\n\
-                .output_unencoded(out_un[WIDTH-1:W2])\n\
-            );')
+                    .WIDTH(W2),\n\
+                    .LSB_PRIORITY(LSB_PRIORITY)\n\
+                )\n\
+                priority_encoder_inst1 (\n\
+                    .input_unencoded(input_unencoded[W2-1:0]),\n\
+                    .output_valid(valid1),\n\
+                    .output_encoded(out1),\n\
+                    .output_unencoded(out_un[W2-1:0])\n\
+                );\n\
+                priority_encoder #(\n\
+                    .WIDTH(W2),\n\
+                    .LSB_PRIORITY(LSB_PRIORITY)\n\
+                )\n\
+                priority_encoder_inst2 (\n\
+                    .input_unencoded({{W1-WIDTH{1\'b0}}, input_unencoded[WIDTH-1:W2]}),\n\
+                    .output_valid(valid2),\n\
+                    .output_encoded(out2),\n\
+                    .output_unencoded(out_un[WIDTH-1:W2])\n\
+                );')
         gen_if.EmbeddedCode('       assign output_valid = valid1 | valid2;\n\
-            if (LSB_PRIORITY == "LOW") begin\n\
-                assign output_encoded = valid2 ? {1\'b1, out2} : {1\'b0, out1};\n\
-            end else begin\n\
-                assign output_encoded = valid1 ? {1\'b0, out1} : {1\'b1, out2};\n\
-            end')
+                if (LSB_PRIORITY == "LOW") begin\n\
+                    assign output_encoded = valid2 ? {1\'b1, out2} : {1\'b0, out1};\n\
+                end else begin\n\
+                    assign output_encoded = valid1 ? {1\'b0, out1} : {1\'b1, out2};\n\
+                end')
         m.EmbeddedCode('assign output_unencoded = 1 << output_encoded;')
 
         initialize_regs(m)
@@ -1000,113 +907,68 @@ class GnrComponents:
         clk = m.Input('clk')
         rst = m.Input('rst')
         start = m.Input('start')
+
         has_data_out = m.Input('has_data_out', num_units)
-        has_lst3_data = m.Input('has_lst3_data', num_units)
         fifo_out_full = m.Input('fifo_out_full')
-        wr_fifo_out = Reg()
-        wr_fifo_out_reg = Reg()
-        read_data_en = Reg()
-        if num_units == 1:
-            read_data_en = m.OutputReg('read_data_en', num_units)
-            wr_fifo_out = m.OutputReg('wr_fifo_out')
-            wr_fifo_out_reg = m.Reg('wr_fifo_out_reg')
 
-        if num_units > 1:
+        read_data_en = m.OutputReg('read_data_en', num_units)
+        wr_fifo_out = m.OutputReg('wr_fifo_out')
+        mux_control = m.OutputReg('mux_control', bits)
 
-            read_data_en = m.OutputReg('read_data_en', num_units)
-            wr_fifo_out = m.OutputReg('wr_fifo_out')
-            mux_control = m.OutputReg('mux_control', bits)
+        FSM_IDLE = m.Localparam('FSM_IDLE', 0)
+        FSM_RD_REQ = m.Localparam('FSM_RD_REQ', 1)
+        FSM_WR_REQ = m.Localparam('FSM_WR_REQ', 2)
+        fsm_state = m.Reg('fsm_state', 3)
 
-            FSM_IDLE = m.Localparam('FSM_IDLE', 0)
-            FSM_RD_REQ = m.Localparam('FSM_RD_REQ', 1)
-            FSM_WR_REQ = m.Localparam('FSM_WR_REQ', 2)
-            fsm_state = m.Reg('fsm_state', 3)
-            request = m.Reg('request', num_units)
-            grant_index_reg = m.Reg('grant_index_reg', bits)
+        request = m.Reg('request', num_units)
+        grant_index_reg = m.Reg('grant_index_reg', bits)
 
-            grant = m.Wire('grant', num_units)
-            grant_index = m.Wire('grant_index', bits)
-            grant_valid = m.Wire('grant_valid')
+        grant = m.Wire('grant', num_units)
+        grant_index = m.Wire('grant_index', bits)
+        grant_valid = m.Wire('grant_valid')
 
-            arbiter = self.create_arbiter()
-            params = [('PORTS', num_units), ('TYPE', "ROUND_ROBIN"), ('BLOCK', "NONE"), ('LSB_PRIORITY', "LOW")]
-            ports = [('clk', clk), ('rst', rst), ('request', request),
-                     ('acknowledge', Int(0, num_units, 10)),
-                     ('grant', grant),
-                     ('grant_valid', grant_valid),
-                     ('grant_encoded', grant_index)]
+        arbiter = self.create_arbiter()
+        params = [('PORTS', num_units), ('TYPE', "ROUND_ROBIN"), ('BLOCK', "NONE"), ('LSB_PRIORITY', "LOW")]
+        ports = [('clk', clk), ('rst', rst), ('request', request), ('acknowledge', Int(0, num_units, 10)),
+                 ('grant', grant), ('grant_valid', grant_valid), ('grant_encoded', grant_index)]
 
-            m.Instance(arbiter, 'arbiter_inst', params, ports)
+        m.Instance(arbiter, 'arbiter_inst', params, ports)
 
-            m.Always(Posedge(clk))(
-                If(rst)(
-                    fsm_state(FSM_IDLE),
-                    request(Int(0, request.width, 10)),
-                    read_data_en(Int(0, 1, 2)),
-                    grant_index_reg(Int(0, grant_index.width, 10)),
-                    wr_fifo_out(Int(0, 1, 2)),
-                    mux_control(Int(0, mux_control.width, 10)),
-                ).Elif(start)(
-                    request(Int(0, request.width, 10)),
-                    read_data_en(Int(0, 1, 2)),
-                    wr_fifo_out(Int(0, 1, 2)),
-                    mux_control(Int(0, mux_control.width, 10)),
-                    Case(fsm_state)(
-                        When(FSM_IDLE)(
-                            If(AndList(has_data_out != Int(0, has_data_out.width, 10), Not(fifo_out_full)))(
-                                request(has_data_out),
-                                fsm_state(FSM_RD_REQ)
-                            )
-                        ),
-                        When(FSM_RD_REQ)(
-                            If(grant_valid)(
-                                read_data_en(grant),
-                                grant_index_reg(grant_index),
-                                fsm_state(FSM_WR_REQ)
-                            )
-                        ),
-                        When(FSM_WR_REQ)(
-                            wr_fifo_out(Int(1, 1, 2)),
-                            mux_control(grant_index_reg),
-                            fsm_state(FSM_IDLE)
+        m.Always(Posedge(clk))(
+            If(rst)(
+                fsm_state(FSM_IDLE),
+                request(Int(0, request.width, 10)),
+                read_data_en(Int(0, 1, 2)),
+                grant_index_reg(Int(0, grant_index.width, 10)),
+                wr_fifo_out(Int(0, 1, 2)),
+                mux_control(Int(0, mux_control.width, 10)),
+            ).Elif(start)(
+                request(Int(0, request.width, 10)),
+                read_data_en(Int(0, 1, 2)),
+                wr_fifo_out(Int(0, 1, 2)),
+                mux_control(Int(0, mux_control.width, 10)),
+                Case(fsm_state)(
+                    When(FSM_IDLE)(
+                        If(AndList(has_data_out != Int(0, has_data_out.width, 10), Not(fifo_out_full)))(
+                            request(has_data_out),
+                            fsm_state(FSM_RD_REQ)
                         )
+                    ),
+                    When(FSM_RD_REQ)(
+                        If(grant_valid)(
+                            read_data_en(grant),
+                            grant_index_reg(grant_index),
+                            fsm_state(FSM_WR_REQ)
+                        )
+                    ),
+                    When(FSM_WR_REQ)(
+                        wr_fifo_out(Int(1, 1, 2)),
+                        mux_control(grant_index_reg),
+                        fsm_state(FSM_IDLE)
                     )
                 )
             )
-
-        else:
-            flag_rd = m.Reg('flag_rd')
-            m.Always(Posedge(clk))(
-                If(rst)(
-                    wr_fifo_out(Int(0, 1, 2))
-                ).Elif(start)(
-                    wr_fifo_out(wr_fifo_out_reg)
-                )
-            )
-            m.Always(Posedge(clk))(
-                If(rst)(
-                    read_data_en(Int(0, num_units, 10)),
-                    wr_fifo_out_reg(Int(0, 1, 2)),
-                    flag_rd(1),
-                ).Elif(start)(
-                    read_data_en(Int(0, num_units, 10)),
-                    wr_fifo_out_reg(Int(0, 1, 2)),
-                    If(AndList(has_data_out != Int(0, num_units, 10), ~fifo_out_full))(
-                        If(has_lst3_data)(
-                            If(flag_rd)(
-                                flag_rd(0),
-                                read_data_en(Int(1, read_data_en.width, 2)),
-                                wr_fifo_out_reg(Int(1, 1, 2)),
-                            ).Else(
-                                flag_rd(1)
-                            )
-                        ).Else(
-                            read_data_en(Int(1, read_data_en.width, 2)),
-                            wr_fifo_out_reg(Int(1, 1, 2)),
-                        )
-                    )
-                )
-            )
+        )
 
         initialize_regs(m)
         self.cache[name] = m
@@ -1231,7 +1093,7 @@ class GnrComponents:
         self.cache[name] = m
         return m
 
-    def create_control_data_out(self, num_units, data_width):
+    def create_control_data_out(self, num_units, data_out_width):
         name = 'control_data_out'
         if name in self.cache.keys():
             return self.cache[name]
@@ -1240,92 +1102,63 @@ class GnrComponents:
         clk = m.Input('clk')
         rst = m.Input('rst')
         start = m.Input('start')
-        num_data_out = m.Input('num_data_out', 32)
-        fifo_out_full = m.Input('fifo_out_full')
-        fifo_out_almostfull = m.Input('fifo_out_almostfull')
-        fifo_out_empty = m.Input('fifo_out_empty')
-        has_data = m.Input('has_data', num_units)
-        has_lst3_data = m.Input('has_lst3_data', num_units)
+
+        gnr_done_wr_data = m.Input('gnr_done_wr_data')
+        gnr_available_write = m.Input('gnr_available_write')
+        gnr_request_write = m.Output('gnr_request_write')
+        gnr_write_data = m.Output('gnr_write_data', data_out_width)
+
         ports_in = {}
         for p in range(num_units):
-            ports_in['din%d' % p] = m.Input('din%d' % p, data_width)
+            ports_in['din%d' % p] = m.Input('din%d' % p, data_out_width)
+
         task_done = m.Input('task_done', num_units)
         wr_fifo_out_en = m.Output('wr_fifo_out_en')
         wr_fifo_out_data = m.Output('wr_fifo_out_data', 512)
-        if num_units == 1:
-            read_data_en = m.OutputReg('read_data_en', num_units)
-        else:
-            read_data_en = m.Output('read_data_en', num_units)
+
+        read_data_en = m.Output('read_data_en', num_units)
         done = m.Output('done')
 
-        if num_units > 1:
-            wr_fifo_out = m.Wire('wr_fifo_out')
-            con = [('clk', clk), ('rst', rst), ('start', start), ('has_data_out', has_data),
-                   ('has_lst3_data', has_lst3_data), ('fifo_out_full', fifo_out_full),
-                   ('read_data_en', read_data_en), ('wr_fifo_out', wr_fifo_out)]
-            mux_num_bits = int(math.ceil(math.log(num_units, 2)))
-            mux_control = m.Wire('mux_control', mux_num_bits)
-            mux_data_out = m.Wire('mux_data_out', data_width)
-            con.append(('mux_control', mux_control))
-            control_arbiter = self.create_control_arbiter(num_units)
-            m.Instance(control_arbiter, 'control_arbiter', control_arbiter.get_params(), con)
-            mux_wr_fifo_out = self.create_mux(num_units, data_width)
-            con = []
-            for i in range(num_units):
-                con.append(('in%d' % i, ports_in.get('din%d' % i)))
-            con.append(('s', mux_control))
-            con.append(('out', mux_data_out))
-            m.Instance(mux_wr_fifo_out, 'mux_wr_fifo_out', [('WIDTH', data_width)], con)
+        '''
+        wr_fifo_out = m.Wire('wr_fifo_out')
+        con = [('clk', clk), ('rst', rst), ('start', start), ('has_data_out', has_data),
+               ('has_lst3_data', has_lst3_data), ('fifo_out_full', fifo_out_full),
+               ('read_data_en', read_data_en), ('wr_fifo_out', wr_fifo_out)]
+        mux_num_bits = int(math.ceil(math.log(num_units, 2)))
+        mux_control = m.Wire('mux_control', mux_num_bits)
+        mux_data_out = m.Wire('mux_data_out', data_out_width)
+        con.append(('mux_control', mux_control))
 
-            control_fifo_out = self.create_control_fifo_out(data_width, num_units)
-            con = [('clk', clk), ('rst', rst), ('start', start), ('num_data_out', num_data_out),
-                   ('task_done', task_done),
-                   ('wr_en', wr_fifo_out), ('wr_data', mux_data_out), ('fifoout_full', fifo_out_full),
-                   ('fifoout_almostfull', fifo_out_almostfull), ('fifoout_empty', fifo_out_empty),
-                   ('wr_fifoout_en', wr_fifo_out_en), ('wr_fifoout_data', wr_fifo_out_data), ('done', done)]
-        else:
-            wr_fifo_out = m.Reg("wr_fifo_out")
-            flag_pass = m.Reg('flag_pass')
-            m.Always(Posedge(clk))(
-                If(rst)(
-                    read_data_en(Int(0, 1, 2)),
-                    wr_fifo_out(Int(0, 1, 2)),
-                    flag_pass(Int(1, 1, 2))
-                ).Elif(start)(
-                    read_data_en(Int(0, 1, 2)),
-                    wr_fifo_out(Int(0, 1, 2)),
-                    If(has_data)(
-                        If(has_lst3_data)(
-                            If(flag_pass)(
-                                flag_pass(Int(0, 1, 2)),
-                                read_data_en(Int(1, 1, 2))
-                            ).Else(
-                                flag_pass(Int(1, 1, 2))
-                            )
-                        ).Else(
-                            read_data_en(Int(1, 1, 2))
-                        )
-                    ),
-                    If(read_data_en)(
-                        wr_fifo_out(Int(1, 1, 2))
-                    )
+        control_arbiter = self.create_control_arbiter(num_units)
+        m.Instance(control_arbiter, 'control_arbiter', control_arbiter.get_params(), con)
+        mux_wr_fifo_out = self.create_mux(num_units, data_out_width)
+        con = []
+        for i in range(num_units):
+            con.append(('in%d' % i, ports_in.get('din%d' % i)))
+        con.append(('s', mux_control))
+        con.append(('out', mux_data_out))
+        m.Instance(mux_wr_fifo_out, 'mux_wr_fifo_out', [('WIDTH', data_out_width)], con)
 
-                )
-            )
-            control_fifo_out = self.create_control_fifo_out(data_width, num_units)
-            con = [('clk', clk), ('rst', rst), ('start', start), ('num_data_out', num_data_out),
-                   ('task_done', task_done),
-                   ('wr_en', wr_fifo_out), ('wr_data', ports_in.get('din0')), ('fifoout_full', fifo_out_full),
-                   ('fifoout_almostfull', fifo_out_almostfull), ('fifoout_empty', fifo_out_empty),
-                   ('wr_fifoout_en', wr_fifo_out_en), ('wr_fifoout_data', wr_fifo_out_data), ('done', done)]
-
+        control_fifo_out = self.create_control_fifo_out(data_out_width, num_units)
+        con = [('clk', clk), ('rst', rst), ('start', start), ('num_data_out', num_data_out),
+               ('task_done', task_done),
+               ('wr_en', wr_fifo_out), ('wr_data', mux_data_out), ('fifoout_full', fifo_out_full),
+               ('fifoout_almostfull', fifo_out_almostfull), ('fifoout_empty', fifo_out_empty),
+               ('wr_fifoout_en', wr_fifo_out_en), ('wr_fifoout_data', wr_fifo_out_data), ('done', done)]
+        control_fifo_out = self.create_control_fifo_out(data_out_width, num_units)
+        con = [('clk', clk), ('rst', rst), ('start', start), ('num_data_out', num_data_out),
+               ('task_done', task_done),
+               ('wr_en', wr_fifo_out), ('wr_data', ports_in.get('din0')), ('fifoout_full', fifo_out_full),
+               ('fifoout_almostfull', fifo_out_almostfull), ('fifoout_empty', fifo_out_empty),
+               ('wr_fifoout_en', wr_fifo_out_en), ('wr_fifoout_data', wr_fifo_out_data), ('done', done)]
         m.Instance(control_fifo_out, 'control_fifo_out', control_fifo_out.get_params(), con)
-
+        '''
         initialize_regs(m)
         self.cache[name] = m
+
         return m
 
-    #Código legado
+    # Código legado
     def create_gnr_harp(self, num_units, functions, fifo_in_size, fifo_out_size):
         name = 'gnr_harp'
         if name in self.cache.keys():

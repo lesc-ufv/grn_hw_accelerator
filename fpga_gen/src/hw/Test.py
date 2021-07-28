@@ -1,5 +1,5 @@
-from src.hw.gnr_components import GnrComponents
-from src.hw.utils import readFile
+from fpga_gen.src.hw.gnr_components import GnrComponents
+from fpga_gen.src.hw.utils import readFile
 
 path = '../../benchmarks/Benchmark_5.txt'
 functions = readFile(path)
