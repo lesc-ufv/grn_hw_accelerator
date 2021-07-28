@@ -3,6 +3,7 @@
 **/*.idea
 **/*.vscode
 **/*.env
+**/*.v
 **/*test
 **/*venv
 **/*build

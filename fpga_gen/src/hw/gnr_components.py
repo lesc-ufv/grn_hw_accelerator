@@ -1325,6 +1325,7 @@ class GnrComponents:
         self.cache[name] = m
         return m
 
+    #Código legado
     def create_gnr_harp(self, num_units, functions, fifo_in_size, fifo_out_size):
         name = 'gnr_harp'
         if name in self.cache.keys():
