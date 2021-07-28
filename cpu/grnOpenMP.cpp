@@ -70,7 +70,7 @@ void runGNR(int inicio, int fim, unsigned int * period_vet, unsigned int * trans
         period--;
         period_vet[i] = period;
         transient_vet[i] = transient;
-        printf("%d: P: %d T: %d\n",i,period,transient);
+        printf("%lld: P: %u T: %u\n",i,period,transient);
         period = 0;
         transient = 0;
     }
