@@ -27,18 +27,18 @@ def writeCpp(filename, data):
     return
 
 def main():
+    key_words = {"and", "or", "not", "(", ")", "=", ""}
+    
     filename_in = sys.argv[1]
-
-    type_words = {"and", "or", "not", "(", ")", "=", ""}
     lines = readInput(filename_in)
     
     all_words = []
     for l in lines:
         for w in l.split(' '):
-            if w not in type_words:
+            if w not in key_words:
                 all_words.append(w.lower())
     
-    all_words = list(set(all_words))
+    all_words = sorted(list(set(all_words)))
 
     replace_dict = {
         "and":"&&", 
