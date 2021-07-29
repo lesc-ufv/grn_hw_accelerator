@@ -75,6 +75,7 @@ module gnr_aws_8
   output gnr_done
 );
 
+  wire data_in_valid;
   wire control_data_in_done;
   wire [88-1:0] data_out0;
   wire [88-1:0] data_out1;
@@ -85,7 +86,6 @@ module gnr_aws_8
   wire [88-1:0] data_out6;
   wire [88-1:0] data_out7;
   wire [32-1:0] data_in;
-  wire data_in_valid;
   wire [8-1:0] read_data_en;
   wire [8-1:0] has_data;
   wire [8-1:0] has_lst3_data;
@@ -267,6 +267,36 @@ module gnr_aws_8
   );
 
 
+  control_data_out
+  control_data_out
+  (
+    .clk(clk),
+    .rst(rst),
+    .start(start),
+    .gnr_done_wr_data(gnr_done_wr_data),
+    .gnr_available_write(gnr_available_write),
+    .gnr_request_write(gnr_request_write),
+    .gnr_write_data(gnr_write_data),
+    .din0(data_out0),
+    .din1(data_out1),
+    .din2(data_out2),
+    .din3(data_out3),
+    .din4(data_out4),
+    .din5(data_out5),
+    .din6(data_out6),
+    .din7(data_out7),
+    .read_data_en(read_data_en),
+    .task_done(task_done),
+    .done(gnr_done)
+  );
+
+
+  initial begin
+    $dumpfile("uut.vcd");
+    $dumpvars(0, "gnr_aws");
+  end
+
+
 endmodule
 
 
@@ -410,6 +440,28 @@ module regulator_network #
   );
 
 
+  fifo
+  #(
+    .FIFO_WIDTH(88),
+    .FIFO_DEPTH_BITS(3),
+    .FIFO_ALMOSTFULL_THRESHOLD(6),
+    .FIFO_ALMOSTEMPTY_THRESHOLD(2)
+  )
+  fifo_out
+  (
+    .clk(clk),
+    .rst(rst),
+    .we(fifo_out_we),
+    .din(fifo_out_data_in),
+    .re(read_data_en),
+    .dout(data_out),
+    .empty(fifo_out_empty),
+    .almostempty(has_lst3_data_out),
+    .full(fifo_out_full),
+    .almostfull(fifo_out_full_almostfull)
+  );
+
+
   control_gnr
   #(
     .ID(ID)
@@ -469,20 +521,20 @@ module control_fifo_data_in #
   input fifo_in_full,
   input fifo_in_amostfull,
   output reg fifo_in_we,
-  output reg [31-1:0] fifo_in_data
+  output reg [16-1:0] fifo_in_data
 );
 
 
   always @(posedge clk) begin
     if(rst) begin
       fifo_in_we <= 1'b0;
-      fifo_in_data <= 31'd0;
+      fifo_in_data <= 16'd0;
     end else begin
       if(start) begin
         fifo_in_we <= 1'b0;
-        if(data_in_valid && (data_in[0:0] == ID) && ~fifo_in_full) begin
+        if(data_in_valid && (data_in[31:16] == ID) && ~fifo_in_full) begin
           fifo_in_we <= 1'b1;
-          fifo_in_data <= data_in[31:1];
+          fifo_in_data <= data_in[15:0];
         end 
       end 
     end
@@ -1344,6 +1396,415 @@ endmodule
 
 
 
+module control_data_out
+(
+  input clk,
+  input rst,
+  input start,
+  input gnr_done_wr_data,
+  input gnr_available_write,
+  output gnr_request_write,
+  output [88-1:0] gnr_write_data,
+  input [1-1:0] has_data,
+  input [1-1:0] has_lst3_data,
+  input [88-1:0] din0,
+  input [1-1:0] task_done,
+  output done,
+  output reg [1-1:0] read_data_en
+);
+
+
+endmodule
+
+
+
+module control_arbiter
+(
+  input clk,
+  input rst,
+  input start,
+  input [8-1:0] has_data_out,
+  input [8-1:0] has_lst3_data,
+  input gnr_available_write,
+  output reg [8-1:0] read_data_en,
+  output reg wr_fifo_out,
+  output reg [3-1:0] mux_control
+);
+
+  localparam FSM_IDLE = 0;
+  localparam FSM_RD_REQ = 1;
+  localparam FSM_WR_REQ = 2;
+  reg [3-1:0] fsm_state;
+  reg [8-1:0] request;
+  reg [3-1:0] grant_index_reg;
+  wire [8-1:0] grant;
+  wire [3-1:0] grant_index;
+  wire grant_valid;
+
+  arbiter
+  #(
+    .PORTS(8),
+    .TYPE("ROUND_ROBIN"),
+    .BLOCK("NONE"),
+    .LSB_PRIORITY("LOW")
+  )
+  arbiter_inst
+  (
+    .clk(clk),
+    .rst(rst),
+    .request(request),
+    .acknowledge(8'd0),
+    .grant(grant),
+    .grant_valid(grant_valid),
+    .grant_encoded(grant_index)
+  );
+
+
+  always @(posedge clk) begin
+    if(rst) begin
+      fsm_state <= FSM_IDLE;
+      request <= 8'd0;
+      read_data_en <= 1'b0;
+      grant_index_reg <= 3'd0;
+      wr_fifo_out <= 1'b0;
+      mux_control <= 3'd0;
+    end else begin
+      if(start) begin
+        request <= 8'd0;
+        read_data_en <= 1'b0;
+        wr_fifo_out <= 1'b0;
+        mux_control <= 3'd0;
+        case(fsm_state)
+          FSM_IDLE: begin
+            if(|has_data_out && gnr_available_write) begin
+              request <= has_data_out;
+              fsm_state <= FSM_RD_REQ;
+            end 
+          end
+          FSM_RD_REQ: begin
+            if(grant_valid) begin
+              read_data_en <= grant;
+              grant_index_reg <= grant_index;
+              fsm_state <= FSM_WR_REQ;
+            end 
+          end
+          FSM_WR_REQ: begin
+            wr_fifo_out <= 1'b1;
+            mux_control <= grant_index_reg;
+            fsm_state <= FSM_IDLE;
+          end
+        endcase
+      end 
+    end
+  end
+
+
+  initial begin
+    read_data_en = 0;
+    wr_fifo_out = 0;
+    mux_control = 0;
+    fsm_state = 0;
+    request = 0;
+    grant_index_reg = 0;
+  end
+
+
+endmodule
+
+
+
+module arbiter #
+(
+  parameter PORTS = 4,
+  parameter TYPE = "ROUND_ROBIN",
+  parameter BLOCK = "NONE",
+  parameter LSB_PRIORITY = "LOW"
+)
+(
+  input clk,
+  input rst,
+  input [PORTS-1:0] request,
+  input [PORTS-1:0] acknowledge,
+  output [PORTS-1:0] grant,
+  output grant_valid,
+  output [$clog2(PORTS)-1:0] grant_encoded
+);
+
+  reg [PORTS-1:0] grant_reg;
+  reg [PORTS-1:0] grant_next;
+  reg grant_valid_reg;
+  reg grant_valid_next;
+  reg [$clog2(PORTS)-1:0] grant_encoded_reg;
+  reg [$clog2(PORTS)-1:0] grant_encoded_next;
+  assign grant_valid = grant_valid_reg;
+  assign grant = grant_reg;
+  assign grant_encoded = grant_encoded_reg;
+  wire request_valid;
+  wire [$clog2(PORTS)-1:0] request_index;
+  wire [PORTS-1:0] request_mask;
+
+  priority_encoder
+  #(
+    .WIDTH(PORTS),
+    .LSB_PRIORITY(LSB_PRIORITY)
+  )
+  priority_encoder_inst
+  (
+    .input_unencoded(request),
+    .output_valid(request_valid),
+    .output_encoded(request_index),
+    .output_unencoded(request_mask)
+  );
+
+  reg [PORTS-1:0] mask_reg;
+  reg [PORTS-1:0] mask_next;
+  wire masked_request_valid;
+  wire [$clog2(PORTS)-1:0] masked_request_index;
+  wire [PORTS-1:0] masked_request_mask;
+
+  priority_encoder
+  #(
+    .WIDTH(PORTS),
+    .LSB_PRIORITY(LSB_PRIORITY)
+  )
+  priority_encoder_masked
+  (
+    .input_unencoded(request & mask_reg),
+    .output_valid(masked_request_valid),
+    .output_encoded(masked_request_index),
+    .output_unencoded(masked_request_mask)
+  );
+
+
+  always @(*) begin
+    grant_next = 0;
+    grant_valid_next = 0;
+    grant_encoded_next = 0;
+    mask_next = mask_reg;
+    if((BLOCK == "REQUEST") && grant_reg & request) begin
+      grant_valid_next = grant_valid_reg;
+      grant_next = grant_reg;
+      grant_encoded_next = grant_encoded_reg;
+    end else if((BLOCK == "ACKNOWLEDGE") && grant_valid && !(grant_reg & acknowledge)) begin
+      grant_valid_next = grant_valid_reg;
+      grant_next = grant_reg;
+      grant_encoded_next = grant_encoded_reg;
+    end else if(request_valid) begin
+      if(TYPE == "PRIORITY") begin
+        grant_valid_next = 1;
+        grant_next = request_mask;
+        grant_encoded_next = request_index;
+      end else if(TYPE == "ROUND_ROBIN") begin
+        if(masked_request_valid) begin
+          grant_valid_next = 1;
+          grant_next = masked_request_mask;
+          grant_encoded_next = masked_request_index;
+          if(LSB_PRIORITY == "LOW") begin
+            mask_next = {PORTS{1'b1}} >> (PORTS - masked_request_index);
+          end else begin
+            mask_next = {PORTS{1'b1}} << (masked_request_index + 1);
+          end
+        end else begin
+          grant_valid_next = 1;
+          grant_next = request_mask;
+          grant_encoded_next = request_index;
+          if(LSB_PRIORITY == "LOW") begin
+            mask_next = {PORTS{1'b1}} >> (PORTS - request_index);
+          end else begin
+            mask_next = {PORTS{1'b1}} << (request_index + 1);
+          end
+        end
+      end 
+    end 
+  end
+
+
+  always @(posedge clk) begin
+    if(rst) begin
+      grant_reg <= 0;
+      grant_valid_reg <= 0;
+      grant_encoded_reg <= 0;
+      mask_reg <= 0;
+    end else begin
+      grant_reg <= grant_next;
+      grant_valid_reg <= grant_valid_next;
+      grant_encoded_reg <= grant_encoded_next;
+      mask_reg <= mask_next;
+    end
+  end
+
+
+  initial begin
+    grant_reg = 0;
+    grant_next = 0;
+    grant_valid_reg = 0;
+    grant_valid_next = 0;
+    grant_encoded_reg = 0;
+    grant_encoded_next = 0;
+    mask_reg = 0;
+    mask_next = 0;
+  end
+
+
+endmodule
+
+
+
+module priority_encoder #
+(
+  parameter WIDTH = 4,
+  parameter LSB_PRIORITY = "LOW"
+)
+(
+  input [WIDTH-1:0] input_unencoded,
+  output [1-1:0] output_valid,
+  output [$clog2(WIDTH)-1:0] output_encoded,
+  output [WIDTH-1:0] output_unencoded
+);
+
+  localparam W1 = 2**$clog2(WIDTH);
+  localparam W2 = W1/2;
+
+  generate if(WIDTH == 2) begin : if_width
+    assign output_valid = input_unencoded[0] | input_unencoded[1];
+    if(LSB_PRIORITY == "LOW") begin : if_low
+      assign output_encoded = input_unencoded[1];
+    end else begin : else_low
+      assign output_encoded = ~input_unencoded[0];
+    end
+  end else begin : else_width
+    wire [$clog2(W2)-1:0] out1;
+    wire [$clog2(W2)-1:0] out2;
+    wire valid1;
+    wire valid2;
+    wire [WIDTH-1:0] out_un;
+    priority_encoder #(
+                        .WIDTH(W2),
+                        .LSB_PRIORITY(LSB_PRIORITY)
+                    )
+                    priority_encoder_inst1 (
+                        .input_unencoded(input_unencoded[W2-1:0]),
+                        .output_valid(valid1),
+                        .output_encoded(out1),
+                        .output_unencoded(out_un[W2-1:0])
+                    );
+                    priority_encoder #(
+                        .WIDTH(W2),
+                        .LSB_PRIORITY(LSB_PRIORITY)
+                    )
+                    priority_encoder_inst2 (
+                        .input_unencoded({{W1-WIDTH{1'b0}}, input_unencoded[WIDTH-1:W2]}),
+                        .output_valid(valid2),
+                        .output_encoded(out2),
+                        .output_unencoded(out_un[WIDTH-1:W2])
+                    );
+           assign output_valid = valid1 | valid2;
+                    if (LSB_PRIORITY == "LOW") begin
+                        assign output_encoded = valid2 ? {1'b1, out2} : {1'b0, out1};
+                    end else begin
+                        assign output_encoded = valid1 ? {1'b0, out1} : {1'b1, out2};
+                    end
+  end
+  endgenerate
+
+  assign output_unencoded = 1 << output_encoded;
+
+endmodule
+
+
+
+module mux8x1 #
+(
+  parameter WIDTH = 88
+)
+(
+  input [WIDTH-1:0] in0,
+  input [WIDTH-1:0] in1,
+  input [WIDTH-1:0] in2,
+  input [WIDTH-1:0] in3,
+  input [WIDTH-1:0] in4,
+  input [WIDTH-1:0] in5,
+  input [WIDTH-1:0] in6,
+  input [WIDTH-1:0] in7,
+  input [3-1:0] s,
+  output [WIDTH-1:0] out
+);
+
+  wire [WIDTH-1:0] ins [0:8-1];
+  assign ins[0] = in0;
+  assign ins[1] = in1;
+  assign ins[2] = in2;
+  assign ins[3] = in3;
+  assign ins[4] = in4;
+  assign ins[5] = in5;
+  assign ins[6] = in6;
+  assign ins[7] = in7;
+  assign out = ins[s];
+
+endmodule
+
+
+
+module control_fifo_out
+(
+  input clk,
+  input rst,
+  input start,
+  input [8-1:0] task_done,
+  input wr_en,
+  input [88-1:0] wr_data,
+  input gnr_available_write,
+  input gnr_done_wr_data,
+  output reg gnr_request_write,
+  output reg [512-1:0] gnr_write_data,
+  output reg done
+);
+
+  reg [3-1:0] count_empty;
+  reg [2-1:0] fms_cs;
+  localparam [2-1:0] FSM_FIFO_WR0 = 0;
+  localparam [2-1:0] FSM_DONE = 1;
+
+  always @(posedge clk) begin
+    if(rst) begin
+      fms_cs <= FSM_FIFO_WR0;
+      gnr_request_write <= 0;
+      done <= 0;
+      count_empty <= 0;
+    end else begin
+      if(start) begin
+        gnr_request_write <= 0;
+        case(fms_cs)
+          FSM_FIFO_WR0: begin
+            if(wr_en) begin
+              gnr_write_data <= wr_data;
+              gnr_request_write <= 1;
+            end else if(&task_done && gnr_done_wr_data) begin
+              fms_cs <= FSM_DONE;
+            end 
+          end
+        endcase
+        FSM_DONE: begin
+          done <= 1;
+        end
+      end 
+    end
+  end
+
+
+  initial begin
+    gnr_request_write = 0;
+    gnr_write_data = 0;
+    done = 0;
+    count_empty = 0;
+    fms_cs = 0;
+  end
+
+
+endmodule
+
+
+
 module gnr_aws_1
 (
   input clk,
@@ -1360,10 +1821,10 @@ module gnr_aws_1
   output gnr_done
 );
 
+  wire data_in_valid;
   wire control_data_in_done;
   wire [88-1:0] data_out0;
   wire [32-1:0] data_in;
-  wire data_in_valid;
   wire [1-1:0] read_data_en;
   wire [1-1:0] has_data;
   wire [1-1:0] has_lst3_data;
@@ -1403,6 +1864,29 @@ module gnr_aws_1
     .data_out(data_out0),
     .task_done(task_done[0])
   );
+
+
+  control_data_out
+  control_data_out
+  (
+    .clk(clk),
+    .rst(rst),
+    .start(start),
+    .gnr_done_wr_data(gnr_done_wr_data),
+    .gnr_available_write(gnr_available_write),
+    .gnr_request_write(gnr_request_write),
+    .gnr_write_data(gnr_write_data),
+    .din0(data_out0),
+    .read_data_en(read_data_en),
+    .task_done(task_done),
+    .done(gnr_done)
+  );
+
+
+  initial begin
+    $dumpfile("uut.vcd");
+    $dumpvars(0, "gnr_aws");
+  end
 
 
 endmodule

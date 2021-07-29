@@ -47,6 +47,7 @@ class GnrAws:
 
         gnr_done = m.Output('gnr_done')
 
+        data_in_valid = m.Wire('data_in_valid')
         control_data_in_done = m.Wire('control_data_in_done')
 
         data_out = []
@@ -54,7 +55,6 @@ class GnrAws:
             data_out.append(m.Wire('data_out%d' % i, self.data_out_width))
 
         data_in = m.Wire('data_in', self.data_in_width)
-        data_in_valid = m.Wire('data_in_valid')
         read_data_en = m.Wire('read_data_en', self.copies)
         has_data = m.Wire('has_data', self.copies)
         has_lst3_data = m.Wire('has_lst3_data', self.copies)
@@ -78,20 +78,20 @@ class GnrAws:
                    ('task_done', task_done[i])]
             m.Instance(rn, 'rn%d' % i, [('ID', i + 1)], con)
 
-        # control_data_out = gnr_components.create_control_data_out(self.copies, self.data_out_width)
-        # con = [('clk', clk), ('rst', rst), ('start', start), ('gnr_done_wr_data', gnr_done_wr_data),
-        #       ('gnr_available_write', gnr_available_write), ('gnr_request_write', gnr_request_write),
-        #       ('gnr_write_data', gnr_write_data)]
-        # for i in range(self.copies):
-        #    con.append(('din%d' % i, data_out[i]))
+        control_data_out = gnr_components.create_control_data_out(self.copies, self.data_out_width)
+        con = [('clk', clk), ('rst', rst), ('start', start), ('gnr_done_wr_data', gnr_done_wr_data),
+               ('gnr_available_write', gnr_available_write), ('gnr_request_write', gnr_request_write),
+               ('gnr_write_data', gnr_write_data)]
+        for i in range(self.copies):
+            con.append(('din%d' % i, data_out[i]))
 
-        # for pair in [('read_data_en', read_data_en), ('task_done', task_done), ('wr_fifo_out_en', wr_fifoout_en),
-        #             ('wr_fifo_out_data', wr_fifoout_data), ('done', done)]:
-        #    con.append(pair)
+        con.append(('read_data_en', read_data_en))
+        con.append(('task_done', task_done))
+        con.append(('done', gnr_done))
 
-        # m.Instance(control_data_out, 'control_data_out', control_data_out.get_params(), con)
+        m.Instance(control_data_out, 'control_data_out', control_data_out.get_params(), con)
 
-        # simulation.setup_waveform(m, 'gnr_harp')
+        simulation.setup_waveform(m, 'gnr_aws')
 
         # initialize_regs(m)
 
