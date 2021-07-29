@@ -84,7 +84,7 @@ class GrnAccelerator:
             num_redes = num_redes - self.grn_copies_per_network
         return m
 
-path = '../../../benchmarks/Benchmark_5.txt'
+#path = '../../../benchmarks/Benchmark_5.txt'
 
-acc = GrnAccelerator(9, path)
-acc.get().to_verilog('./Benchmark_5.v')
+#acc = GrnAccelerator(9, path)
+#acc.get().to_verilog('./Benchmark_5.v')

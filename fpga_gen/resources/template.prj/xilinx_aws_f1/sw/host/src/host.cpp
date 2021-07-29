@@ -13,9 +13,14 @@ int main(int argc, char *argv[]){
        
     auto grn_acc = GrnFpga(NUM_CHANNELS,NUM_CHANNELS);
     grn_acc.fpga_init(binaryFile, kernel_name);
-        
+    
+    //create inputs and put the data
+    //create outputs
+    
     grn_acc.execute();
-        
+    
+    //print the outputs
+    
     grn_acc.print_report();
     
     grn_acc.cleanup();

@@ -33,7 +33,10 @@ class GrnComponents:
         start_s1 = m.Input('start_s1')
         init_state = m.Input('init_state')
         ops = {'and': ' & ', 'or': ' | ', 'not': ' ~ ', 'xor': ' ^ ', 'nor': ' ~| ', 'nand': ' ~& ', 'xnor': ' ~^ '}
-
+        
+        if not '=' in funcao:
+            funcao = funcao + '=' + funcao
+        
         funcao_orig = funcao
         funcao = re.sub(u'[()]', '', funcao)
         funcao = funcao.split("=")[1].split(" ")
