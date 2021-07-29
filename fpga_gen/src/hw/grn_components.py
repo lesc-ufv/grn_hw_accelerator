@@ -447,12 +447,12 @@ class GrnComponents:
                                 start_s0(Int(0, 1, 2)),
                                 start_s1(Int(0, 1, 2)),
                                 state(CALC_PERIOD_ATTRACTOR),
-                                #  Display("%d: FIND_ATTRACTOR -> CALC_PERIOD_ATTRACTOR: %x %x", clk_count, s0, s1)
+                                #Display("%d: FIND_ATTRACTOR -> CALC_PERIOD_ATTRACTOR: %x %x", clk_count, s0, s1)
 
                             ).Else(
                                 start_count_transient(Int(1, 1, 2)),
                                 state(FIND_ATTRACTOR),
-                                #   Display("%d: FIND_ATTRACTOR -> FIND_ATTRACTOR: %x %x", clk_count, s0, s1)
+                                #Display("%d: FIND_ATTRACTOR -> FIND_ATTRACTOR: %x %x", clk_count, s0, s1)
                             )
                         ).Else(
                             pass_cycle_attractor(Int(1, 1, 2))
