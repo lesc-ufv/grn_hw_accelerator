@@ -18,7 +18,7 @@ GrnFpga::GrnFpga(int num_inputs, int num_outputs):m_input_buffer(num_inputs),
     memset(m_output_size_bytes, 0, sizeof(size_t) * num_outputs);
 }
 
-int GrnFpga::cgra_fpga_init(std::string &binary_file, std::string kernel_name){
+int GrnFpga::fpga_init(std::string &binary_file, std::string kernel_name){
 
   TIMER_START(INIT_TIMER_ID);   
   cl_int err;
@@ -61,7 +61,7 @@ int GrnFpga::cgra_fpga_init(std::string &binary_file, std::string kernel_name){
     
 }
 
-void * GrnFpga::cgra_allocate_mem_align(size_t size){
+void * GrnFpga::allocate_mem_align(size_t size){
     
     void *ptr;
     if( posix_memalign((void**)&ptr,4096,size) == 0){
@@ -72,7 +72,7 @@ void * GrnFpga::cgra_allocate_mem_align(size_t size){
 
 void GrnFpga::createInputQueue(int input_id, size_t size){
     if(input_id >= 0 && input_id < m_num_inputs){
-        m_inputs_ptr[input_id] = cgra_allocate_mem_align(size);
+        m_inputs_ptr[input_id] = allocate_mem_align(size);
         m_input_size_bytes[input_id] = size;
         OCL_CHECK(err,
                   m_input_buffer[input_id] = cl::Buffer(m_context,
@@ -91,7 +91,7 @@ void * GrnFpga::getInputQueue(int input_id){
   
 void GrnFpga::createOutputQueue(int output_id, size_t size){
     if(output_id >= 0 && output_id < m_num_outputs){
-        m_outputs_ptr[output_id] = cgra_allocate_mem_align(size);
+        m_outputs_ptr[output_id] = allocate_mem_align(size);
         m_output_size_bytes[output_id] = size;
         
         OCL_CHECK(err,
@@ -110,7 +110,7 @@ void * GrnFpga::getOutputQueue(int output_id){
     return nullptr; 
 }
 
-void GrnFpga::cgra_set_args(){
+void GrnFpga::set_args(){
     
     int id = m_num_inputs + m_num_outputs;
     for(int i = 0; i < m_num_inputs;++i){
@@ -132,11 +132,11 @@ void GrnFpga::cgra_set_args(){
     }
 }
 
-int GrnFpga::cgra_execute(){
+int GrnFpga::execute(){
   
     TIMER_START(TOTAL_EXE_TIMER_ID);
     {
-        cgra_set_args();
+        set_args();
         TIMER_START(DATA_CPY_HtoD);
         {
             // Copy input data to device global memory

@@ -45,12 +45,15 @@ def create_project(GRN_root, grn_file, copies, name, output_path):
     m = acc_axi.create_kernel_top(name)
     m.to_verilog(hw_path + 'src/%s.v' % (name))
 
+    num_channels = '#define NUM_CHANNELS %d'% grnacc.get_num_in()
     num_axis_str = 'NUM_M_AXIS=%d' % grnacc.get_num_in()
     conn_str = acc_axi.get_connectivity_config(name)
+    
 
     write_file(hw_path + 'simulate/num_m_axis.mk', num_axis_str)
     write_file(hw_path + 'synthesis/num_m_axis.mk', num_axis_str)
     write_file(sw_path + 'host/prj_name', name)
+    write_file(sw_path + 'host/include/num_channels.h',num_channels)
     write_file(hw_path + 'simulate/prj_name', name)
     write_file(hw_path + 'synthesis/prj_name', name)
     write_file(hw_path + 'simulate/vitis_config.txt', conn_str)
