@@ -6,7 +6,7 @@ from veriloggen import Uand
 from fpga_gen.src.hw.utils import initialize_regs
 
 
-class GnrComponents:
+class GrnComponents:
     _instance = None
 
     def __new__(cls):
@@ -306,8 +306,8 @@ class GnrComponents:
         self.cache[name] = m
         return m
 
-    def create_control_gnr(self, number_nos, debug=False):
-        name = 'control_gnr'
+    def create_control_grn(self, number_nos, debug=False):
+        name = 'control_grn'
         if name in self.cache.keys():
             return self.cache[name]
 
@@ -623,7 +623,7 @@ class GnrComponents:
                  ('FIFO_ALMOSTEMPTY_THRESHOLD', 2)]
         m.Instance(fifo, 'fifo_out', param, con)
 
-        control = self.create_control_gnr(len(functions))
+        control = self.create_control_grn(len(functions))
         con = [('clk', clk), ('rst', rst), ('start', start), ('s0', s0), ('s1', s1), ('fifo_out_full', fifo_out_full),
                ('fifo_in_empty', fifo_in_empty), ('fifo_data_in', fifo_in_data_out), ('end_data_in', end_data_in),
                ('fifo_in_re', fifo_in_re),
@@ -631,7 +631,7 @@ class GnrComponents:
                ('data_out', fifo_out_data_in), ('fifo_out_we', fifo_out_we), ('fifo_out_empty', fifo_out_empty),
                ('done', task_done)]
 
-        m.Instance(control, 'control_gnr', control.get_params(), con)
+        m.Instance(control, 'control_grn', control.get_params(), con)
 
         graph = self.create_graph(functions)
         m.Instance(graph, 'network_graph', graph.get_params(), graph.get_ports())
@@ -649,10 +649,10 @@ class GnrComponents:
         clk = m.Input('clk')
         rst = m.Input('rst')
         start = m.Input('start')
-        gnr_read_data_valid = m.Input('gnr_read_data_valid')
-        gnr_read_data = m.Input('gnr_read_data', data_in_width)
-        gnr_done_rd_data = m.Input('gnr_done_rd_data')
-        gnr_request_read = m.OutputReg('gnr_request_read')
+        grn_read_data_valid = m.Input('grn_read_data_valid')
+        grn_read_data = m.Input('grn_read_data', data_in_width)
+        grn_done_rd_data = m.Input('grn_done_rd_data')
+        grn_request_read = m.OutputReg('grn_request_read')
         data_valid = m.OutputReg('data_valid')
         data_out = m.OutputReg('data_out', data_in_width)
         done = m.OutputReg('done')
@@ -663,20 +663,20 @@ class GnrComponents:
 
         m.Always(Posedge(clk))(
             If(rst)(
-                gnr_request_read(0),
+                grn_request_read(0),
                 done(0),
                 data_valid(0),
                 fsm_cs(FSM_SEND_DATA),
             ).Elif(start)(
                 data_valid(0),
-                gnr_request_read(0),
+                grn_request_read(0),
                 Case(fsm_cs)(
                     When(FSM_SEND_DATA)(
-                        If(gnr_done_rd_data)(
+                        If(grn_done_rd_data)(
                             fsm_cs(FSM_DONE),
-                        ).Elif(gnr_read_data_valid)(
-                            data_out(gnr_read_data),
-                            gnr_request_read(1),
+                        ).Elif(grn_read_data_valid)(
+                            data_out(grn_read_data),
+                            grn_request_read(1),
                         ),
                     ),
                     When(FSM_DONE)(
@@ -908,7 +908,7 @@ class GnrComponents:
 
         has_data_out = m.Input('has_data_out', num_units)
         has_lst3_data = m.Input('has_lst3_data', num_units)
-        gnr_available_write = m.Input('gnr_available_write')
+        grn_available_write = m.Input('grn_available_write')
 
         read_data_en = m.OutputReg('read_data_en', num_units)
         wr_fifo_out = m.OutputReg('wr_fifo_out')
@@ -948,7 +948,7 @@ class GnrComponents:
                 mux_control(Int(0, mux_control.width, 10)),
                 Case(fsm_state)(
                     When(FSM_IDLE)(
-                        If(AndList(Uor(has_data_out), gnr_available_write))(
+                        If(AndList(Uor(has_data_out), grn_available_write))(
                             request(has_data_out),
                             fsm_state(FSM_RD_REQ)
                         )
@@ -986,10 +986,10 @@ class GnrComponents:
         wr_en = m.Input('wr_en')
         wr_data = m.Input('wr_data', data_out_width)
 
-        gnr_available_write = m.Input('gnr_available_write')
-        gnr_done_wr_data = m.Input('gnr_done_wr_data')
-        gnr_request_write = m.OutputReg('gnr_request_write')
-        gnr_write_data = m.OutputReg('gnr_write_data', 512)
+        grn_available_write = m.Input('grn_available_write')
+        grn_done_wr_data = m.Input('grn_done_wr_data')
+        grn_request_write = m.OutputReg('grn_request_write')
+        grn_write_data = m.OutputReg('grn_write_data', 512)
         done = m.OutputReg('done')
 
         count_empty = m.Reg('count_empty', 3)
@@ -1001,17 +1001,17 @@ class GnrComponents:
         m.Always(Posedge(clk))(
             If(rst)(
                 fsm_cs(FSM_FIFO_WR),
-                gnr_request_write(0),
+                grn_request_write(0),
                 done(0),
                 count_empty(0),
             ).Elif(start)(
-                gnr_request_write(0),
+                grn_request_write(0),
                 Case(fsm_cs)(
                     When(FSM_FIFO_WR)(
                         If(wr_en)(
-                            gnr_write_data(wr_data),
-                            gnr_request_write(1),
-                        ).Elif(AndList(Uand(task_done), gnr_done_wr_data))(
+                            grn_write_data(wr_data),
+                            grn_request_write(1),
+                        ).Elif(AndList(Uand(task_done), grn_done_wr_data))(
                             fsm_cs(FSM_DONE)
                         ),
                     ),
@@ -1036,11 +1036,11 @@ class GnrComponents:
         rst = m.Input('rst')
         start = m.Input('start')
 
-        gnr_done_wr_data = m.Input('gnr_done_wr_data')
+        grn_done_wr_data = m.Input('grn_done_wr_data')
 
-        gnr_available_write = m.Input('gnr_available_write')
-        gnr_request_write = m.Output('gnr_request_write')
-        gnr_write_data = m.Output('gnr_write_data', data_out_width)
+        grn_available_write = m.Input('grn_available_write')
+        grn_request_write = m.Output('grn_request_write')
+        grn_write_data = m.Output('grn_write_data', data_out_width)
 
         has_data = m.Input('has_data', num_units)
         has_lst3_data = m.Input('has_lst3_data', num_units)
@@ -1064,7 +1064,7 @@ class GnrComponents:
 
             control_arbiter = self.create_control_arbiter(num_units)
             con = [('clk', clk), ('rst', rst), ('start', start), ('has_data_out', has_data),
-                   ('has_lst3_data', has_lst3_data), ('gnr_available_write', gnr_available_write),
+                   ('has_lst3_data', has_lst3_data), ('grn_available_write', grn_available_write),
                    ('read_data_en', read_data_en), ('wr_fifo_out', wr_fifo_out),
                    ('mux_control', mux_control)]
             m.Instance(control_arbiter, 'control_arbiter', control_arbiter.get_params(), con)
@@ -1079,9 +1079,9 @@ class GnrComponents:
 
             control_fifo_out = self.create_control_fifo_out(data_out_width, num_units)
             con = [('clk', clk), ('rst', rst), ('start', start), ('task_done', task_done), ('wr_en', wr_fifo_out),
-                   ('wr_data', mux_data_out), ('gnr_available_write', gnr_available_write),
-                   ('gnr_done_wr_data', gnr_done_wr_data), ('gnr_request_write', gnr_request_write),
-                   ('gnr_write_data', gnr_write_data), ('done', done)]
+                   ('wr_data', mux_data_out), ('grn_available_write', grn_available_write),
+                   ('grn_done_wr_data', grn_done_wr_data), ('grn_request_write', grn_request_write),
+                   ('grn_write_data', grn_write_data), ('done', done)]
             m.Instance(control_fifo_out, 'control_fifo_out', control_fifo_out.get_params(), con)
         '''else:
             wr_fifo_out = m.Reg("wr_fifo_out")
@@ -1124,8 +1124,8 @@ class GnrComponents:
         return m
 
     # Código legado
-    def create_gnr_harp(self, num_units, functions, fifo_in_size, fifo_out_size):
-        name = 'gnr_harp'
+    def create_grn_harp(self, num_units, functions, fifo_in_size, fifo_out_size):
+        name = 'grn_harp'
         if name in self.cache.keys():
             return self.cache[name]
 
@@ -1144,7 +1144,7 @@ class GnrComponents:
             raise Exception('Número máximo de nós ultrapassado!')
 
         m = Module(name)
-        clk = m.Input('clk_gnr')
+        clk = m.Input('clk_grn')
         rst = m.Input('rst')
         start = m.Input('start')
         afu_context = m.Input('afu_context', 512)
@@ -1210,7 +1210,7 @@ class GnrComponents:
 
         m.Instance(control_data_out, 'control_data_out', control_data_out.get_params(), con)
 
-        simulation.setup_waveform(m, 'gnr_harp')
+        simulation.setup_waveform(m, 'grn_harp')
 
         initialize_regs(m)
         self.cache[name] = m

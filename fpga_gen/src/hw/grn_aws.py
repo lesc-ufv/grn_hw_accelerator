@@ -1,10 +1,9 @@
-import math
 from veriloggen import *
 
-from fpga_gen.src.hw.gnr_components import GnrComponents
+from fpga_gen.src.hw.grn_components import GrnComponents
 
 
-class GnrAws:
+class GrnAws:
     def __init__(self):
         self.cache = {}
 
@@ -19,14 +18,14 @@ class GnrAws:
         self.transient_width = transient_width
         self.atractor_width = atractor_width
         self.id_width = id_width
-        return self.__create_gnr_aws()
+        return self.__create_grn_aws()
 
-    def __create_gnr_aws(self):
-        name = 'gnr_aws_%d' % self.copies
+    def __create_grn_aws(self):
+        name = 'grn_aws_%d' % self.copies
         if name in self.cache.keys():
             return self.cache[name]
 
-        gnr_components = GnrComponents()
+        grn_components = GrnComponents()
 
         m = Module(name)
 
@@ -34,18 +33,18 @@ class GnrAws:
         rst = m.Input('rst')
         start = m.Input('start')
 
-        gnr_done_rd_data = m.Input('gnr_done_rd_data')
-        gnr_done_wr_data = m.Input('gnr_done_wr_data')
+        grn_done_rd_data = m.Input('grn_done_rd_data')
+        grn_done_wr_data = m.Input('grn_done_wr_data')
 
-        gnr_request_read = m.Output('gnr_request_read')
-        gnr_read_data_valid = m.Input('gnr_read_data_valid')
-        gnr_read_data = m.Input('gnr_read_data', self.data_in_width)
+        grn_request_read = m.Output('grn_request_read')
+        grn_read_data_valid = m.Input('grn_read_data_valid')
+        grn_read_data = m.Input('grn_read_data', self.data_in_width)
 
-        gnr_available_write = m.Input('gnr_available_write')
-        gnr_request_write = m.Output('gnr_request_write')
-        gnr_write_data = m.Output('gnr_write_data', self.data_out_width)
+        grn_available_write = m.Input('grn_available_write')
+        grn_request_write = m.Output('grn_request_write')
+        grn_write_data = m.Output('grn_write_data', self.data_out_width)
 
-        gnr_done = m.Output('gnr_done')
+        grn_done = m.Output('grn_done')
 
         data_in_valid = m.Wire('data_in_valid')
         control_data_in_done = m.Wire('control_data_in_done')
@@ -60,14 +59,14 @@ class GnrAws:
         has_lst3_data = m.Wire('has_lst3_data', self.copies)
         task_done = m.Wire('task_done', self.copies)
 
-        control_data_in = gnr_components.create_control_data_in(self.data_in_width)
-        con = [('clk', clk), ('rst', rst), ('start', start), ('gnr_read_data_valid', gnr_read_data_valid),
-               ('gnr_read_data', gnr_read_data), ('gnr_done_rd_data', gnr_done_rd_data),
-               ('gnr_request_read', gnr_request_read), ('data_valid', data_in_valid), ('data_out', data_in),
+        control_data_in = grn_components.create_control_data_in(self.data_in_width)
+        con = [('clk', clk), ('rst', rst), ('start', start), ('grn_read_data_valid', grn_read_data_valid),
+               ('grn_read_data', grn_read_data), ('grn_done_rd_data', grn_done_rd_data),
+               ('grn_request_read', grn_request_read), ('data_valid', data_in_valid), ('data_out', data_in),
                ('done', control_data_in_done)]
         m.Instance(control_data_in, 'control_data_in', control_data_in.get_params(), con)
 
-        rn = gnr_components.create_regulator_network(self.copies, self.functions, self.fifo_in_size, self.fifo_out_size,
+        rn = grn_components.create_regulator_network(self.copies, self.functions, self.fifo_in_size, self.fifo_out_size,
                                                      self.id_width, self.data_in_width, self.data_out_width)
         for i in range(self.copies):
             con = [('clk', clk), ('rst', rst), ('start', start), ('data_in_valid', data_in_valid), ('data_in', data_in),
@@ -78,20 +77,20 @@ class GnrAws:
                    ('task_done', task_done[i])]
             m.Instance(rn, 'rn%d' % i, [('ID', i + 1)], con)
 
-        control_data_out = gnr_components.create_control_data_out(self.copies, self.data_out_width)
-        con = [('clk', clk), ('rst', rst), ('start', start), ('gnr_done_wr_data', gnr_done_wr_data),
-               ('gnr_available_write', gnr_available_write), ('gnr_request_write', gnr_request_write),
-               ('gnr_write_data', gnr_write_data)]
+        control_data_out = grn_components.create_control_data_out(self.copies, self.data_out_width)
+        con = [('clk', clk), ('rst', rst), ('start', start), ('grn_done_wr_data', grn_done_wr_data),
+               ('grn_available_write', grn_available_write), ('grn_request_write', grn_request_write),
+               ('grn_write_data', grn_write_data)]
         for i in range(self.copies):
             con.append(('din%d' % i, data_out[i]))
 
         con.append(('read_data_en', read_data_en))
         con.append(('task_done', task_done))
-        con.append(('done', gnr_done))
+        con.append(('done', grn_done))
 
         m.Instance(control_data_out, 'control_data_out', control_data_out.get_params(), con)
 
-        simulation.setup_waveform(m, 'gnr_aws')
+        simulation.setup_waveform(m, 'grn_aws')
 
         # initialize_regs(m)
 

@@ -9,7 +9,7 @@ if not p in sys.path:
 
 from veriloggen import *
 
-from src.hw.gnr_accelerator_aws import GnrAccelerator
+from src.hw.grn_accelerator_aws import GrnAccelerator
 from src.hw.create_acc_axi_interface import AccAXIInterface
 from src.hw.utils import commands_getoutput
 
@@ -22,7 +22,7 @@ def write_file(name, string):
 
 def create_args():
     parser = argparse.ArgumentParser('create_project -h')
-    parser.add_argument('-g', '--gnr', help='GNR description file', type=str)
+    parser.add_argument('-g', '--grn', help='GRN description file', type=str)
     parser.add_argument('-c', '--copies', help='Number of copies', type=int)
     parser.add_argument('-n', '--name', help='Project name', type=str, default='a.prj')
     parser.add_argument('-o', '--output', help='Project location', type=str, default='.')
@@ -30,12 +30,12 @@ def create_args():
     return parser.parse_args()
 
 
-def create_project(GNR_root, grn_file, copies, name, output_path):
+def create_project(GRN_root, grn_file, copies, name, output_path):
     
-    gnracc = GnrAccelerator(copies,grn_file)
-    acc_axi = AccAXIInterface(gnracc)
+    grnacc = GrnAccelerator(copies, grn_file)
+    acc_axi = AccAXIInterface(grnacc)
 
-    template_path = GNR_root + '/resources/template.prj'
+    template_path = GRN_root + '/resources/template.prj'
     cmd = 'cp -r %s  %s/%s' % (template_path, output_path, name)
     commands_getoutput(cmd)
 
@@ -45,7 +45,7 @@ def create_project(GNR_root, grn_file, copies, name, output_path):
     m = acc_axi.create_kernel_top(name)
     m.to_verilog(hw_path + 'src/%s.v' % (name))
 
-    num_axis_str = 'NUM_M_AXIS=%d' % gnracc.get_num_in()
+    num_axis_str = 'NUM_M_AXIS=%d' % grnacc.get_num_in()
     conn_str = acc_axi.get_connectivity_config(name)
 
     write_file(hw_path + 'simulate/num_m_axis.mk', num_axis_str)
@@ -61,14 +61,14 @@ def main():
     args = create_args()
     running_path = os.getcwd()
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    GNR_root = os.getcwd()
+    GRN_root = os.getcwd()
 
     if args.output == '.':
         args.output = running_path
 
-    if args.gnr and args.copies:
-        args.gnr = running_path + '/' + args.gnr
-        create_project(GNR_root, args.gnr, args.copies , args.name, args.output)
+    if args.grn and args.copies:
+        args.grn = running_path + '/' + args.grn
+        create_project(GRN_root, args.grn, args.copies , args.name, args.output)
 
         print('Project successfully created in %s/%s' % (args.output, args.name))
     else:

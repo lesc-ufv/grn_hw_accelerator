@@ -1,6 +1,6 @@
 
 
-module gnr_acc
+module grn_acc
 (
   input clk,
   input rst,
@@ -16,42 +16,42 @@ module gnr_acc
   output acc_user_done
 );
 
-  wire [2-1:0] gnr_done;
-  assign acc_user_done = &gnr_done;
+  wire [2-1:0] grn_done;
+  assign acc_user_done = &grn_done;
 
-  gnr_aws_8
-  gnr_aws_8_0
+  grn_aws_8
+  grn_aws_8_0
   (
     .clk(clk),
     .rst(rst),
     .start(start),
-    .gnr_done_rd_data(acc_user_done_rd_data[0]),
-    .gnr_done_wr_data(acc_user_done_wr_data[0]),
-    .gnr_request_read(acc_user_request_read[0]),
-    .gnr_read_data_valid(acc_user_read_data_valid[0]),
-    .gnr_read_data(acc_user_read_data[31:0]),
-    .gnr_available_write(acc_user_available_write[0]),
-    .gnr_request_write(acc_user_request_write[0]),
-    .gnr_write_data(acc_user_write_data[87:0]),
-    .gnr_done(gnr_done[0])
+    .grn_done_rd_data(acc_user_done_rd_data[0]),
+    .grn_done_wr_data(acc_user_done_wr_data[0]),
+    .grn_request_read(acc_user_request_read[0]),
+    .grn_read_data_valid(acc_user_read_data_valid[0]),
+    .grn_read_data(acc_user_read_data[31:0]),
+    .grn_available_write(acc_user_available_write[0]),
+    .grn_request_write(acc_user_request_write[0]),
+    .grn_write_data(acc_user_write_data[87:0]),
+    .grn_done(grn_done[0])
   );
 
 
-  gnr_aws_1
-  gnr_aws_1_1
+  grn_aws_1
+  grn_aws_1_1
   (
     .clk(clk),
     .rst(rst),
     .start(start),
-    .gnr_done_rd_data(acc_user_done_rd_data[1]),
-    .gnr_done_wr_data(acc_user_done_wr_data[1]),
-    .gnr_request_read(acc_user_request_read[1]),
-    .gnr_read_data_valid(acc_user_read_data_valid[1]),
-    .gnr_read_data(acc_user_read_data[63:32]),
-    .gnr_available_write(acc_user_available_write[1]),
-    .gnr_request_write(acc_user_request_write[1]),
-    .gnr_write_data(acc_user_write_data[175:88]),
-    .gnr_done(gnr_done[1])
+    .grn_done_rd_data(acc_user_done_rd_data[1]),
+    .grn_done_wr_data(acc_user_done_wr_data[1]),
+    .grn_request_read(acc_user_request_read[1]),
+    .grn_read_data_valid(acc_user_read_data_valid[1]),
+    .grn_read_data(acc_user_read_data[63:32]),
+    .grn_available_write(acc_user_available_write[1]),
+    .grn_request_write(acc_user_request_write[1]),
+    .grn_write_data(acc_user_write_data[175:88]),
+    .grn_done(grn_done[1])
   );
 
 
@@ -59,20 +59,20 @@ endmodule
 
 
 
-module gnr_aws_8
+module grn_aws_8
 (
   input clk,
   input rst,
   input start,
-  input gnr_done_rd_data,
-  input gnr_done_wr_data,
-  output gnr_request_read,
-  input gnr_read_data_valid,
-  input [32-1:0] gnr_read_data,
-  input gnr_available_write,
-  output gnr_request_write,
-  output [88-1:0] gnr_write_data,
-  output gnr_done
+  input grn_done_rd_data,
+  input grn_done_wr_data,
+  output grn_request_read,
+  input grn_read_data_valid,
+  input [32-1:0] grn_read_data,
+  input grn_available_write,
+  output grn_request_write,
+  output [88-1:0] grn_write_data,
+  output grn_done
 );
 
   wire data_in_valid;
@@ -97,10 +97,10 @@ module gnr_aws_8
     .clk(clk),
     .rst(rst),
     .start(start),
-    .gnr_read_data_valid(gnr_read_data_valid),
-    .gnr_read_data(gnr_read_data),
-    .gnr_done_rd_data(gnr_done_rd_data),
-    .gnr_request_read(gnr_request_read),
+    .grn_read_data_valid(grn_read_data_valid),
+    .grn_read_data(grn_read_data),
+    .grn_done_rd_data(grn_done_rd_data),
+    .grn_request_read(grn_request_read),
     .data_valid(data_in_valid),
     .data_out(data_in),
     .done(control_data_in_done)
@@ -273,10 +273,10 @@ module gnr_aws_8
     .clk(clk),
     .rst(rst),
     .start(start),
-    .gnr_done_wr_data(gnr_done_wr_data),
-    .gnr_available_write(gnr_available_write),
-    .gnr_request_write(gnr_request_write),
-    .gnr_write_data(gnr_write_data),
+    .grn_done_wr_data(grn_done_wr_data),
+    .grn_available_write(grn_available_write),
+    .grn_request_write(grn_request_write),
+    .grn_write_data(grn_write_data),
     .din0(data_out0),
     .din1(data_out1),
     .din2(data_out2),
@@ -287,13 +287,13 @@ module gnr_aws_8
     .din7(data_out7),
     .read_data_en(read_data_en),
     .task_done(task_done),
-    .done(gnr_done)
+    .done(grn_done)
   );
 
 
   initial begin
     $dumpfile("uut.vcd");
-    $dumpvars(0, "gnr_aws");
+    $dumpvars(0, "grn_aws");
   end
 
 
@@ -306,10 +306,10 @@ module control_data_in
   input clk,
   input rst,
   input start,
-  input gnr_read_data_valid,
-  input [32-1:0] gnr_read_data,
-  input gnr_done_rd_data,
-  output reg gnr_request_read,
+  input grn_read_data_valid,
+  input [32-1:0] grn_read_data,
+  input grn_done_rd_data,
+  output reg grn_request_read,
   output reg data_valid,
   output reg [32-1:0] data_out,
   output reg done
@@ -321,21 +321,21 @@ module control_data_in
 
   always @(posedge clk) begin
     if(rst) begin
-      gnr_request_read <= 0;
+      grn_request_read <= 0;
       done <= 0;
       data_valid <= 0;
       fms_cs <= FSM_SEND_DATA;
     end else begin
       if(start) begin
         data_valid <= 0;
-        gnr_request_read <= 0;
+        grn_request_read <= 0;
         case(fms_cs)
           FSM_SEND_DATA: begin
-            if(gnr_done_rd_data) begin
+            if(grn_done_rd_data) begin
               fms_cs <= FSM_DONE;
-            end else if(gnr_read_data_valid) begin
-              data_out <= gnr_read_data;
-              gnr_request_read <= 1;
+            end else if(grn_read_data_valid) begin
+              data_out <= grn_read_data;
+              grn_request_read <= 1;
             end 
           end
           FSM_DONE: begin
@@ -348,7 +348,7 @@ module control_data_in
 
 
   initial begin
-    gnr_request_read = 0;
+    grn_request_read = 0;
     data_valid = 0;
     data_out = 0;
     done = 0;
@@ -462,11 +462,11 @@ module regulator_network #
   );
 
 
-  control_gnr
+  control_grn
   #(
     .ID(ID)
   )
-  control_gnr
+  control_grn
   (
     .clk(clk),
     .rst(rst),
@@ -662,7 +662,7 @@ endmodule
 
 
 
-module control_gnr #
+module control_grn #
 (
   parameter ID = 0
 )
@@ -1401,10 +1401,10 @@ module control_data_out
   input clk,
   input rst,
   input start,
-  input gnr_done_wr_data,
-  input gnr_available_write,
-  output gnr_request_write,
-  output [88-1:0] gnr_write_data,
+  input grn_done_wr_data,
+  input grn_available_write,
+  output grn_request_write,
+  output [88-1:0] grn_write_data,
   input [1-1:0] has_data,
   input [1-1:0] has_lst3_data,
   input [88-1:0] din0,
@@ -1425,7 +1425,7 @@ module control_arbiter
   input start,
   input [8-1:0] has_data_out,
   input [8-1:0] has_lst3_data,
-  input gnr_available_write,
+  input grn_available_write,
   output reg [8-1:0] read_data_en,
   output reg wr_fifo_out,
   output reg [3-1:0] mux_control
@@ -1476,7 +1476,7 @@ module control_arbiter
         mux_control <= 3'd0;
         case(fsm_state)
           FSM_IDLE: begin
-            if(|has_data_out && gnr_available_write) begin
+            if(|has_data_out && grn_available_write) begin
               request <= has_data_out;
               fsm_state <= FSM_RD_REQ;
             end 
@@ -1753,10 +1753,10 @@ module control_fifo_out
   input [8-1:0] task_done,
   input wr_en,
   input [88-1:0] wr_data,
-  input gnr_available_write,
-  input gnr_done_wr_data,
-  output reg gnr_request_write,
-  output reg [512-1:0] gnr_write_data,
+  input grn_available_write,
+  input grn_done_wr_data,
+  output reg grn_request_write,
+  output reg [512-1:0] grn_write_data,
   output reg done
 );
 
@@ -1768,18 +1768,18 @@ module control_fifo_out
   always @(posedge clk) begin
     if(rst) begin
       fms_cs <= FSM_FIFO_WR0;
-      gnr_request_write <= 0;
+      grn_request_write <= 0;
       done <= 0;
       count_empty <= 0;
     end else begin
       if(start) begin
-        gnr_request_write <= 0;
+        grn_request_write <= 0;
         case(fms_cs)
           FSM_FIFO_WR0: begin
             if(wr_en) begin
-              gnr_write_data <= wr_data;
-              gnr_request_write <= 1;
-            end else if(&task_done && gnr_done_wr_data) begin
+              grn_write_data <= wr_data;
+              grn_request_write <= 1;
+            end else if(&task_done && grn_done_wr_data) begin
               fms_cs <= FSM_DONE;
             end 
           end
@@ -1793,8 +1793,8 @@ module control_fifo_out
 
 
   initial begin
-    gnr_request_write = 0;
-    gnr_write_data = 0;
+    grn_request_write = 0;
+    grn_write_data = 0;
     done = 0;
     count_empty = 0;
     fms_cs = 0;
@@ -1805,20 +1805,20 @@ endmodule
 
 
 
-module gnr_aws_1
+module grn_aws_1
 (
   input clk,
   input rst,
   input start,
-  input gnr_done_rd_data,
-  input gnr_done_wr_data,
-  output gnr_request_read,
-  input gnr_read_data_valid,
-  input [32-1:0] gnr_read_data,
-  input gnr_available_write,
-  output gnr_request_write,
-  output [88-1:0] gnr_write_data,
-  output gnr_done
+  input grn_done_rd_data,
+  input grn_done_wr_data,
+  output grn_request_read,
+  input grn_read_data_valid,
+  input [32-1:0] grn_read_data,
+  input grn_available_write,
+  output grn_request_write,
+  output [88-1:0] grn_write_data,
+  output grn_done
 );
 
   wire data_in_valid;
@@ -1836,10 +1836,10 @@ module gnr_aws_1
     .clk(clk),
     .rst(rst),
     .start(start),
-    .gnr_read_data_valid(gnr_read_data_valid),
-    .gnr_read_data(gnr_read_data),
-    .gnr_done_rd_data(gnr_done_rd_data),
-    .gnr_request_read(gnr_request_read),
+    .grn_read_data_valid(grn_read_data_valid),
+    .grn_read_data(grn_read_data),
+    .grn_done_rd_data(grn_done_rd_data),
+    .grn_request_read(grn_request_read),
     .data_valid(data_in_valid),
     .data_out(data_in),
     .done(control_data_in_done)
@@ -1872,20 +1872,20 @@ module gnr_aws_1
     .clk(clk),
     .rst(rst),
     .start(start),
-    .gnr_done_wr_data(gnr_done_wr_data),
-    .gnr_available_write(gnr_available_write),
-    .gnr_request_write(gnr_request_write),
-    .gnr_write_data(gnr_write_data),
+    .grn_done_wr_data(grn_done_wr_data),
+    .grn_available_write(grn_available_write),
+    .grn_request_write(grn_request_write),
+    .grn_write_data(grn_write_data),
     .din0(data_out0),
     .read_data_en(read_data_en),
     .task_done(task_done),
-    .done(gnr_done)
+    .done(grn_done)
   );
 
 
   initial begin
     $dumpfile("uut.vcd");
-    $dumpvars(0, "gnr_aws");
+    $dumpvars(0, "grn_aws");
   end
 
 
