@@ -4,13 +4,13 @@
 int main(int argc, char *argv[]){
 
     if (argc != 4) {
-        std::cout << "Usage: " << argv[0] << " <XCLBIN File> <Kernel name> <CGRA bitstream file>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <XCLBIN File> <Kernel name>" << std::endl;
         return EXIT_FAILURE;
     }
     
     std::string binaryFile = argv[1];
     std::string kernel_name = argv[2];
-    std::string bitstreamFile = argv[3];
+    
     vector_u16 inputs[NUM_CHANNELS];
     vector_u16 outputs[NUM_CHANNELS];
     

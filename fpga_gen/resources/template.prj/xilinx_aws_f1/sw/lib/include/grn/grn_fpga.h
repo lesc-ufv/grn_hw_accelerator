@@ -7,7 +7,7 @@
 #include <string>
 #include <cmath>
 
-#include <hpcgra/timer.h>
+#include <grn/timer.h>
 #include <xcl2/xcl2.hpp>
 
 //Timers
@@ -22,7 +22,7 @@ using namespace std::chrono;
 
 typedef unsigned char byte;
 
-class CgraFpga{
+class GrnFpga{
     
 private:
   cl::Context m_context;
@@ -30,7 +30,6 @@ private:
   cl::Program m_prog;
   cl::Kernel m_kernel;
   
-  std::vector<byte> m_cgra_bitstream;    
   std::vector<cl::Memory> m_input_buffer;
   std::vector<cl::Memory> m_output_buffer;
   
@@ -51,9 +50,9 @@ private:
       
 public:
         
-  CgraFpga(int num_inputs, int num_outputs);  
+  GrnFpga(int num_inputs, int num_outputs);  
   
-  int cgra_fpga_init(std::string &binary_file, std::string kernel_name, std::string cgra_bitstream);
+  int cgra_fpga_init(std::string &binary_file, std::string kernel_name);
   
   void createInputQueue(int input_id, size_t size);
   

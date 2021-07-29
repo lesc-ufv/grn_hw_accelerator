@@ -1,8 +1,8 @@
-#include <hpcgra/cgra_fpga.h>
+#include <grn/grn_fpga.h>
 
 TIMER_INIT(5);
 
-CgraFpga::CgraFpga(int num_inputs, int num_outputs):m_input_buffer(num_inputs),
+GrnFpga::GrnFpga(int num_inputs, int num_outputs):m_input_buffer(num_inputs),
                                                     m_output_buffer(num_outputs),
                                                     m_num_inputs(num_inputs),
                                                     m_num_outputs(num_outputs)
@@ -18,27 +18,9 @@ CgraFpga::CgraFpga(int num_inputs, int num_outputs):m_input_buffer(num_inputs),
     memset(m_output_size_bytes, 0, sizeof(size_t) * num_outputs);
 }
 
-int CgraFpga::cgra_fpga_init(std::string &binary_file, std::string kernel_name, std::string cgra_bitstream){
+int GrnFpga::cgra_fpga_init(std::string &binary_file, std::string kernel_name){
 
-  TIMER_START(INIT_TIMER_ID);
-  
-  std::string line;
-  std::ifstream MyReadFile(cgra_bitstream);
-  while(getline(MyReadFile,line)) {
-    int c = line.size();
-    int bytes = c / 2;
-    byte aux[bytes];
-    int i=0,j=bytes-1;
-    for(i=0;i < c; i+=2){
-        aux[j] = std::stoul(line.substr(i,2), nullptr, 16);
-        j--;
-    }
-    for(int i=0;i < bytes;i++){
-        m_cgra_bitstream.push_back(aux[i]);
-    }
-  }
-  MyReadFile.close();
-    
+  TIMER_START(INIT_TIMER_ID);   
   cl_int err;
   // get_xil_devices() is a utility API which will find the xilinx
   // platforms and will return list of devices connected to Xilinx platform
@@ -79,7 +61,7 @@ int CgraFpga::cgra_fpga_init(std::string &binary_file, std::string kernel_name, 
     
 }
 
-void * CgraFpga::cgra_allocate_mem_align(size_t size){
+void * GrnFpga::cgra_allocate_mem_align(size_t size){
     
     void *ptr;
     if( posix_memalign((void**)&ptr,4096,size) == 0){
@@ -88,20 +70,10 @@ void * CgraFpga::cgra_allocate_mem_align(size_t size){
     return nullptr;
 }
 
-void CgraFpga::createInputQueue(int input_id, size_t size){
+void GrnFpga::createInputQueue(int input_id, size_t size){
     if(input_id >= 0 && input_id < m_num_inputs){
-        
-        if(input_id == 0){
-            auto bit_size = m_cgra_bitstream.size() * sizeof(m_cgra_bitstream[0]);
-            size = size + bit_size;
-            m_inputs_ptr[input_id] = cgra_allocate_mem_align(size);
-            m_input_size_bytes[input_id] = size;
-            memcpy(m_inputs_ptr[input_id],m_cgra_bitstream.data(),bit_size);
-            
-        }else{
-            m_inputs_ptr[input_id] = cgra_allocate_mem_align(size);
-            m_input_size_bytes[input_id] = size;
-        }
+        m_inputs_ptr[input_id] = cgra_allocate_mem_align(size);
+        m_input_size_bytes[input_id] = size;
         OCL_CHECK(err,
                   m_input_buffer[input_id] = cl::Buffer(m_context,
                                                         CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
@@ -110,20 +82,14 @@ void CgraFpga::createInputQueue(int input_id, size_t size){
     }
 }
   
-void * CgraFpga::getInputQueue(int input_id){
+void * GrnFpga::getInputQueue(int input_id){
     if(input_id >= 0 && input_id < m_num_inputs){
-        if(input_id == 0){
-            auto bitstream_offset = m_cgra_bitstream.size() * sizeof(m_cgra_bitstream[0]);
-            auto ptr = ((char*)m_inputs_ptr[input_id]) + bitstream_offset;
-            return ptr;   
-        }else{
-            return m_inputs_ptr[input_id];
-        }
+        return m_inputs_ptr[input_id];
     }
     return nullptr;
 }
   
-void CgraFpga::createOutputQueue(int output_id, size_t size){
+void GrnFpga::createOutputQueue(int output_id, size_t size){
     if(output_id >= 0 && output_id < m_num_outputs){
         m_outputs_ptr[output_id] = cgra_allocate_mem_align(size);
         m_output_size_bytes[output_id] = size;
@@ -137,23 +103,19 @@ void CgraFpga::createOutputQueue(int output_id, size_t size){
     }    
 }
   
-void * CgraFpga::getOutputQueue(int output_id){
+void * GrnFpga::getOutputQueue(int output_id){
     if(output_id >= 0 && output_id < m_num_outputs){
         return m_outputs_ptr[output_id];
     }
     return nullptr; 
 }
 
-void CgraFpga::cgra_set_args(){
+void GrnFpga::cgra_set_args(){
     
     int id = m_num_inputs + m_num_outputs;
     for(int i = 0; i < m_num_inputs;++i){
          if(m_input_size_bytes[i] == 0){
-             if(i == 0){
-                createInputQueue(i,64);
-             }else{
-                createInputQueue(i,64);
-             }
+            createInputQueue(i,64);
          }        
          OCL_CHECK(err, err = m_kernel.setArg(i, sizeof(cl_int),(void *)& m_input_size_bytes[i]));  
          OCL_CHECK(err, err = m_kernel.setArg(id, m_input_buffer[i]));
@@ -170,7 +132,7 @@ void CgraFpga::cgra_set_args(){
     }
 }
 
-int CgraFpga::cgra_execute(){
+int GrnFpga::cgra_execute(){
   
     TIMER_START(TOTAL_EXE_TIMER_ID);
     {
@@ -203,7 +165,7 @@ int CgraFpga::cgra_execute(){
     return 0;
 }
 
-int CgraFpga::cleanup(){  
+int GrnFpga::cleanup(){  
     
     for(int i = 0; i < m_num_inputs;++i){
         free(m_inputs_ptr[i]);
@@ -221,7 +183,7 @@ int CgraFpga::cleanup(){
     return 0;
 }
 
-int CgraFpga::print_report(){
+int GrnFpga::print_report(){
     printf("------------------------------------------------------\n");
     printf("  Performance Summary                                 \n");
     printf("------------------------------------------------------\n");

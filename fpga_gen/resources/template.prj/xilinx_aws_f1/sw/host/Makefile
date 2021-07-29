@@ -9,7 +9,7 @@ CXXFLAGS += $(opencl_CXXFLAGS) -Wall -O3 -g -std=c++11
 LDFLAGS += $(opencl_LDFLAGS)
 
 CXXFLAGS += -I$(shell readlink -f ./include) -I$(shell readlink -f ../lib/include/)
-LDFLAGS += -L$(LIB_READY) -lrt -lstdc++ -lhpcgra 
+LDFLAGS += -L$(LIB_READY) -lrt -lstdc++ -lgrn 
 
 CXXFLAGS += -fmessage-length=0
 
@@ -41,11 +41,11 @@ $(EXECUTABLE): check-xrt $(HOST_SRCS)
 
 .PHONY: sim	
 sim: host simconf emconfig
-	XCL_EMULATION_MODE=$(TARGET) LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(LIB_READY) $(EXECUTABLE) $(SIM_XCLBIN) $(shell cat prj_name) $(CGRA_BITSTREAM)
+	XCL_EMULATION_MODE=$(TARGET) LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(LIB_READY) $(EXECUTABLE) $(SIM_XCLBIN) $(shell cat prj_name)
 
 .PHONY: run
 run: host
-	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(LIB_READY) $(EXECUTABLE) $(HW_XCLBIN) $(shell cat prj_name) $(CGRA_BITSTREAM)
+	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(LIB_READY) $(EXECUTABLE) $(HW_XCLBIN) $(shell cat prj_name) 
 
 .PHONY: wave 
 wave: sim
