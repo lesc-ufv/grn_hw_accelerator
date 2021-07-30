@@ -3,6 +3,9 @@
 **/*.idea
 **/*.vscode
 **/*.env
+**/*.out
+**/*.v
+**/*.vcd
 **/*venv
 **/*build
 **/*cmake-build-debug

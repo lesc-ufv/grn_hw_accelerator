@@ -33,10 +33,10 @@ class GrnComponents:
         start_s1 = m.Input('start_s1')
         init_state = m.Input('init_state')
         ops = {'and': ' & ', 'or': ' | ', 'not': ' ~ ', 'xor': ' ^ ', 'nor': ' ~| ', 'nand': ' ~& ', 'xnor': ' ~^ '}
-        
+
         if not '=' in funcao:
             funcao = funcao + '=' + funcao
-        
+
         funcao_orig = funcao
         funcao = re.sub(u'[()]', '', funcao)
         funcao = funcao.split("=")[1].split(" ")
@@ -317,7 +317,7 @@ class GrnComponents:
         m = Module(name)
         data_width = 29
         ID = m.Parameter('ID', 0)
-        width = number_nos
+        width = math.ceil(number_nos / 8) * 8
         clk = m.Input('clk')
         rst = m.Input('rst')
         start = m.Input('start')
@@ -447,12 +447,12 @@ class GrnComponents:
                                 start_s0(Int(0, 1, 2)),
                                 start_s1(Int(0, 1, 2)),
                                 state(CALC_PERIOD_ATTRACTOR),
-                                #Display("%d: FIND_ATTRACTOR -> CALC_PERIOD_ATTRACTOR: %x %x", clk_count, s0, s1)
+                                # Display("%d: FIND_ATTRACTOR -> CALC_PERIOD_ATTRACTOR: %x %x", clk_count, s0, s1)
 
                             ).Else(
                                 start_count_transient(Int(1, 1, 2)),
                                 state(FIND_ATTRACTOR),
-                                #Display("%d: FIND_ATTRACTOR -> FIND_ATTRACTOR: %x %x", clk_count, s0, s1)
+                                # Display("%d: FIND_ATTRACTOR -> FIND_ATTRACTOR: %x %x", clk_count, s0, s1)
                             )
                         ).Else(
                             pass_cycle_attractor(Int(1, 1, 2))
@@ -679,6 +679,7 @@ class GrnComponents:
                             fsm_cs(FSM_DONE),
                         ).Elif(grn_read_data_valid)(
                             data_out(grn_read_data),
+                            data_valid(1),
                             grn_request_read(1),
                         ),
                     ),
@@ -1015,12 +1016,12 @@ class GrnComponents:
                             grn_write_data(wr_data),
                             grn_request_write(1),
                         ).Elif(AndList(Uand(task_done), grn_done_wr_data))(
-                            fsm_cs(FSM_DONE)
+                            fsm_cs(FSM_DONE),
                         ),
                     ),
-                ),
-                When(FSM_DONE)(
-                    done(1)
+                    When(FSM_DONE)(
+                        done(1)
+                    ),
                 ),
             )
         )
@@ -1086,7 +1087,7 @@ class GrnComponents:
                    ('grn_done_wr_data', grn_done_wr_data), ('grn_request_write', grn_request_write),
                    ('grn_write_data', grn_write_data), ('done', done)]
             m.Instance(control_fifo_out, 'control_fifo_out', control_fifo_out.get_params(), con)
-        '''else:
+        else:
             wr_fifo_out = m.Reg("wr_fifo_out")
             flag_pass = m.Reg('flag_pass')
             m.Always(Posedge(clk))(
@@ -1115,14 +1116,14 @@ class GrnComponents:
 
                 )
             )
-            control_fifo_out = make_control_fifo_out(data_width, num_units)
-            con = [('clk', clk), ('rst', rst), ('start', start), ('num_data_out', num_data_out),
-                   ('task_done', task_done),
-                   ('wr_en', wr_fifo_out), ('wr_data', ports_in.get('din0')), ('fifoout_full', fifo_out_full),
-                   ('fifoout_almostfull', fifo_out_almostfull), ('fifoout_empty', fifo_out_empty),
-                   ('wr_fifoout_en', wr_fifo_out_en), ('wr_fifoout_data', wr_fifo_out_data), ('done', done)]
 
-        m.Instance(control_fifo_out, 'control_fifo_out', control_fifo_out.get_params(), con)'''
+            control_fifo_out = self.create_control_fifo_out(data_out_width, num_units)
+            con = [('clk', clk), ('rst', rst), ('start', start), ('task_done', task_done), ('wr_en', wr_fifo_out),
+                   ('wr_data', ports_in.get('din0')), ('grn_available_write', grn_available_write),
+                   ('grn_done_wr_data', grn_done_wr_data), ('grn_request_write', grn_request_write),
+                   ('grn_write_data', grn_write_data), ('done', done)]
+
+        m.Instance(control_fifo_out, 'control_fifo_out', control_fifo_out.get_params(), con)
 
         return m
 

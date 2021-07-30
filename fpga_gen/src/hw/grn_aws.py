@@ -1,6 +1,7 @@
 from veriloggen import *
 
 from fpga_gen.src.hw.grn_components import GrnComponents
+from fpga_gen.src.hw.utils import initialize_regs
 
 
 class GrnAws:
@@ -90,9 +91,7 @@ class GrnAws:
 
         m.Instance(control_data_out, 'control_data_out', control_data_out.get_params(), con)
 
-        simulation.setup_waveform(m, 'grn_aws')
-
-        # initialize_regs(m)
+        initialize_regs(m)
 
         self.cache[name] = m
         return m
