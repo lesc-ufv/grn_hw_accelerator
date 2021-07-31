@@ -544,8 +544,7 @@ class GrnComponents:
         self.cache[name] = m
         return m
 
-    def create_regulator_network(self, num_units, functions, fifo_in_size, fifo_out_size, id_width, data_in_width,
-                                 data_out_width):
+    def create_regulator_network(self, num_units, functions, fifo_in_size, fifo_out_size, id_width, data_in_width,data_out_width):
         name = 'regulator_network'
         if name in self.cache.keys():
             return self.cache[name]
@@ -561,7 +560,6 @@ class GrnComponents:
         clk = m.Input('clk')
         rst = m.Input('rst')
         start = m.Input('start')
-        control_data_in_done = m.Input('control_data_in_done')
 
         data_in_valid = m.Input('data_in_valid')
         data_in = m.Input('data_in', data_in_width)  # (ID + BEGIN + END)

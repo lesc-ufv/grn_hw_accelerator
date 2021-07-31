@@ -70,18 +70,21 @@ class GrnAws:
         rn = grn_components.create_regulator_network(self.copies, self.functions, self.fifo_in_size, self.fifo_out_size,
                                                      self.id_width, self.data_in_width, self.data_out_width)
         for i in range(self.copies):
-            con = [('clk', clk), ('rst', rst), ('start', start), ('data_in_valid', data_in_valid), ('data_in', data_in),
-                   ('control_data_in_done', control_data_in_done),
-                   ('read_data_en', read_data_en[i]), ('has_data_out', has_data[i]),
+            con = [('clk', clk), ('rst', rst), ('start', start),
+                   ('data_in_valid', data_in_valid),
+                   ('data_in', data_in),
+                   ('read_data_en', read_data_en[i]),
+                   ('has_data_out', has_data[i]),
                    ('has_lst3_data_out', has_lst3_data[i]),
                    ('data_out', data_out[i]),
+                   ('end_data_in',control_data_in_done),
                    ('task_done', task_done[i])]
             m.Instance(rn, 'rn%d' % i, [('ID', i + 1)], con)
 
         control_data_out = grn_components.create_control_data_out(self.copies, self.data_out_width)
         con = [('clk', clk), ('rst', rst), ('start', start), ('grn_done_wr_data', grn_done_wr_data),
                ('grn_available_write', grn_available_write), ('grn_request_write', grn_request_write),
-               ('grn_write_data', grn_write_data)]
+               ('grn_write_data', grn_write_data),('has_data',has_data),('has_lst3_data',has_lst3_data)]
         for i in range(self.copies):
             con.append(('din%d' % i, data_out[i]))
 

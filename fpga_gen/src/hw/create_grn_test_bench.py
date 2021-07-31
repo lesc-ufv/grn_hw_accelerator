@@ -1,3 +1,13 @@
+import os
+import sys
+
+p = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+print(p)
+
+if not p in sys.path:
+    sys.path.insert(0, p)
+
 from math import ceil, log2
 
 from veriloggen import *
@@ -314,8 +324,9 @@ class GrnTestBench:
         return m
 
 
-grn_path = '/home/jeronimo/Documentos/GIT/grn_hw_accelerator/benchmarks/Benchmark_5.txt'
-grn_input_path = '/home/jeronimo/Documentos/GIT/grn_hw_accelerator/benchmarks/Benchmark_5_simul_input.txt'
+
+grn_path = '../../../benchmarks/Benchmark_5.txt'
+grn_input_path = '../../../benchmarks/Benchmark_5_simul_input.txt'
 
 grn_test_bench = GrnTestBench(1, grn_path, [grn_input_path])
 grn_test_bench.start(1)
