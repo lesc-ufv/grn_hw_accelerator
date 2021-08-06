@@ -1,0 +1,1 @@
+( EGFR_Y1068 )  OR ( EGFR_Y1086 )  OR ( ErbB2_Y1139 )  OR ( Src AND ( ( ( Fak ) ) )    )  OR ( Shc ) 

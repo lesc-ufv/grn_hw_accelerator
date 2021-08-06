@@ -1,0 +1,1 @@
+( Mekk4 AND ( ( ( ASK1 ) ) )    )  OR ( MLK3 AND ( ( ( ASK1 ) ) )    )  OR ( PAK AND ( ( ( ASK1 ) ) )    )  OR ( TAK1 AND ( ( ( ASK1 ) ) )    )  OR ( Tpl2 AND ( ( ( ASK1 ) ) )    )  OR ( TAO_12 AND ( ( ( ASK1 ) ) )    ) 

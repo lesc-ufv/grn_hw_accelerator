@@ -1,0 +1,1 @@
+( TLR3_TICAM1_TICAM2 AND ( ( ( TRAF6 ) ) )    ) 

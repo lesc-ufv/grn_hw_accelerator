@@ -1,0 +1,1 @@
+( ( Pix_Cool AND ( ( ( PAK  AND Gbg_i )  AND (  ( ( NOT Rac ) ) ) )  OR ( ( Cdc42 ) ) )     ) AND NOT ( RhoGDI AND ( ( ( Src ) ) )     ) )  OR ( ( Cdc42 AND ( ( ( NOT Graf  AND NOT p190RhoGAP  AND NOT RalBP1 ) )  AND ( ( IQGAP1 ) ) )     ) AND NOT ( RhoGDI AND ( ( ( Src ) ) )     ) ) 

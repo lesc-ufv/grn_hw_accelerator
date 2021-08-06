@@ -1,0 +1,15 @@
+reference
+
+Samaga R, Saez-Rodriguez J, Alexopoulos LG, Sorger PK, and Klamt S.The logic of EGFR/ErbB signaling: theoretical properties and analysis of high-throughput data.PLoS Comput Biol 2009 Aug5; (8) e1000438.pmid:19662154
+
+Bibtext
+@article{samaga2009logic,
+  title={The logic of EGFR/ErbB signaling: theoretical properties and analysis of high-throughput data},
+  author={Samaga, Regina and Saez-Rodriguez, Julio and Alexopoulos, Leonidas G and Sorger, Peter K and Klamt, Steffen},
+  journal={PLoS computational biology},
+  volume={5},
+  number={8},
+  pages={e1000438},
+  year={2009},
+  publisher={Public Library of Science}
+}

@@ -1,0 +1,1 @@
+( FOXP3 AND ( ( ( NFAT ) ) )    )  OR ( STAT5 AND ( ( ( NFAT ) ) )    )  OR ( SMAD3 AND ( ( ( NFAT ) ) )    )  OR ( NFKB AND ( ( ( NFAT ) ) )    ) 

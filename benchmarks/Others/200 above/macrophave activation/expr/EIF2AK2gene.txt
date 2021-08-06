@@ -1,0 +1,1 @@
+( IRF1_IRF1nucleus )  OR ( ISGF3nucleus ) 

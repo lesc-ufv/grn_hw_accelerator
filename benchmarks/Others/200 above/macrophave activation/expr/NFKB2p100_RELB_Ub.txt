@@ -1,0 +1,1 @@
+( NFKB2p100_RELBcytoplasm AND ( ( ( Ub ) ) )    ) 

@@ -1,0 +1,1 @@
+( ( ras AND ( ( ( csrc ) ) )     ) AND NOT ( aktd  ) )  OR ( ( pak1 AND ( ( ( ras ) ) )     ) AND NOT ( aktd  ) ) 

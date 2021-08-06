@@ -1,0 +1,1 @@
+ NOT ( ( DIABLOcytoplasm )  OR ( HTRA2cytoplasm ) )

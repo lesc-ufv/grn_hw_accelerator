@@ -1,0 +1,1 @@
+( CBP AND ( ( ( IRF3_IRF3nucleus  OR IRF3_IRF7nucleus ) ) )    )  OR ( IRF1_IRF1nucleus AND ( ( ( SPI1  AND IRF8  AND IRF4 ) ) )    )  OR ( ISGF3nucleus )  OR ( IRF2 AND ( ( ( SPI1  AND IRF8  AND IRF4 ) ) )    ) 

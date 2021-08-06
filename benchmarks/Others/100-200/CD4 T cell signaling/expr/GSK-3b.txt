@@ -1,0 +1,1 @@
+(  NOT ( ( AKT ) ) ) OR  NOT ( AKT ) 

@@ -1,0 +1,1 @@
+( Pertuzumab AND ( ( ( EGFR_ErbB2 ) ) )    )  OR ( ( EGF AND ( ( ( ErbB2_Free  AND EGFR_Free ) )  AND ( ( NOT EGFR_ErbB2 ) )  AND ( ( NOT EGFR_ErbB2 ) )  AND ( ( NOT EGFR_T654 ) )  AND ( ( NOT NRG  OR NOT ErbB3_Free ) ) )     ) AND NOT ( Pertuzumab  ) )  OR ( ( ( EGFR_ErbB2  ) AND NOT ( Trastuzumab  )  ) AND NOT ( ErbB2Deg_Contr AND ( ( ( EGFR_ErbB2 ) ) )     ) ) 

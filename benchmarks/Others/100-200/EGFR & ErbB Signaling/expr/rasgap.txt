@@ -1,0 +1,1 @@
+( ( gab1  ) AND NOT ( shp2  ) ) 

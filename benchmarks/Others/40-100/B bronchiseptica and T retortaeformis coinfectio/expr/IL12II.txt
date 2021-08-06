@@ -1,0 +1,1 @@
+( ( DCII_Bacterium AND ( ( ( T0 ) ) )     ) AND NOT ( IL4II  ) )  OR ( ( DCII_TRetortaeformis AND ( ( ( T0 ) ) )     ) AND NOT ( IL4II  ) ) 

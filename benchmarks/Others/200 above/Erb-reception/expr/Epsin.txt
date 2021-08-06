@@ -1,0 +1,1 @@
+( EGFR_Ub )  OR ( EGFR_EGFR_EGF_PM )  OR ( PIP2_45 )  OR ( EGFR_EGFR_TGFa_PM ) 

@@ -1,0 +1,1 @@
+( CD40_CD40LG AND ( ( ( TRAF3 ) ) )    ) 

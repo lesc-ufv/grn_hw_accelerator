@@ -1,0 +1,1 @@
+( IL2 AND ( ( ( CGC  AND IL2RB )  AND (  ( ( NOT IL2RA ) ) ) ) )    )  OR ( IL2_e AND ( ( ( CGC  AND IL2RB )  AND (  ( ( NOT IL2RA ) ) ) ) )    ) 

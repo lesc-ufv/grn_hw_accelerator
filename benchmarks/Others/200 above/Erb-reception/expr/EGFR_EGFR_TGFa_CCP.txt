@@ -1,0 +1,1 @@
+( Eps15 AND ( ( ( Rab5 ) )  AND ( ( EGFR_EGFR_TGFa_PM ) )  AND ( ( Clathrin  AND PIP2_45 ) ) )    )  OR ( Epsin AND ( ( ( EGFR_EGFR_TGFa_PM ) )  AND ( ( Clathrin  AND PIP2_45 ) )  AND ( ( Rab5 ) ) )    )  OR ( AP2 AND ( ( ( Clathrin  AND PIP2_45 ) )  AND ( ( EGFR_EGFR_TGFa_PM ) )  AND ( ( Rab5 ) ) )    )  OR ( ( EGFR_EGFR_TGFa_CCP  ) AND NOT ( EGFR_EGFR_TGFa_CCV  ) ) 

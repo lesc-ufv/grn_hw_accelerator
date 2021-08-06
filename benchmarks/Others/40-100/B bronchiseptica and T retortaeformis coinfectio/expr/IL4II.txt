@@ -1,0 +1,1 @@
+( EL2 )  OR ( ( ( Th2II_Bacterium  ) AND NOT ( IFNgI  )  ) AND NOT ( IL12II  ) )  OR ( ( ( Th2II_TRetortaeformis  ) AND NOT ( IFNgI  )  ) AND NOT ( IL12II  ) )  OR ( ( ( DCII_Bacterium AND ( ( ( T0 ) ) )     ) AND NOT ( IFNgI  )  ) AND NOT ( IL12II  ) )  OR ( ( ( DCII_TRetortaeformis AND ( ( ( T0 ) ) )     ) AND NOT ( IFNgI  )  ) AND NOT ( IL12II  ) ) 

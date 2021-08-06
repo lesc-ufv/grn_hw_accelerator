@@ -1,0 +1,1 @@
+( ( IS  ) AND NOT ( EL2  ) ) 

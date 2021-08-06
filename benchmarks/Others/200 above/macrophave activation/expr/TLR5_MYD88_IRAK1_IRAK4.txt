@@ -1,0 +1,1 @@
+( TLR5_TLR5 AND ( ( ( MYD88  AND IRAK1  AND IRAK4 ) ) )    ) 

@@ -1,0 +1,1 @@
+( PKC AND ( ( ( Ras  OR PIP2_45  OR Rap1 ) )  AND ( ( PIP2_34  OR PIP3_345 ) ) )    )  OR ( Src AND ( ( ( PIP2_34  OR PIP3_345 ) )  AND ( ( Ras  OR PIP2_45  OR Rap1 ) ) )    )  OR ( CaMK AND ( ( ( PIP2_34  OR PIP3_345 ) )  AND ( ( Ras  OR PIP2_45  OR Rap1 ) ) )    ) 

@@ -1,0 +1,1 @@
+ NOT ( ( p90rsk AND ( ( ( akt ) ) )    ) )

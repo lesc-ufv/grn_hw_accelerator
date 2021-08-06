@@ -1,0 +1,1 @@
+( TCR AND ( ( ( MHC_II  AND CD3 ) ) )    ) 

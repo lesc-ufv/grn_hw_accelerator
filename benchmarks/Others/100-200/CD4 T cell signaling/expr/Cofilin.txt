@@ -1,0 +1,1 @@
+(  NOT ( ( LIMK ) ) ) OR  NOT ( LIMK ) 

@@ -1,0 +1,1 @@
+( FAK_576_577 AND ( ( ( Bintegrin ) ) )    ) 

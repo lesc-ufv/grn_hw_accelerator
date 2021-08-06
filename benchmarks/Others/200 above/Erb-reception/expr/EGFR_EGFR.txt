@@ -1,0 +1,1 @@
+( alpha_qR AND ( ( ( EGFR_T654 ) )  AND ( ( Ca ) )  AND ( ( EGFR_Free ) ) )    )  OR ( alpha_iR AND ( ( ( Ca ) )  AND ( ( EGFR_Free ) )  AND ( ( EGFR_T654 ) ) )    )  OR ( alpha_1213R AND ( ( ( EGFR_Free ) )  AND ( ( EGFR_T654 ) )  AND ( ( Ca ) ) )    ) 

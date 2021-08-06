@@ -1,0 +1,1 @@
+( DCI_Bacterium )  OR ( MPI_Bacterium )  OR ( ( ( Th1I_Bacterium  ) AND NOT ( IL10I_Bacterium  )  ) AND NOT ( IL4I  ) ) 

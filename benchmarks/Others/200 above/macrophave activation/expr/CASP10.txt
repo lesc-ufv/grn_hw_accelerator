@@ -1,0 +1,1 @@
+( ProCASP10 AND ( ( ( TNF_TNFRSF1A_FADD_TRADD ) ) )    ) 

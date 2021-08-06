@@ -1,0 +1,1 @@
+(  NOT ( ( CaM AND ( ( ( Ca ) ) )    ) ) ) OR  NOT ( Ca OR CaM ) 
