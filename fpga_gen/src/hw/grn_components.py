@@ -156,6 +156,8 @@ class GrnComponents:
         i = 0
         ports_graph_genes = m.get_ports()
         wires_graph_genes = m.get_vars()
+        err = False
+        nodes_not_found = []
         for f in functions:
             no = self.create_no(f)
             ports_no = no.get_ports()
@@ -165,20 +167,32 @@ class GrnComponents:
                     p2p = ports_graph_genes.get(p)
                 else:
                     p2p = wires_graph_genes.get(p)
-
-                if p2p.width:
-                    if p2p.width > 1:
-                        p2p = p2p[i]
-                ports_con.append((p, p2p))
+                try:
+                    if p2p.width:
+                        if p2p.width > 1:
+                            p2p = p2p[i]
+                    ports_con.append((p, p2p))
+                except:
+                    err = True
+                    p = p.replace("_s0", "")
+                    p = p.replace("_s1", "")
+                    if p not in nodes_not_found:
+                        nodes_not_found.append(p)
+                        print(p)
             i += 1
 
             m.Instance(no, "_%s" % no.name, no.get_params(), ports_con)
+
+        if err:
+            print("Error: Some needed nodes were not declared! Please check your GRN File and please correct it before " +
+                  "continue. The missed nodes found for now were shown above.")
+            exit(1)
 
         initialize_regs(m)
         self.cache[name] = m
         return m
 
-    def create_control_fifo_data_in(self,id_width, width_data_in, width_data_out):
+    def create_control_fifo_data_in(self, id_width, width_data_in, width_data_out):
         name = 'control_fifo_data_in'
         if name in self.cache.keys():
             return self.cache[name]
@@ -194,9 +208,11 @@ class GrnComponents:
         fifo_in_amostfull = m.Input('fifo_in_amostfull')
         fifo_in_we = m.OutputReg('fifo_in_we')
         fifo_in_data = m.OutputReg('fifo_in_data', width_data_out)
-        
-        init_state = data_in[id_width:id_width+(width_data_out//2)]
-        end_state = data_in[id_width+((width_data_in-id_width)//2):id_width+((width_data_in-id_width)//2)+(width_data_out//2)]
+
+        init_state = data_in[id_width:id_width + (width_data_out // 2)]
+        end_state = data_in[
+                    id_width + ((width_data_in - id_width) // 2):id_width + ((width_data_in - id_width) // 2) + (
+                                width_data_out // 2)]
         m.Always(Posedge(clk))(
             If(rst)(
                 fifo_in_we(Int(0, 1, 2)),
@@ -205,7 +221,7 @@ class GrnComponents:
                 fifo_in_we(Int(0, 1, 2)),
                 If(AndList(data_in_valid, (data_in[:id_width] == ID), (~fifo_in_full)))(
                     fifo_in_we(Int(1, 1, 2)),
-                    fifo_in_data(Cat(end_state,init_state))
+                    fifo_in_data(Cat(end_state, init_state))
                 )
             )
 
@@ -331,13 +347,13 @@ class GrnComponents:
         fifo_in_empty = m.Input('fifo_in_empty')
         fifo_data_in = m.Input('fifo_data_in', 2 * width)
         end_data_in = m.Input('end_data_in')
-        
+
         fifo_in_re = m.OutputReg('fifo_in_re')
         start_s0 = m.OutputReg('start_s0')
         start_s1 = m.OutputReg('start_s1')
         reset_nos = m.OutputReg('reset_nos')
         init_state_out = m.OutputReg('init_state', width)
-        
+
         fifo_out_we = m.OutputReg('fifo_out_we')
         fifo_out_empty = m.Input('fifo_out_empty')
         data_out = m.OutputReg('data_out', (data_width + data_width + width))
@@ -548,7 +564,8 @@ class GrnComponents:
         self.cache[name] = m
         return m
 
-    def create_regulator_network(self, num_units, functions, fifo_in_size, fifo_out_size, id_width, data_in_width, data_out_width):
+    def create_regulator_network(self, num_units, functions, fifo_in_size, fifo_out_size, id_width, data_in_width,
+                                 data_out_width):
         name = 'regulator_network'
         if name in self.cache.keys():
             return self.cache[name]
@@ -583,12 +600,12 @@ class GrnComponents:
         init_state = m.Wire('init_state', width)
 
         fifo_out_we = m.Wire('fifo_out_we')
-        fifo_out_data_in = m.Wire('fifo_out_data_in', data_out_width-id_width)
+        fifo_out_data_in = m.Wire('fifo_out_data_in', data_out_width - id_width)
         fifo_out_empty = m.Wire('fifo_out_empty')
         fifo_out_full = m.Wire('fifo_out_full')
         fifo_out_full_almostfull = m.Wire('fifo_out_full_almostfull')
 
-        fifo_data_out = m.Wire('fifo_data_out', data_out_width-id_width)
+        fifo_data_out = m.Wire('fifo_data_out', data_out_width - id_width)
 
         fifo_in_we = m.Wire('fifo_in_we')
         fifo_in_data_in = m.Wire('fifo_in_data_in', 2 * width)
@@ -600,10 +617,10 @@ class GrnComponents:
         fifo_in_full_almostfull = m.Wire('fifo_in_full_almostfull')
 
         has_data_out.assign(~fifo_out_empty)
-        
-        data_out.assign(Cat(fifo_data_out,ID[0:id_width]))
 
-        control_fifo_data_in = self.create_control_fifo_data_in(id_width,data_in_width, 2 * width)
+        data_out.assign(Cat(fifo_data_out, ID[0:id_width]))
+
+        control_fifo_data_in = self.create_control_fifo_data_in(id_width, data_in_width, 2 * width)
         con = [('clk', clk), ('rst', rst), ('start', start), ('data_in_valid', data_in_valid), ('data_in', data_in),
                ('fifo_in_full', fifo_in_full), ('fifo_in_amostfull', fifo_in_full_almostfull),
                ('fifo_in_we', fifo_in_we),
@@ -617,7 +634,7 @@ class GrnComponents:
                ('re', fifo_in_re), ('dout', fifo_in_data_out), ('empty', fifo_in_empty),
                ('almostempty', fifo_in_almostempty), ('full', fifo_in_full), ('almostfull', fifo_in_full_almostfull)]
 
-        param = [('FIFO_WIDTH', 2*width), ('FIFO_DEPTH_BITS', fifo_in_depth_bits),
+        param = [('FIFO_WIDTH', 2 * width), ('FIFO_DEPTH_BITS', fifo_in_depth_bits),
                  ('FIFO_ALMOSTFULL_THRESHOLD', fifo_in_size - 2),
                  ('FIFO_ALMOSTEMPTY_THRESHOLD', 2)]
         m.Instance(fifo, 'fifo_in', param, con)
@@ -626,7 +643,7 @@ class GrnComponents:
                ('re', read_data_en), ('dout', fifo_data_out), ('empty', fifo_out_empty),
                ('almostempty', has_lst3_data_out), ('full', fifo_out_full), ('almostfull', fifo_out_full_almostfull)]
 
-        param = [('FIFO_WIDTH', data_out_width-id_width),
+        param = [('FIFO_WIDTH', data_out_width - id_width),
                  ('FIFO_DEPTH_BITS', fifo_out_depth_bits),
                  ('FIFO_ALMOSTFULL_THRESHOLD', fifo_out_size - 2),
                  ('FIFO_ALMOSTEMPTY_THRESHOLD', 2)]
@@ -669,11 +686,11 @@ class GrnComponents:
         FSM_IDLE = m.Localparam('FSM_IDLE', 0, 2)
         FSM_SEND_DATA = m.Localparam('FSM_SEND_DATA', 1, 2)
         FSM_DONE = m.Localparam('FSM_DONE', 2, 2)
-        
+
         flag = m.Reg('flag')
-        
+
         fsm_cs = m.Reg('fms_cs', 2)
-               
+
         m.Always(Posedge(clk))(
             If(rst)(
                 grn_request_read(0),
@@ -698,11 +715,11 @@ class GrnComponents:
                             data_out(grn_read_data),
                             data_valid(1),
                             grn_request_read(1),
-                            
+
                         ).Elif(grn_done_rd_data)(
                             fsm_cs(FSM_DONE)
                         ).Else(
-                          fsm_cs(FSM_IDLE)
+                            fsm_cs(FSM_IDLE)
                         )
                     ),
                     When(FSM_DONE)(

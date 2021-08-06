@@ -300,3 +300,22 @@ RIPK1 = ( External_Activator )
 IRF5_IRF7nucleus = ( IRF5_IRF7cytoplasm ) 
 TNF_TNFRSF1A_FADD_TRADD = ( TNF_TNFRSF1A and ( ( ( TRADD  and FADD ) ) )    ) 
 CASP6nucleus = ( CASP6cytoplasm ) 
+external_activator
+mitochondrial_activator
+virus
+bacteria
+ifng
+ifna
+casp6_activator
+tnfsf13b
+irf1_irf1_activator
+ifnb1
+faslg
+tnfsf10
+cd40lg
+tnf
+rela_nfkb1_activator
+casp3_activator
+casp7_activator
+ilib
+irf2_activator

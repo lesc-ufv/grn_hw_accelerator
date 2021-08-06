@@ -325,8 +325,8 @@ class GrnTestBench:
 
 
 
-grn_path = '../../../benchmarks/Benchmark_5.txt'
-grn_input_path = '../../../benchmarks/Benchmark_5_simul_input.txt'
+grn_path = '../../../benchmarks/Used/macrophave_activation/expr/expressions.ALL.txt'
+grn_input_path = '../../..//Benchmark_5_simul_input.txt'
 
 grn_test_bench = GrnTestBench(1, grn_path, [grn_input_path])
 grn_test_bench.start(1)

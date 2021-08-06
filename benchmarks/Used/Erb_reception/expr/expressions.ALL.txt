@@ -242,3 +242,6 @@ IL1_TNF
 PI3K_I
 Stress
 PTEN_I
+alpha_1213L
+alpha_iL
+alpha_qL
