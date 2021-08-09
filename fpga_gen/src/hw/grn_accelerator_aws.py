@@ -26,12 +26,12 @@ class GrnAccelerator:
         self.grn_num_nos = len(self.grn_functions)
 
         self.acc_data_in_width = self.grn_id_width + math.ceil(
-            self.grn_num_nos / 8) * 8 * 2  # grn_id_width + start_state_width(aligned 8b) + end_state_width(aligned 8b)
+            self.grn_num_nos / 8) * 8 * 2  #grn_id_width + start_state_width(aligned 8b) + end_state_width(aligned 8b)
 
-        self.acc_data_out_width = self.grn_id_width + self.grn_transient_width + self.grn_atractor_width + self.grn_num_nos
+        self.acc_data_out_width = self.grn_id_width + self.grn_transient_width + self.grn_atractor_width +  self.grn_num_nos
 
-        self.axi_bus_data_width = int(
-            math.pow(2, math.ceil(math.log2(max(self.acc_data_out_width, self.acc_data_in_width)))))
+        self.axi_bus_data_width =  int(math.pow(2,math.ceil(math.log2(max(self.acc_data_out_width,self.acc_data_in_width)))))
+
 
     def get_num_in(self):
         return self.acc_num_in
@@ -68,11 +68,11 @@ class GrnAccelerator:
         acc_user_done.assign(Uand(grn_done))
 
         m.Always(Posedge(clk))(
-            If(rst)(
-                start_reg(Int(0, 1, 2))
-            ).Else(
-                start_reg(Or(start_reg, start))
-            )
+          If(rst)(
+             start_reg(Int(0,1,2))
+          ).Else(
+             start_reg(Or(start_reg, start))
+          )
         )
 
         num_redes = self.acc_num_networks
@@ -84,15 +84,21 @@ class GrnAccelerator:
             grn = grn_aws.get(copies, self.grn_functions, self.grn_fifo_in_size, self.grn_fifo_out_size,
                               self.acc_data_in_width, self.acc_data_out_width, self.grn_transient_width,
                               self.grn_atractor_width, self.grn_id_width)
+
+            in_init =  i * self.axi_bus_data_width
+            in_end = ((i * self.axi_bus_data_width) + 1) + self.acc_data_in_width
+
+            out_init =  i * self.axi_bus_data_width
+            out_end = ((i * self.axi_bus_data_width) + 1) + self.acc_data_out_width
+
             par = []
             con = [('clk', clk), ('rst', rst), ('start', start_reg), ('grn_done_rd_data', acc_user_done_rd_data[i]),
                    ('grn_done_wr_data', acc_user_done_wr_data[i]), ('grn_request_read', acc_user_request_read[i]),
                    ('grn_read_data_valid', acc_user_read_data_valid[i]),
-                   ('grn_read_data', acc_user_read_data[self.axi_bus_data_width * i:(i + 1) * self.acc_data_in_width]),
+                   ('grn_read_data', acc_user_read_data[in_init:in_end-1]),
                    ('grn_available_write', acc_user_available_write[i]),
                    ('grn_request_write', acc_user_request_write[i]),
-                   ('grn_write_data',
-                    acc_user_write_data[self.axi_bus_data_width * i:(i + 1) * self.acc_data_out_width]),
+                   ('grn_write_data', acc_user_write_data[out_init:out_end-1]),
                    ('grn_done', grn_done[i])]
             m.Instance(grn, '%s_%d' % (grn.name, i), par, con)
             num_redes = num_redes - self.grn_copies_per_network
@@ -100,3 +106,5 @@ class GrnAccelerator:
         initialize_regs(m)
 
         return m
+
+
