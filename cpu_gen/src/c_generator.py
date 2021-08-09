@@ -57,7 +57,7 @@ def main():
             w_lower = w.lower()
             if w_lower in replace_dict.keys():
                 if w_lower not in all_words:
-                    code_string += replace_dict[w_lower]
+                    code_string += replace_dict[w_lower] + " "
                 elif(before):
                     code_string += "aux[" + str(replace_dict[w_lower]) + "] "
                 else:
