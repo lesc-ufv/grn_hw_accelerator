@@ -20,7 +20,7 @@ def readInput(filename):
     fin.close()
     return data
 
-def writeCpp(filename, data):
+def writeFile(filename, data):
     fout = open(filename, WRITE)
     fout.write(data)
     fout.close()
@@ -74,7 +74,7 @@ def main():
     ftemp.close()
     str_out = str_out.replace(NUM_NODES, str(len(all_words))).replace(ASSIGN_CODE, code_string)
 
-    writeCpp(sys.argv[2], str_out)
+    writeFile(sys.argv[2], str_out)
 
     return
 
