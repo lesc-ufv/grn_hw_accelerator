@@ -10,7 +10,7 @@ class GrnAccelerator:
     def __init__(self, num_networks, grn_arch_file):
         # constants
 
-        self.grn_copies_per_network = 8
+        self.grn_copies_per_network = 32
         self.grn_fifo_in_size = 2 ** 3
         self.grn_fifo_out_size = 2 ** 3
         self.grn_atractor_width = 32
