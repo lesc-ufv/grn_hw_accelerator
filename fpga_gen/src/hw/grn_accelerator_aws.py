@@ -22,7 +22,7 @@ class GrnAccelerator:
         self.grn_arch_file = grn_arch_file
         self.acc_num_in = math.ceil(num_networks / self.grn_copies_per_network)
         self.acc_num_out = self.acc_num_in
-        self.grn_functions = readFile(grn_arch_file)
+        self.grn_functions = sorted(readFile(grn_arch_file))
         self.grn_num_nos = len(self.grn_functions)
 
         self.acc_data_in_width = self.grn_id_width + math.ceil(
