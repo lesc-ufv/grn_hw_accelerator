@@ -24,10 +24,8 @@ Grn::Grn(std::string xclbin,
 }
 Grn::~Grn(){
     m_grn_fpga->cleanup();
-    for (int i = 0; i < NUM_CHANNELS; ++i) {
-        delete m_input_data[i];
-        delete m_output_data[i];
-    }
+    delete m_input_data;
+    delete m_output_data;
     delete m_input_size;
     delete m_output_size;
     delete m_grn_fpga;
@@ -98,8 +96,7 @@ void Grn::save_grn_report(){
         total += m_output_size[k];
     }
     std::stringstream d;
-    std::string data[total];
-    unsigned long c = 0;
+    std::vector<std::string> data;
     std::ofstream myfile(m_output_file);
     unsigned long c_global[NUM_COPIES];
     memset(c_global,0,sizeof(unsigned long )* NUM_COPIES);
@@ -107,18 +104,37 @@ void Grn::save_grn_report(){
         for(unsigned long i = 0; i < m_output_size[k];i++){
             unsigned long idg = ((k*NUM_COPIES_PER_CHANNEL) + (m_output_data[k][i].id-1));
             d <<  idg << "," << c_global[idg] <<  "," << m_output_data[k][i].period << "," <<  m_output_data[k][i].transient <<  ",";
-            for(char j : m_output_data[k][i].state){
-                d << j;
+            for(int j=STATE_SIZE_BYTES-1; j >= 0 ;--j){
+                d << std::hex << std::setw(2) << std::setfill('0') << (int)m_output_data[k][i].state[j] << std::dec;
             }
-            data[c] = d.str();
+            d << std::endl;
+            data.push_back(d.str());
+            d.str("");
             c_global[idg]++;
-            c++;
         }
     }
-    sort(&data[0],&data[total-1]);
+    sort(data.begin(),data.end(),mycmp);
     for(unsigned long i = 0; i < total; i++){
         myfile << data[i];
     }
     myfile.close();
+}
+bool mycmp(std::string a, std::string b){
+    char *aid = strtok((char *)a.c_str(), ",");
+    char *aid1 = strtok(NULL, ",");
+
+    char *bid = strtok((char *)b.c_str(), ",");
+    char *bid1 = strtok(NULL, ",");
+
+    auto aidi = std::stoul(aid, nullptr, 10);
+    auto aid1i = std::stoul(aid1, nullptr, 10);
+    auto bidi = std::stoul(bid, nullptr, 10);
+    auto bid1i = std::stoul(bid1, nullptr, 10);
+
+    if (aidi < bidi) return true;
+    else if(aidi > bidi) return false;
+    else if (aid1i < bid1i) return true;
+    else if (aid1i > bid1i) return false;
+    else return true;
 }
 

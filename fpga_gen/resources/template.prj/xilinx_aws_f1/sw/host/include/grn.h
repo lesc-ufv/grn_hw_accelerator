@@ -15,6 +15,7 @@
 #include <sstream>
 #include <map>
 #include <algorithm>
+#include <iomanip>
 
 class Grn {
 private:
@@ -37,5 +38,6 @@ public:
     void save_grn_report();
 };
 
+bool mycmp(std::string a, std::string b);
 
 #endif //GRN_H

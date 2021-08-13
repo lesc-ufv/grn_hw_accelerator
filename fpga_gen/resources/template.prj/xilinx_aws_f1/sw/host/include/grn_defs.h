@@ -19,15 +19,15 @@
 #define ACC_DATA_WIDTH (MAX(DATA_IN,DATA_OUT))
 
 typedef struct grn_data_t{
-    char data[ACC_DATA_WIDTH];
+    unsigned char data[ACC_DATA_WIDTH];
 }grn_data_t;
 
 typedef struct grn_conf_t{
     union {
         struct{
             int id;
-            char init_state[STATE_SIZE_BYTES];
-            char end_state[STATE_SIZE_BYTES];
+            unsigned char init_state[STATE_SIZE_BYTES];
+            unsigned char end_state[STATE_SIZE_BYTES];
         };
         grn_data_t pad;
     };
@@ -40,7 +40,7 @@ typedef struct grn_data_out_t{
             int id;
             int period;
             int transient;
-            char state[STATE_SIZE_BYTES];
+            unsigned char state[STATE_SIZE_BYTES];
        };
         grn_data_t pad;
     };
