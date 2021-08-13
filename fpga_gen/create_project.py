@@ -45,7 +45,16 @@ def create_project(GRN_root, grn_file, copies, name, output_path):
     m = acc_axi.create_kernel_top(name)
     m.to_verilog(hw_path + 'src/%s.v' % (name))
 
-    num_channels = '#define NUM_CHANNELS %d'% grnacc.get_num_in()
+#define NUM_CHANNELS error!!!
+#define NUM_COPIES error!!!
+#define NUM_COPIES_PER_CHANNEL error!!!
+#define NUM_NOS error!!!
+
+    acc_config  = '#define NUM_CHANNELS (%d)\n'% grnacc.get_num_in()
+    acc_config += '#define NUM_COPIES (%d)\n'% copies
+    acc_config += '#define NUM_COPIES_PER_CHANNEL (%d)\n'% grnacc.grn_copies_per_network
+    acc_config += '#define NUM_NOS (%d)'% grnacc.grn_num_nos
+
     num_axis_str = 'NUM_M_AXIS=%d' % grnacc.get_num_in()
     conn_str = acc_axi.get_connectivity_config(name)
     
@@ -53,7 +62,7 @@ def create_project(GRN_root, grn_file, copies, name, output_path):
     write_file(hw_path + 'simulate/num_m_axis.mk', num_axis_str)
     write_file(hw_path + 'synthesis/num_m_axis.mk', num_axis_str)
     write_file(sw_path + 'host/prj_name', name)
-    write_file(sw_path + 'host/include/num_channels.h',num_channels)
+    write_file(sw_path + 'host/include/acc_config.h',acc_config)
     write_file(hw_path + 'simulate/prj_name', name)
     write_file(hw_path + 'synthesis/prj_name', name)
     write_file(hw_path + 'simulate/vitis_config.txt', conn_str)

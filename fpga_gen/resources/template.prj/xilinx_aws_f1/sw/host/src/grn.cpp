@@ -15,8 +15,6 @@ Grn::Grn(std::string xclbin,
                             m_output_file(std::move(output_file)){
 
     m_grn_fpga = new GrnFpga(NUM_CHANNELS,NUM_CHANNELS);
-    read_input_file();
-
     m_input_data = (grn_conf_t **) malloc(sizeof(grn_conf_t*)*NUM_CHANNELS);
     m_output_data = (grn_data_out_t **) malloc(sizeof(grn_data_out_t*)*NUM_CHANNELS);
     m_input_size = (unsigned long *) malloc(sizeof(unsigned long)*NUM_CHANNELS);
@@ -40,8 +38,8 @@ void Grn::read_input_file(){
     if (myfile.is_open()) {
         while (getline(myfile, line)) {
             char *id = strtok((char *)line.c_str(), ",");
-            char *init_state = strtok(NULL, ",");
-            char *end_state = strtok(NULL, ",");
+            strtok(NULL, ",");
+            strtok(NULL, ",");
             char *num_states = strtok(NULL, ",");
             auto idx = std::stoul(id, nullptr, 10) / NUM_COPIES_PER_CHANNEL;
             auto sz = std::stoul(num_states, nullptr, 10);
@@ -51,10 +49,15 @@ void Grn::read_input_file(){
         myfile.clear();
         myfile.seekg(0);
         for (int j = 0; j < NUM_CHANNELS; ++j) {
-            m_grn_fpga->createInputQueue(j,sizeof(grn_conf_t)*m_input_size[j]);
-            m_input_data[j] = (grn_conf_t*)m_grn_fpga->getInputQueue(j);
-            m_grn_fpga->createOutputQueue(j,sizeof(grn_data_out_t)*m_output_size[j]);
-            m_output_data[j] = (grn_data_out_t*) m_grn_fpga->getOutputQueue(j);
+
+            if(m_input_size[j] > 0){
+                m_grn_fpga->createInputQueue(j,sizeof(grn_conf_t)*m_input_size[j]);
+                m_input_data[j] = (grn_conf_t*)m_grn_fpga->getInputQueue(j);
+            }
+            if(m_output_size[j] > 0){
+                m_grn_fpga->createOutputQueue(j,sizeof(grn_data_out_t)*m_output_size[j]);
+                m_output_data[j] = (grn_data_out_t*) m_grn_fpga->getOutputQueue(j);
+            }
         }
         int c[NUM_CHANNELS];
         memset(c,0,sizeof(int)*NUM_CHANNELS);
@@ -62,14 +65,14 @@ void Grn::read_input_file(){
             char *id = strtok((char *)line.c_str(), ",");
             char *init_state = strtok(NULL, ",");
             char *end_state = strtok(NULL, ",");
-            char *num_states = strtok(NULL, ",");
+            strtok(NULL, ",");
             std::string init_state_str(init_state);
             std::string end_state_str(end_state);
             auto ch = std::stoul(id, nullptr, 10) / NUM_COPIES_PER_CHANNEL;
-            m_input_data[ch][c[ch]].id = std::stoul(id, nullptr, 10) % NUM_COPIES_PER_CHANNEL;
-            for(int i = 0,p = 0; i < STATE_SIZE_BYTES;++i,p+=2){
-                m_input_data[ch][c[ch]].init_state[i] = std::stoi(init_state_str.substr(p,p+2), nullptr, 16);
-                m_input_data[ch][c[ch]].end_state[i] = std::stoi(end_state_str.substr(p,p+2), nullptr, 16);
+            m_input_data[ch][c[ch]].id = (std::stoul(id, nullptr, 10) % NUM_COPIES_PER_CHANNEL) + 1;
+            for(int i = STATE_SIZE_BYTES-1,p = 0; i >= 0;--i,p+=2){
+                m_input_data[ch][c[ch]].init_state[i] = std::stoul(init_state_str.substr(p,2), nullptr, 16);
+                m_input_data[ch][c[ch]].end_state[i] = std::stoul(end_state_str.substr(p,2), nullptr, 16);
             }
             c[ch]++;
         }
@@ -77,6 +80,7 @@ void Grn::read_input_file(){
     }
     else{
         std::cout << "Error: input file not found." << std::endl;
+        exit(255);
     }
 }
 void Grn::run(){
@@ -93,25 +97,27 @@ void Grn::save_grn_report(){
     for (int k = 0; k < NUM_CHANNELS; ++k) {
         total += m_output_size[k];
     }
-    std::stringstream data[total];
+    std::stringstream d;
+    std::string data[total];
     unsigned long c = 0;
     std::ofstream myfile(m_output_file);
     unsigned long c_global[NUM_COPIES];
     memset(c_global,0,sizeof(unsigned long )* NUM_COPIES);
     for (int k = 0; k < NUM_CHANNELS; ++k) {
-        for(int i = 0; i < m_output_size[k];i++){
-            unsigned long idg = ((k*NUM_COPIES_PER_CHANNEL) + m_output_data[k][i].id);
-            data[c] <<  idg << "," << c_global[idg] <<  "," << m_output_data[k][i].period << "," <<  m_output_data[k][i].transient <<  ",";
+        for(unsigned long i = 0; i < m_output_size[k];i++){
+            unsigned long idg = ((k*NUM_COPIES_PER_CHANNEL) + (m_output_data[k][i].id-1));
+            d <<  idg << "," << c_global[idg] <<  "," << m_output_data[k][i].period << "," <<  m_output_data[k][i].transient <<  ",";
             for(char j : m_output_data[k][i].state){
-                data[c] << j;
+                d << j;
             }
+            data[c] = d.str();
             c_global[idg]++;
             c++;
         }
     }
     sort(&data[0],&data[total-1]);
-    for(int i = 0; i < total; i++){
-        myfile << data[i].str();
+    for(unsigned long i = 0; i < total; i++){
+        myfile << data[i];
     }
     myfile.close();
 }

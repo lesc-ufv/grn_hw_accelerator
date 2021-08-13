@@ -1,4 +1,4 @@
-#include <grn/grn_fpga.h>
+#include <grn_fpga/grn_fpga.h>
 
 TIMER_INIT(5);
 
@@ -71,7 +71,7 @@ void * GrnFpga::allocate_mem_align(size_t size){
 }
 
 void GrnFpga::createInputQueue(int input_id, size_t size){
-    if(input_id >= 0 && input_id < m_num_inputs){
+    if(input_id >= 0 && input_id < m_num_inputs && size > 0){
         m_inputs_ptr[input_id] = allocate_mem_align(size);
         m_input_size_bytes[input_id] = size;
         OCL_CHECK(err,
@@ -90,7 +90,7 @@ void * GrnFpga::getInputQueue(int input_id){
 }
   
 void GrnFpga::createOutputQueue(int output_id, size_t size){
-    if(output_id >= 0 && output_id < m_num_outputs){
+    if(output_id >= 0 && output_id < m_num_outputs && size > 0){
         m_outputs_ptr[output_id] = allocate_mem_align(size);
         m_output_size_bytes[output_id] = size;
         

@@ -7,7 +7,7 @@
 #include <string>
 #include <cmath>
 
-#include <grn/timer.h>
+#include <grn_fpga/timer.h>
 #include <xcl2/xcl2.hpp>
 
 //Timers
