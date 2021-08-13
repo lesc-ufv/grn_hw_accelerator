@@ -2,7 +2,7 @@ TARGET := hw_emu
 DEVICE := $(AWS_PLATFORM)
 HOST_ARCH = x86
 
-CXXFLAGS += $(opencl_CXXFLAGS) -Wall -O0 -g -std=c++11
+CXXFLAGS += $(opencl_CXXFLAGS) -Wall -O3 -g -std=c++14
 LDFLAGS += $(opencl_LDFLAGS)
 
 CXXFLAGS += -I$(shell readlink -f ./include)
@@ -10,7 +10,7 @@ LDFLAGS += -lrt -lstdc++
 
 CXXFLAGS += -fmessage-length=0 -fPIC
 
-LIB_NAME=grn
+LIB_NAME=grn_fpga
 
 SRC_FILES = $(shell find ./src -iname *.cpp)
 

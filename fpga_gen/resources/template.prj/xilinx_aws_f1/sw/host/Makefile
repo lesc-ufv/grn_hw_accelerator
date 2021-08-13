@@ -1,11 +1,12 @@
 
+GRN_CONFFILE := "grn_default.cfg"
 TARGET := hw_emu
 DEVICE := $(AWS_PLATFORM)
 HOST_ARCH = x86
 
-LIB_READY=$(shell readlink -f ../lib/lib/)
+LIB_GRN_FPGA=$(shell readlink -f ../lib/lib/)
 
-CXXFLAGS += $(opencl_CXXFLAGS) -Wall -O3 -g -std=c++11
+CXXFLAGS += $(opencl_CXXFLAGS) -Wall -O3 -g -std=c++14
 LDFLAGS += $(opencl_LDFLAGS)
 
 CXXFLAGS += -I$(shell readlink -f ./include) -I$(shell readlink -f ../lib/include/)
@@ -41,11 +42,11 @@ $(EXECUTABLE): check-xrt $(HOST_SRCS)
 
 .PHONY: sim	
 sim: host simconf emconfig
-	XCL_EMULATION_MODE=$(TARGET) LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(LIB_READY) $(EXECUTABLE) $(SIM_XCLBIN) $(shell cat prj_name)
+	XCL_EMULATION_MODE=$(TARGET) LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(LIB_GRN_FPGA) $(EXECUTABLE) $(SIM_XCLBIN) $(GRN_CONFFILE)
 
 .PHONY: run
 run: host
-	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(LIB_READY) $(EXECUTABLE) $(HW_XCLBIN) $(shell cat prj_name) 
+	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(LIB_GRN_FPGA) $(EXECUTABLE) $(HW_XCLBIN) $(GRN_CONFFILE)
 
 .PHONY: wave 
 wave: sim

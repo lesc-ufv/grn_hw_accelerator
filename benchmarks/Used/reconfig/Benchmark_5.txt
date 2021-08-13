@@ -1,0 +1,5 @@
+CtrA = (CtrA or GcrA) and (not CcrM) and (not SciP)
+GcrA = DnaA and not CtrA
+SciP = CtrA and not DnaA
+DnaA = CtrA and CcrM and (not GcrA) and (not DnaA)
+CcrM = CtrA and (not CcrM) and (not SciP )
