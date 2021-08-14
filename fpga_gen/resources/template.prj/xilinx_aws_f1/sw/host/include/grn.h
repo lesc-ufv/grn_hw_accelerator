@@ -35,7 +35,7 @@ public:
     ~Grn();
     void run();
     void savePerfReport();
-    void saveGrnTeport();
+    void saveGrnReport();
 };
 
 bool myCmp(std::string a, std::string b);

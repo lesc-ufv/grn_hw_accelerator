@@ -89,7 +89,7 @@ void Grn::run(){
 void Grn::savePerfReport(){
   std::ofstream myfile("performance_report.csv");
   myfile << "initialization(ms),data copy HtoD(ms),data copy DtoH(ms),execution time(ms),total execution time(ms)" << std::endl;
-  myfile << m_grn_fpga->getInitTime() "," << m_grn_fpga->getDataCopyHtoDTime() << "," << m_grn_fpga->getDataCopyDtoHTime() << "," << m_grn_fpga->getExecTime() << "," <<  m_grn_fpga->getTotalTime() << std::endl;
+  myfile << m_grn_fpga->getInitTime() << "," << m_grn_fpga->getDataCopyHtoDTime() << "," << m_grn_fpga->getDataCopyDtoHTime() << "," << m_grn_fpga->getExecTime() << "," <<  m_grn_fpga->getTotalTime() << std::endl;
 }
 void Grn::saveGrnReport(){
 
@@ -115,13 +115,13 @@ void Grn::saveGrnReport(){
             c_global[idg]++;
         }
     }
-    sort(data.begin(),data.end(),mycmp);
+    sort(data.begin(),data.end(),myCmp);
     for(unsigned long i = 0; i < total; i++){
         myfile << data[i];
     }
     myfile.close();
 }
-bool mycmp(std::string a, std::string b){
+bool myCmp(std::string a, std::string b){
     char *aid = strtok((char *)a.c_str(), ",");
     char *aid1 = strtok(NULL, ",");
 
