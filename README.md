@@ -1,1 +1,1 @@
-# gnr_hw_accelerator
+# Genetic Regulator Network Atractors Seach on AWS FPGA Instance
