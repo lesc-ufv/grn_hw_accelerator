@@ -30,7 +30,7 @@ Grn::~Grn(){
     delete m_output_size;
     delete m_grn_fpga;
 }
-void Grn::read_input_file(){
+void Grn::readInputFile(){
     std::string line;
     std::ifstream myfile(m_input_file);
     if (myfile.is_open()) {
@@ -82,14 +82,16 @@ void Grn::read_input_file(){
     }
 }
 void Grn::run(){
-    m_grn_fpga->fpga_init(m_xclbin, m_kernel_name);
-    read_input_file();
+    m_grn_fpga->fpgaInit(m_xclbin, m_kernel_name);
+    readInputFile();
     m_grn_fpga->execute();
 }
-void Grn::save_perf_report(){
-//todo: implement this function
+void Grn::savePerfReport(){
+  std::ofstream myfile("performance_report.csv");
+  myfile << "initialization(ms),data copy HtoD(ms),data copy DtoH(ms),execution time(ms),total execution time(ms)" << std::endl;
+  myfile << m_grn_fpga->getInitTime() "," << m_grn_fpga->getDataCopyHtoDTime() << "," << m_grn_fpga->getDataCopyDtoHTime() << "," << m_grn_fpga->getExecTime() << "," <<  m_grn_fpga->getTotalTime() << std::endl;
 }
-void Grn::save_grn_report(){
+void Grn::saveGrnReport(){
 
     unsigned long total = 0;
     for (int k = 0; k < NUM_CHANNELS; ++k) {

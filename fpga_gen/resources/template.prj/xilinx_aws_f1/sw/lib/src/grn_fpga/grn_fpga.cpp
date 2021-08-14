@@ -18,7 +18,7 @@ GrnFpga::GrnFpga(int num_inputs, int num_outputs):m_input_buffer(num_inputs),
     memset(m_output_size_bytes, 0, sizeof(size_t) * num_outputs);
 }
 
-int GrnFpga::fpga_init(std::string &binary_file, std::string kernel_name){
+int GrnFpga::fpgaInit(std::string &binary_file, std::string kernel_name){
 
   TIMER_START(INIT_TIMER_ID);   
   cl_int err;
@@ -61,7 +61,7 @@ int GrnFpga::fpga_init(std::string &binary_file, std::string kernel_name){
     
 }
 
-void * GrnFpga::allocate_mem_align(size_t size){
+void * GrnFpga::allocateMemAlign(size_t size){
     
     void *ptr;
     if( posix_memalign((void**)&ptr,4096,size) == 0){
@@ -72,7 +72,7 @@ void * GrnFpga::allocate_mem_align(size_t size){
 
 void GrnFpga::createInputQueue(int input_id, size_t size){
     if(input_id >= 0 && input_id < m_num_inputs && size > 0){
-        m_inputs_ptr[input_id] = allocate_mem_align(size);
+        m_inputs_ptr[input_id] = allocateMemAlign(size);
         m_input_size_bytes[input_id] = size;
         OCL_CHECK(err,
                   m_input_buffer[input_id] = cl::Buffer(m_context,
@@ -91,7 +91,7 @@ void * GrnFpga::getInputQueue(int input_id){
   
 void GrnFpga::createOutputQueue(int output_id, size_t size){
     if(output_id >= 0 && output_id < m_num_outputs && size > 0){
-        m_outputs_ptr[output_id] = allocate_mem_align(size);
+        m_outputs_ptr[output_id] = allocateMemAlign(size);
         m_output_size_bytes[output_id] = size;
         
         OCL_CHECK(err,
@@ -110,7 +110,7 @@ void * GrnFpga::getOutputQueue(int output_id){
     return nullptr; 
 }
 
-void GrnFpga::set_args(){
+void GrnFpga::setArgs(){
     
     int id = m_num_inputs + m_num_outputs;
     for(int i = 0; i < m_num_inputs;++i){
@@ -136,7 +136,7 @@ int GrnFpga::execute(){
   
     TIMER_START(TOTAL_EXE_TIMER_ID);
     {
-        set_args();
+        setArgs();
         TIMER_START(DATA_CPY_HtoD);
         {
             // Copy input data to device global memory
@@ -183,7 +183,7 @@ int GrnFpga::cleanup(){
     return 0;
 }
 
-int GrnFpga::print_report(){
+int GrnFpga::printReport(){
     printf("------------------------------------------------------\n");
     printf("  Performance Summary                                 \n");
     printf("------------------------------------------------------\n");
@@ -196,4 +196,22 @@ int GrnFpga::print_report(){
     return 0;
 }
 
+double GrnFpga::getInitTime(){
+    return TIMER_REPORT_MS(INIT_TIMER_ID);
+}
+
+double GrnFpga::getDataCopyHtoDTime(){
+    return TIMER_REPORT_MS(DATA_CPY_HtoD);
+}
+
+double GrnFpga::getDataCopyDtoHTime(){
+    return TIMER_REPORT_MS(DATA_CPY_DtoH);
+}
+
+double GrnFpga::getExecTime(){
+    return TIMER_REPORT_MS(EXE_TIMER_ID);
+}
+double GrnFpga::getTotalTime(){
+    return TIMER_REPORT_MS(TOTAL_EXE_TIMER_ID);
+}
 

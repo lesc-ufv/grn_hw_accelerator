@@ -28,16 +28,16 @@ private:
     grn_data_out_t ** m_output_data;
     unsigned long * m_input_size;
     unsigned long * m_output_size;
-    void read_input_file();
+    void readInputFile();
 
 public:
     Grn(std::string xclbin, std::string kernel_name,std::string input_file, std::string output_file);
     ~Grn();
     void run();
-    void save_perf_report();
-    void save_grn_report();
+    void savePerfReport();
+    void saveGrnTeport();
 };
 
-bool mycmp(std::string a, std::string b);
+bool myCmp(std::string a, std::string b);
 
 #endif //GRN_H

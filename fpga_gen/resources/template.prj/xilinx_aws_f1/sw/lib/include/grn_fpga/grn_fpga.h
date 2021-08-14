@@ -44,15 +44,15 @@ private:
   void ** m_inputs_ptr;
   void ** m_outputs_ptr;
 
-  void set_args();
+  void setArgs();
   
-  void * allocate_mem_align(size_t size);
+  void * allocateMemAlign(size_t size);
       
 public:
         
   GrnFpga(int num_inputs, int num_outputs);  
   
-  int fpga_init(std::string &binary_file, std::string kernel_name);
+  int fpgaInit(std::string &binary_file, std::string kernel_name);
   
   void createInputQueue(int input_id, size_t size);
   
@@ -66,6 +66,11 @@ public:
      
   int cleanup();
       
-  int print_report();
-    
+  int printReport();
+
+  double getInitTime();
+  double getDataCopyHtoDTime();
+  double getDataCopyDtoHTime();
+  double getExecTime();
+  double getTotalTime();
 };

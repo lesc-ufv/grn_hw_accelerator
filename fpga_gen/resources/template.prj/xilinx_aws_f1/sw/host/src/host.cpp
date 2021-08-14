@@ -15,7 +15,9 @@ int main(int argc, char *argv[]){
 
     auto grn = Grn(binaryFile,kernel_name,grn_cfg,grn_outputfile);
     grn.run();
-    grn.save_grn_report();
+    grn.saveGrnReport();
+    grn.savePerfReport();
+
 
     return 0;
 }
