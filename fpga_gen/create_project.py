@@ -12,7 +12,7 @@ from veriloggen import *
 from src.hw.grn_accelerator_aws import GrnAccelerator
 from src.hw.create_acc_axi_interface import AccAXIInterface
 from src.hw.utils import commands_getoutput
-
+from math import ceil
 
 def write_file(name, string):
     with open(name, 'w') as fp:
@@ -45,15 +45,12 @@ def create_project(GRN_root, grn_file, copies, name, output_path):
     m = acc_axi.create_kernel_top(name)
     m.to_verilog(hw_path + 'src/%s.v' % (name))
 
-#define NUM_CHANNELS error!!!
-#define NUM_COPIES error!!!
-#define NUM_COPIES_PER_CHANNEL error!!!
-#define NUM_NOS error!!!
-
     acc_config  = '#define NUM_CHANNELS (%d)\n'% grnacc.get_num_in()
     acc_config += '#define NUM_COPIES (%d)\n'% copies
     acc_config += '#define NUM_COPIES_PER_CHANNEL (%d)\n'% grnacc.grn_copies_per_network
-    acc_config += '#define NUM_NOS (%d)'% grnacc.grn_num_nos
+    acc_config += '#define NUM_NOS (%d)\n'% grnacc.grn_num_nos
+    acc_config += '#define STATE_SIZE_BYTES (%d)\n'% int(ceil(grnacc.grn_num_nos/8))
+    acc_config += '#define ACC_DATA_BYTES (%d)\n'% int(grnacc.axi_bus_data_width/8)
 
     num_axis_str = 'NUM_M_AXIS=%d' % grnacc.get_num_in()
     conn_str = acc_axi.get_connectivity_config(name)

@@ -101,6 +101,10 @@ class GrnAccelerator:
                    ('grn_write_data', acc_user_write_data[out_init:out_end-1]),
                    ('grn_done', grn_done[i])]
             m.Instance(grn, '%s_%d' % (grn.name, i), par, con)
+
+            s = ((i+1) * self.axi_bus_data_width) - out_end
+            acc_user_write_data[out_end-1:((i+1) * self.axi_bus_data_width)].assign(Int(0,s,16))
+
             num_redes = num_redes - self.grn_copies_per_network
 
         initialize_regs(m)
