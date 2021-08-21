@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
 void writeOutputFile(uint32_t **period, uint32_t **transient, uint64_t *init_state, uint64_t *end_state, uint64_t **atractor, uint32_t lines, string filename) {
     ofstream file(filename);
     for(uint32_t l=0; l<lines; ++l) {
-        for(uint64_t s=init_state[l], i = 0; s < end_state[l]; ++s, ++i) {
+        for(uint64_t s=init_state[l], i = 0; s <= end_state[l]; ++s, ++i) {
             file << to_string(l) << ", " << to_string(period[l][i]) << ", " << to_string(transient[l][i]) << ", " << std::hex << (atractor[l][i]) << endl;
         }
     }
