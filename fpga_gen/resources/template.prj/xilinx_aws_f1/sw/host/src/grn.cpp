@@ -91,7 +91,7 @@ void Grn::savePerfReport(){
   myfile << "Name,Initialization(ms),Size input data(bytes),Data copy HtoD(ms),Size output data(bytes),";
   myfile << "Data copy DtoH(ms),Execution time(ms),Total execution time(ms)" << std::endl;
   myfile << m_kernel_name << ",";
-  myfile << m_grn_fpga->getInitTime() << ",";
+  myfile << m_grn_fpga->getInitTime()+m_grn_fpga->getSetArgsTime() << ",";
   myfile << m_grn_fpga->getTotalInputSize() << ",";
   myfile << m_grn_fpga->getDataCopyHtoDTime() << ",";
   myfile << m_grn_fpga->getTotalOutputSize() << ",";
