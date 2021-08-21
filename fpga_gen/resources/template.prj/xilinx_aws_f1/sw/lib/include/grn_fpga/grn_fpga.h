@@ -81,8 +81,8 @@ public:
   
   double getSetArgsTime();
 
-  double getTotalInputSize();
+  unsigned long getTotalInputSize();
 
-  double getTotalOutputSize();
+  unsigned long getTotalOutputSize();
 
 };

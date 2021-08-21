@@ -225,16 +225,16 @@ double GrnFpga::getTotalTime(){
     return TIMER_REPORT_MS(TOTAL_EXE_TIMER_ID);
 }
 
-double GrnFpga::getTotalInputSize(){
-    double r = 0;
+unsigned long GrnFpga::getTotalInputSize(){
+    unsigned long r = 0;
     for(int i = 0;i<m_num_inputs;++i){
         r += m_input_size_bytes[i];
     }
     return r;
 }
 
-double GrnFpga::getTotalOutputSize(){
-    double r = 0;
+unsigned long GrnFpga::getTotalOutputSize(){
+    unsigned long r = 0;
     for(int i = 0;i<m_num_outputs;++i){
         r += m_output_size_bytes[i];
     }
