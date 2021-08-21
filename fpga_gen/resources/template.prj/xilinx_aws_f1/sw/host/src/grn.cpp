@@ -88,8 +88,15 @@ void Grn::run(){
 }
 void Grn::savePerfReport(){
   std::ofstream myfile("performance_report.csv");
-  myfile << "initialization(ms),data copy HtoD(ms),data copy DtoH(ms),execution time(ms),total execution time(ms)" << std::endl;
-  myfile << m_grn_fpga->getInitTime() << "," << m_grn_fpga->getDataCopyHtoDTime() << "," << m_grn_fpga->getDataCopyDtoHTime() << "," << m_grn_fpga->getExecTime() << "," <<  m_grn_fpga->getTotalTime() << std::endl;
+  myfile << "Initialization(ms),Size input data(bytes),Data copy HtoD(ms),Size output data(bytes),";
+  myfile << "Data copy DtoH(ms),Execution time(ms),Total execution time(ms)" << std::endl;
+  myfile << m_grn_fpga->getInitTime() << ",";
+  myfile << m_grn_fpga->getTotalInputSize() << ",";
+  myfile << m_grn_fpga->getDataCopyHtoDTime() << ",";
+  myfile << m_grn_fpga->getTotalOutputSize() << ",";
+  myfile << m_grn_fpga->getDataCopyDtoHTime() << ",";
+  myfile << m_grn_fpga->getExecTime() << ",";
+  myfile << m_grn_fpga->getTotalTime() << std::endl;
 }
 void Grn::saveGrnReport(){
 
