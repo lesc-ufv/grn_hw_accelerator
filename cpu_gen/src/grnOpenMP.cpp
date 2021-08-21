@@ -2,30 +2,78 @@
 #include <math.h>
 #include <omp.h>
 #include <chrono>
+#include <vector>
+#include <algorithm>
+#include <fstream>
 
-#define NUM_STATES (1<<5)
 #define NUM_NOS 21
 
 using namespace std;
 using namespace std::chrono;
 
+vector<string> splitString(string s, string delimiter);
+void readInputFile(uint32_t ***period, uint32_t ***transient, uint64_t **init_state, uint64_t **end_state, bool ***s0, bool ***s1, uint64_t ***atractor, uint32_t *lines, string filename);
 void pass(bool *aux);
-bool equals(bool *vet1, bool *vet2, int size);
-void print(bool *vet1);
-void initialState(unsigned long int valor, bool *vet1, bool *vet2, int size);
-string boolArraytoString(bool *vet, int size);
-unsigned long long int boolArraytoInt(bool *vet, int size);
-void runGNR(int inicio, int fim, unsigned int * period_vet, unsigned int * transient_vet);
+bool equals(bool *vet1, bool *vet2);
+string vet_to_hex(bool *vet1);
+void initialState(uint64_t valor, bool *vet1, bool *vet2);
+string boolArraytoString(bool *vet);
+uint64_t boolArraytoInt(bool *vet);
+void runGNR(uint64_t *init_state, uint64_t *end_state, uint32_t **period_vet, uint32_t **transient_vet, bool **s0, bool **s1, uint64_t **atractor_vet, uint32_t lines);
+void writeOutputFile(uint32_t **period, uint32_t **transient, uint64_t *init_state, uint64_t *end_state, uint64_t **atractor, uint32_t lines, string filename);
 
-int main() {
+class InputParser {
+private:
+    vector<string> tokens;
+
+public:
+    InputParser(int &argc, char **argv) {
+        for(int i=1; i<argc; ++i) {
+            this->tokens.push_back(string(argv[i]));
+        }
+    }
+
+    bool cmdOptionExists(const string &option) const{
+        return find(this->tokens.begin(), this->tokens.end(), option)
+                != this->tokens.end();
+    }
+
+    const string& getCmdOption(const string &option) const{
+        vector<string>::const_iterator itr;
+        itr =  find(this->tokens.begin(), this->tokens.end(), option);
+        if (itr != this->tokens.end() && ++itr != this->tokens.end() && (*itr).front() != '-'){
+            return *itr;
+        }
+        static const string empty_string("");
+        return empty_string;
+    }
+};
+
+int main(int argc, char **argv) {
+    InputParser input(argc, argv);
+
+    string filein = input.getCmdOption("-i");
+    string fileout = input.getCmdOption("-o");
+
+    if(!filein.size() || !fileout.size()) {
+        cout << "Usage: ./<executable> -i <input filename> -o <utput filename csv>" << endl;
+        exit(255);
+    } 
         
-    unsigned int *period_vet = nullptr;
-    unsigned int *transient_vet = nullptr;
+    uint32_t **period_vet = nullptr;
+    uint32_t **transient_vet = nullptr;
+    uint64_t *init_state = nullptr;
+    uint64_t *end_state = nullptr;
+    uint32_t lines;
+
+    bool **s0 = nullptr;
+    bool **s1 = nullptr;
+
+    uint64_t **atractor_vet;
     
-    period_vet = (unsigned int *)malloc(sizeof(unsigned int)*NUM_STATES);
-    transient_vet = (unsigned int *)malloc(sizeof(unsigned int)*NUM_STATES);
+    readInputFile(&period_vet, &transient_vet, &init_state, &end_state, &s0, &s1, &atractor_vet, &lines, filein);
     
-    if(period_vet == nullptr || transient_vet == nullptr){
+    if(period_vet == nullptr || transient_vet == nullptr || init_state == nullptr || end_state == nullptr) {
         cout << "Error: malloc failed!" << endl;
         exit(255);
     }
@@ -34,59 +82,128 @@ int main() {
     duration<double> diff{};
     s = high_resolution_clock::now();
     
-    runGNR(0,NUM_STATES,period_vet,transient_vet);
+    runGNR(init_state, end_state, period_vet, transient_vet, s0, s1, atractor_vet, lines);
     
     diff = high_resolution_clock::now() - s;
     
-    cout << "Number of state: " << NUM_STATES << endl;
+    // cout << "Number of state: " << NUM_STATES << endl;
     cout << "Execution Time: " << diff.count() * 1000 << "ms" << endl;
-    cout << "State per second: " << (NUM_STATES/diff.count()) << endl;
+    // cout << "State per second: " << (NUM_STATES/diff.count()) << endl;
+
+    writeOutputFile(period_vet, transient_vet, init_state, end_state, atractor_vet, lines, fileout);
     
-    free(period_vet);
-    free(transient_vet);
+    // free(period_vet);
+    // free(transient_vet);
      
     return 0;
 }
 
-void runGNR(int inicio, int fim, unsigned int * period_vet, unsigned int * transient_vet) {
-    bool s0[NUM_NOS];
-    bool s1[NUM_NOS];
-    unsigned int period = 0;
-    unsigned int transient = 0;
-    #pragma omp parallel for schedule(static) private(s0,s1,period,transient)
-    for (unsigned long long int i = inicio; i < fim; i++) {
-        initialState(i, s0, s1, NUM_NOS);
-        do {
-            pass(s0);
-            pass(s1);
-            pass(s1);
-            transient++;
-        } while (!equals(s0, s1, NUM_NOS));
-        do {
-            pass(s1);
-            period++;
-        } while (!equals(s0, s1, NUM_NOS));
-        
-        period--;
-        period_vet[i] = period;
-        transient_vet[i] = transient;
-        printf("%lld: P: %u T: %u\n",i,period,transient);
-        period = 0;
-        transient = 0;
+void writeOutputFile(uint32_t **period, uint32_t **transient, uint64_t *init_state, uint64_t *end_state, uint64_t **atractor, uint32_t lines, string filename) {
+    ofstream file(filename);
+    for(uint32_t l=0; l<lines; ++l) {
+        for(uint64_t s=init_state[l], i = 0; s < end_state[l]; ++s, ++i) {
+            file << to_string(l) << ", " << to_string(period[l][i]) << ", " << to_string(transient[l][i]) << ", " << std::hex << (atractor[l][i]) << endl;
+        }
+    }
+    file.close();
+}
+
+vector<string> splitString(string s, string delimiter) {
+    size_t pos = 0;
+    vector<string> ans;
+    while((pos = s.find(delimiter)) != string::npos) {
+        ans.push_back(s.substr(0, pos));
+        s.erase(0, pos + delimiter.length());
+    }
+    ans.push_back(s);
+    return ans;
+}
+
+void readInputFile(uint32_t ***period, uint32_t ***transient, uint64_t **init_state, uint64_t **end_state, bool ***s0, bool ***s1, uint64_t ***atractor, uint32_t *lines, string filename) {
+    ifstream file(filename);
+    uint32_t cnt_lines = 0;
+    string line;
+    uint32_t size;
+    vector<vector<string>> all_items;
+    while(getline(file, line)) {
+        auto items = splitString(line, ",");
+        if(items.size() == 4) {
+            cnt_lines++;
+            all_items.push_back(items);
+        }
+    }
+    file.close();
+
+    (*lines) = cnt_lines;
+    (*period) = (uint32_t **) malloc(cnt_lines * sizeof (uint32_t *));
+    (*transient) = (uint32_t **) malloc(cnt_lines * sizeof(uint32_t *));
+    (*init_state) = (uint64_t *) malloc(cnt_lines * sizeof(uint64_t));
+    (*end_state) = (uint64_t *) malloc(cnt_lines * sizeof(uint64_t));
+    (*s0) = (bool **) malloc(cnt_lines * sizeof(bool *));
+    (*s1) = (bool **) malloc(cnt_lines * sizeof(bool *));
+    (*atractor) = (uint64_t **) malloc(cnt_lines * sizeof (uint64_t *));
+
+    for(int i=0; i<cnt_lines; ++i) {
+        size = stoul(all_items[i][3], NULL, 16);
+        (*period)[i] = (uint32_t *) malloc(size * sizeof(uint32_t));
+        (*transient)[i] = (uint32_t *) malloc(size * sizeof(uint32_t));
+        (*init_state)[i] = stoull(all_items[i][1], NULL, 16);
+        (*end_state)[i] = stoull(all_items[i][2], NULL, 16);
+        (*s1)[i] = (bool *) malloc(NUM_NOS * sizeof(bool));
+        (*s0)[i] = (bool *) malloc(NUM_NOS * sizeof(bool)); 
+        (*atractor)[i] = (uint64_t *) malloc(size * sizeof(uint64_t));
     }
 }
 
-void initialState(unsigned long int valor, bool *vet1, bool *vet2, int size) {
+void runGNR(uint64_t *init_state, uint64_t *end_state, uint32_t **period_vet, uint32_t **transient_vet, bool **s0, bool **s1, uint64_t **atractor_vet, uint32_t lines) {
+    #pragma omp parallel for schedule(static)
+    for(uint32_t l=0; l<lines; ++l) {
+        for (uint64_t s = init_state[l], i = 0; s <= end_state[l]; s++, i++) {
+            initialState(s, s0[l], s1[l]);
+            transient_vet[l][i] = 0;
+            period_vet[l][i] = 0;
+            do {
+                pass(s0[l]);
+                pass(s1[l]);
+                pass(s1[l]);
+                // transient++;
+                transient_vet[l][i]++;
+            } while (!equals(s0[l], s1[l]));
+            do {
+                pass(s1[l]);
+                // period++;
+                period_vet[l][i]++;
+            } while (!equals(s0[l], s1[l]));
 
-    for (int i = 0; i < size; i++) {
+            period_vet[l][i]--;
+            atractor_vet[l][i] = boolArraytoInt(s0[l]);
+            // printf("%lld: P: %u T: %u\n", i, period, transient);
+            /* if(output.is_open()) {
+                string str = "";
+                str += to_string()
+                str += to_string(i);
+                str += ",";
+                str += to_string(period);
+                str += ",";
+                str += to_string(transient);
+                str += "\n";
+                cout << str << endl;
+                output.write(str.c_str(), str.size());
+            } */
+        }
+    }
+}
+
+void initialState(uint64_t valor, bool *vet1, bool *vet2) {
+    for (int i = 0; i < NUM_NOS; i++) {
         vet1[i] = (valor & 1) != 0;
         vet2[i] = vet1[i];
         valor >>= 1;
     }
 }
 
-bool equals(bool *vet1, bool *vet2, int size) {
-    for (int i = 0; i < size; i++) {
+bool equals(bool *vet1, bool *vet2) {
+    for (int i = 0; i < NUM_NOS; i++) {
         if (vet1[i] != vet2[i]) {
             return false;
         }
@@ -94,31 +211,47 @@ bool equals(bool *vet1, bool *vet2, int size) {
     return true;
 }
 
-string boolArraytoString(bool *vet, int size) {
-    string out;
-    for (int i = size - 1; i >= 0; i--) {
+string vet_to_hex(bool *vet) {
+    string hex = "";
+    for(int i=0; i<NUM_NOS; i += 4) {
+        int v=0;
+        for(int j=i+3; j>=i; --j) {
+            if(j < NUM_NOS) {
+                v = (v << 1) | (vet[j] ? 1 : 0);
+            } 
+        }
+        if(v >= 10) hex += ('a' + v - 10);
+        else hex += to_string(v);
+    }
+    reverse(hex.begin(), hex.end());
+
+    return hex;
+}
+
+string boolArraytoString(bool *vet) {
+    string out = "";
+    for (int i = NUM_NOS - 1; i >= 0; i--) {
         if (vet[i]) {
-            out = out + "1";
+            out += "1";
         } else {
-            out = out + "0";
+            out += "0";
         }
     }
     return out;
 }
 
-unsigned long long int boolArraytoInt(bool *vet, int size) {
-    int out = 0;
+uint64_t boolArraytoInt(bool *vet) {
+    uint64_t out = 0;
     // std::cout <<"boolArraytoInt:"<< std::endl;
-    for (int i = size - 1; i >= 0; i--) {
+    for (int i = NUM_NOS - 1; i >= 0; i--) {
         //   std::cout << vet[i] << " ";
-        if (vet[i]) {
-            out |= 1;
-        }
-        if (i > 0) out <<= 1;
+        out = (out << 1ll) | vet[i];
     }
     //  std::cout << " = " << out << std::endl;
     return out;
 }
+
+
 // Equações Biológicas
 // CAC Network ( 70 Vértices )
 #if NUM_NOS == 70
@@ -230,7 +363,7 @@ void pass (bool *aux){
 }
 #elif NUM_NOS == 54
  // MAPK ( 54 Vértices)
-void pass(bool *aux){
+void pass(bool *aux){int size, 
     bool vet[NUM_NOS];
  for (int i=0; i<NUM_NOS; i++){
      vet[i] = aux[i];
@@ -293,7 +426,7 @@ void pass(bool *aux){
 
 #elif NUM_NOS == 188
 
-void pass(bool *aux){
+void pass(bool *aux){int size, 
     bool vet[NUM_NOS];
     for (int i=0; i<NUM_NOS; i++){
         vet[i]=aux[i];
@@ -494,5 +627,9 @@ void pass(bool *aux){
 
 }
 #else
- /*Error*/
+
+void pass(bool *aux) {
+
+}
+
 #endif
