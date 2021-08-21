@@ -144,7 +144,7 @@ void readInputFile(uint32_t ***period, uint32_t ***transient, uint64_t **init_st
     (*atractor) = (uint64_t **) malloc(cnt_lines * sizeof (uint64_t *));
 
     for(int i=0; i<cnt_lines; ++i) {
-        size = stoul(all_items[i][3], NULL, 16);
+        size = stoul(all_items[i][3], NULL, 10);
         (*period)[i] = (uint32_t *) malloc(size * sizeof(uint32_t));
         (*transient)[i] = (uint32_t *) malloc(size * sizeof(uint32_t));
         (*init_state)[i] = stoull(all_items[i][1], NULL, 16);
