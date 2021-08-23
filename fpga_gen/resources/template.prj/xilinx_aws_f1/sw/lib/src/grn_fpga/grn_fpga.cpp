@@ -1,6 +1,6 @@
 #include <grn_fpga/grn_fpga.h>
 
-TIMER_INIT(5);
+TIMER_INIT(6);
 
 GrnFpga::GrnFpga(int num_inputs, int num_outputs):m_input_buffer(num_inputs),
                                                     m_output_buffer(num_outputs),
@@ -21,7 +21,6 @@ GrnFpga::GrnFpga(int num_inputs, int num_outputs):m_input_buffer(num_inputs),
 int GrnFpga::fpgaInit(std::string &binary_file, std::string kernel_name){
 
   TIMER_START(INIT_TIMER_ID);   
-  cl_int err;
   // get_xil_devices() is a utility API which will find the xilinx
   // platforms and will return list of devices connected to Xilinx platform
   auto devices = xcl::get_xil_devices();
@@ -33,13 +32,13 @@ int GrnFpga::fpgaInit(std::string &binary_file, std::string kernel_name){
   for (unsigned int i = 0; i < devices.size(); i++) {
     auto device = devices[i];
     // Creating Context and Command Queue for selected Device
-    OCL_CHECK(err, m_context = cl::Context(device, NULL, NULL, NULL, &err));
-    OCL_CHECK(err, m_q = cl::CommandQueue(m_context, device, CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err));
+    OCL_CHECK(m_err, m_context = cl::Context(device, NULL, NULL, NULL, &m_err));
+    OCL_CHECK(m_err, m_q = cl::CommandQueue(m_context, device, CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &m_err));
 
     std::cout << "Trying to program device[" << i
               << "]: " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
-    m_prog = cl::Program(m_context, {device}, bins, NULL, &err);
-    if (err != CL_SUCCESS) {
+    m_prog = cl::Program(m_context, {device}, bins, NULL, &m_err);
+    if (m_err != CL_SUCCESS) {
       std::cout << "Failed to program device[" << i << "] with xclbin file!\n";
     } else {
       std::cout << "Device[" << i << "]: program successful!\n";
@@ -53,7 +52,7 @@ int GrnFpga::fpgaInit(std::string &binary_file, std::string kernel_name){
     exit(EXIT_FAILURE);
   }
 
-  OCL_CHECK(err, m_kernel = cl::Kernel(m_prog,kernel_name.c_str(), &err));
+  OCL_CHECK(m_err, m_kernel = cl::Kernel(m_prog,kernel_name.c_str(), &m_err));
 
   TIMER_STOP_ID(INIT_TIMER_ID);
 
@@ -70,16 +69,18 @@ void * GrnFpga::allocateMemAlign(size_t size){
     return nullptr;
 }
 
-void GrnFpga::createInputQueue(int input_id, size_t size){
+void * GrnFpga::createInputQueue(int input_id, size_t size){
     if(input_id >= 0 && input_id < m_num_inputs && size > 0){
         m_inputs_ptr[input_id] = allocateMemAlign(size);
         m_input_size_bytes[input_id] = size;
-        OCL_CHECK(err,
+        OCL_CHECK(m_err,
                   m_input_buffer[input_id] = cl::Buffer(m_context,
                                                         CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
                                                         size, m_inputs_ptr[input_id],
-                                                        &err));
+                                                        &m_err));
+        return m_inputs_ptr[input_id];
     }
+    return nullptr;
 }
   
 void * GrnFpga::getInputQueue(int input_id){
@@ -89,18 +90,20 @@ void * GrnFpga::getInputQueue(int input_id){
     return nullptr;
 }
   
-void GrnFpga::createOutputQueue(int output_id, size_t size){
+void * GrnFpga::createOutputQueue(int output_id, size_t size){
     if(output_id >= 0 && output_id < m_num_outputs && size > 0){
         m_outputs_ptr[output_id] = allocateMemAlign(size);
         m_output_size_bytes[output_id] = size;
         
-        OCL_CHECK(err,
+        OCL_CHECK(m_err,
                   m_output_buffer[output_id] = cl::Buffer(m_context,
                                                           CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
                                                           size,
                                                           m_outputs_ptr[output_id],
-                                                          &err));
+                                                          &m_err));
+         return m_outputs_ptr[output_id];
     }    
+    return nullptr;
 }
   
 void * GrnFpga::getOutputQueue(int output_id){
@@ -117,8 +120,8 @@ void GrnFpga::setArgs(){
          if(m_input_size_bytes[i] == 0){
             createInputQueue(i,64);
          }        
-         OCL_CHECK(err, err = m_kernel.setArg(i, sizeof(cl_int),(void *)& m_input_size_bytes[i]));  
-         OCL_CHECK(err, err = m_kernel.setArg(id, m_input_buffer[i]));
+         OCL_CHECK(m_err, m_err = m_kernel.setArg(i, sizeof(cl_int),(void *)& m_input_size_bytes[i]));
+         OCL_CHECK(m_err, m_err = m_kernel.setArg(id, m_input_buffer[i]));
          id += 2;
     }
     id = m_num_inputs + m_num_outputs + 1;
@@ -126,41 +129,43 @@ void GrnFpga::setArgs(){
         if(m_output_size_bytes[i] == 0){
             createOutputQueue(i,64);
         }        
-        OCL_CHECK(err, err = m_kernel.setArg(m_num_inputs + i, sizeof(cl_int),(void *)& m_output_size_bytes[i]));
-        OCL_CHECK(err, err = m_kernel.setArg(id, m_output_buffer[i]));
+        OCL_CHECK(m_err, m_err = m_kernel.setArg(m_num_inputs + i, sizeof(cl_int),(void *)& m_output_size_bytes[i]));
+        OCL_CHECK(m_err, m_err = m_kernel.setArg(id, m_output_buffer[i]));
         id += 2;
     }
 }
 
 int GrnFpga::execute(){
-  
-    TIMER_START(TOTAL_EXE_TIMER_ID);
     {
+        TIMER_START(SET_ARGS_TIMER_ID);
         setArgs();
-        TIMER_START(DATA_CPY_HtoD);
-        {
-            // Copy input data to device global memory
-            OCL_CHECK(err, err = m_q.enqueueMigrateMemObjects(m_input_buffer,0/* 0 means from host*/));
-            OCL_CHECK(err, err = m_q.finish());
-        }
-        TIMER_STOP_ID(DATA_CPY_HtoD);
-        TIMER_START(EXE_TIMER_ID);
-        {
-            // Launch the Kernel
-            OCL_CHECK(err, err = m_q.enqueueTask(m_kernel));
-            OCL_CHECK(err, err = m_q.finish());
-        }
-        TIMER_STOP_ID(EXE_TIMER_ID);
-        TIMER_START(DATA_CPY_DtoH);
-        {
-            // Copy Result from Device Global Memory to Host Local Memory
-            OCL_CHECK(err, err = m_q.enqueueMigrateMemObjects(m_output_buffer, CL_MIGRATE_MEM_OBJECT_HOST));
-            OCL_CHECK(err, err = m_q.finish());
-        }
-        TIMER_STOP_ID(DATA_CPY_DtoH);
-    
+        TIMER_STOP_ID(SET_ARGS_TIMER_ID);
     }
-    TIMER_STOP_ID(TOTAL_EXE_TIMER_ID);
+    {
+        TIMER_START(TOTAL_EXE_TIMER_ID);
+        {
+            TIMER_START(DATA_CPY_HtoD);
+            // Copy input data to device global memory
+            OCL_CHECK(m_err, m_err = m_q.enqueueMigrateMemObjects(m_input_buffer,0/* 0 means from host*/));
+            OCL_CHECK(m_err, m_err = m_q.finish());
+            TIMER_STOP_ID(DATA_CPY_HtoD);
+        }
+        {
+            TIMER_START(EXE_TIMER_ID);
+            // Launch the Kernel
+            OCL_CHECK(m_err, m_err = m_q.enqueueTask(m_kernel));
+            OCL_CHECK(m_err, m_err = m_q.finish());
+            TIMER_STOP_ID(EXE_TIMER_ID);
+        }
+        {
+            TIMER_START(DATA_CPY_DtoH);
+            // Copy Result from Device Global Memory to Host Local Memory
+            OCL_CHECK(m_err, m_err = m_q.enqueueMigrateMemObjects(m_output_buffer, CL_MIGRATE_MEM_OBJECT_HOST));
+            OCL_CHECK(m_err, m_err = m_q.finish());
+            TIMER_STOP_ID(DATA_CPY_DtoH);
+        }
+        TIMER_STOP_ID(TOTAL_EXE_TIMER_ID);
+    }
         
     return 0;
 }
@@ -188,6 +193,7 @@ int GrnFpga::printReport(){
     printf("  Performance Summary                                 \n");
     printf("------------------------------------------------------\n");
     printf("  Device Initialization      : %12.4f ms\n", TIMER_REPORT_MS(INIT_TIMER_ID));
+    printf("  Set args                   : %12.4f ms\n", TIMER_REPORT_MS(SET_ARGS_TIMER_ID));
     printf("  Data copy host to device   : %12.4f ms\n", TIMER_REPORT_MS(DATA_CPY_HtoD));
     printf("  Data copy device to host   : %12.4f ms\n", TIMER_REPORT_MS(DATA_CPY_DtoH));
     printf("  Execution:                 : %12.4f ms\n", TIMER_REPORT_MS(EXE_TIMER_ID));
@@ -198,6 +204,10 @@ int GrnFpga::printReport(){
 
 double GrnFpga::getInitTime(){
     return TIMER_REPORT_MS(INIT_TIMER_ID);
+}
+
+double GrnFpga::getSetArgsTime(){
+    return TIMER_REPORT_MS(SET_ARGS_TIMER_ID);
 }
 
 double GrnFpga::getDataCopyHtoDTime(){
@@ -214,4 +224,21 @@ double GrnFpga::getExecTime(){
 double GrnFpga::getTotalTime(){
     return TIMER_REPORT_MS(TOTAL_EXE_TIMER_ID);
 }
+
+unsigned long GrnFpga::getTotalInputSize(){
+    unsigned long r = 0;
+    for(int i = 0;i<m_num_inputs;++i){
+        r += m_input_size_bytes[i];
+    }
+    return r;
+}
+
+unsigned long GrnFpga::getTotalOutputSize(){
+    unsigned long r = 0;
+    for(int i = 0;i<m_num_outputs;++i){
+        r += m_output_size_bytes[i];
+    }
+    return r;
+}
+
 
