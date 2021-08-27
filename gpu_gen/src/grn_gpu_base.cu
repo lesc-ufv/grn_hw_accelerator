@@ -4,7 +4,7 @@
 
 #define NUM_STATES (1<<20)
 #define NUM_COPYS  (1 << 10)
-#define NUM_NOS REPLACE_NUM_NODES
+#define NUM_NOS 70
 
 typedef unsigned int uint32_t;
 
@@ -21,11 +21,81 @@ bool state_comp(bool *s0, bool *s1){
 __device__
 void pass(bool *aux){
   
-    bool vet[NUM_NOS];
-    for(int i = 0; i < NUM_NOS; i++){
-        vet[i] = aux[i];
-    }
-    REPLACE_ASSIGN_CODE
+  bool vet[NUM_NOS];
+  for(int i = 0; i < NUM_NOS; i++){
+       vet[i] = aux[i];
+  }
+  aux[0] = vet[41];
+  aux[1] = vet[21];
+  aux[2] = vet[41] && ! vet[33] ;
+  aux[3] = vet[36] && ! ( vet[37] || vet[7] ) ;
+  aux[4] = ( ( vet[51] || vet[34] ) && vet[37] ) && ! vet[3] ;
+  aux[5] = ! ( vet[21] && vet[1] ) ;
+  aux[6] = ( vet[49] || vet[32] ) && ! ( vet[34] || vet[37] ) ;
+  aux[7] = ( vet[8] || vet[9] ) && ! vet[22] ;
+  aux[8] = vet[18] && ! ( vet[11] || vet[33] ) ;
+  aux[9] = vet[14] && ! ( vet[22] || vet[33] ) ;
+  aux[10] = vet[47] && ! vet[48] ;
+  aux[11] = vet[32] ;
+  aux[12] = vet[43] && vet[53] ;
+  aux[13] = ( vet[5] || vet[49] || vet[27] ) && ! vet[21] ;
+  aux[14] = vet[31] ;
+  aux[15] = vet[35] ;
+  aux[16] = vet[29] ;
+  aux[17] = vet[65] ;
+  aux[18] = vet[53] || vet[17] ;
+  aux[19] = vet[16] ;
+  aux[20] = vet[60] ;
+  aux[21] = ! ( vet[15] || vet[3] ) ;
+  aux[22] = ( vet[32] || vet[49] ) && ! vet[44] ;
+  aux[23] = ! vet[24] ;
+  aux[24] = ( vet[3] || ( vet[43] && vet[53] ) ) ;
+  aux[25] = vet[20] && ! vet[50] ;
+  aux[26] = vet[2] || vet[30] ;
+  aux[27] = ( ( vet[5] || vet[16] ) && vet[26] ) && ! vet[21] ;
+  aux[28] = ( vet[34] && vet[3] ) && ! ( vet[21] || vet[0] ) ;
+  aux[29] = vet[39] || vet[41] ;
+  aux[30] = vet[10] || vet[52] || vet[53] ;
+  aux[31] = ( vet[4] || vet[51] || vet[10] ) && ! vet[6] ;
+  aux[32] = ! vet[23] ;
+  aux[33] = ( vet[34] || vet[45] ) && ! ( vet[21] || vet[7] ) ;
+  aux[34] = ( vet[38] || vet[26] || vet[0] ) && ! vet[28] ;
+  aux[35] = vet[12] ;
+  aux[36] = ( vet[15] || vet[40] ) && ! vet[38] ;
+  aux[37] = vet[10] && ! vet[3] ;
+  aux[38] = vet[34] && ! ( vet[32] || vet[27] ) ;
+  aux[39] = vet[10] || vet[40] ;
+  aux[40] = vet[15] || vet[20] ;
+  aux[41] = vet[53] && ! vet[42] ;
+  aux[42] = vet[32] || vet[49] ;
+  aux[43] = vet[48] ;
+  aux[44] = vet[31] ;
+  aux[45] = vet[52] && ! vet[27] ;
+  aux[46] = vet[45] || vet[32] ;
+  aux[47] = vet[34] || vet[18] ;
+  aux[48] = vet[16] || vet[53] ;
+  aux[49] = vet[25] ;
+  aux[50] = vet[49] ;
+  aux[51] = vet[8] && ! vet[6] ;
+  aux[52] = vet[58] && ! vet[46] ;
+  aux[53] = vet[55] ;
+  aux[54] = ( vet[63] || vet[66] ) && ! vet[60] ;
+  aux[55] = vet[59] ;
+  aux[56] = vet[61] && ! ( vet[64] || vet[58] ) ;
+  aux[57] = ( vet[62] || vet[64] ) && ! ( vet[63] || vet[58] || vet[61] ) ;
+  aux[58] = vet[54] ;
+  aux[59] = ( vet[64] || vet[67] ) && ! vet[63] ;
+  aux[60] = vet[59] || vet[66] || vet[32] ;
+  aux[61] = vet[66] || vet[56] ;
+  aux[62] = vet[66] || vet[59] ;
+  aux[63] = vet[54] || vet[56] ;
+  aux[64] = vet[57] || vet[65] ;
+  aux[65] = vet[64] && ! vet[58] ;
+  aux[66] = ( vet[67] || vet[55] ) && ! vet[63] ;
+  aux[67] = vet[32] ;
+  aux[68] = ( vet[19] && vet[13] ) && ! ( vet[33] || vet[7] ) ;
+  aux[69] = vet[7] ;
+
 }
 
 __global__
