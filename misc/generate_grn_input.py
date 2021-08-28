@@ -9,7 +9,7 @@ def create_args():
     parser = argparse.ArgumentParser('create_grn_input -h')
     parser.add_argument('-s', '--number', help='Number of states', type=str)
     parser.add_argument('-n', '--num_nos', help='Number of nodes', type=int)
-    parser.add_argument('-c', '--copies', help='Number of copies', type=int)
+    parser.add_argument('-c', '--copies', help='Number of copies', type=str)
     parser.add_argument('-o', '--output', help='Output file', type=str, default='.')
 
     return parser.parse_args()
