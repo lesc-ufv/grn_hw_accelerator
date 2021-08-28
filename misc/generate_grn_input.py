@@ -19,6 +19,7 @@ def state(val,size):
 
 def create_output(num_states,num_nos,num_copies,output):
     num_states = int(eval(num_states))
+    num_copies = int(eval(num_copies))
     num_states = min(2**num_nos,num_states)
     
     l = int(ceil(num_nos/8))*2
