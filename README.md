@@ -1,1 +1,1 @@
-# Genetic Regulator Network Attractors Search on AWS FPGA Instance
+# Genetic Regulator Network Attractors Search Accelerator to AWS FPGA Instance
