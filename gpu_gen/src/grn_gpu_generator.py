@@ -1,11 +1,14 @@
+import os
+import sys
+
+MY_DIR = os.path.dirname(os.path.abspath(__file__))
+
 READ = "r"
 WRITE = "w"
+NUM_NODES = "#NUM_NOS"
+PASS_CODE = "#PASS"
 
-NUM_NODES = "REPLACE_NUM_NODES"
-ASSIGN_CODE = "REPLACE_ASSIGN_CODE"
-TEMPLATE = "./base_code.txt"
-
-import sys
+TEMPLATE = MY_DIR+"/../resources/template/grn_gpu_base.h"
 
 def readInput(filename):
     fin = open(filename, READ)
@@ -59,9 +62,9 @@ def main():
                 if w_lower not in all_words:
                     code_string += replace_dict[w_lower] + " "
                 elif(before):
-                    code_string += "aux[" + str(replace_dict[w_lower]) + "] "
+                    code_string += "state[" + str(replace_dict[w_lower]) + "] "
                 else:
-                    code_string += "vet[" + str(replace_dict[w_lower]) + "] "
+                    code_string += "aux[" + str(replace_dict[w_lower]) + "] "
             else:
                 if(w == '='):
                     before = False
@@ -72,9 +75,9 @@ def main():
     ftemp = open(TEMPLATE, READ)
     str_out = ftemp.read()
     ftemp.close()
-    str_out = str_out.replace(NUM_NODES, str(len(all_words))).replace(ASSIGN_CODE, code_string)
-
-    writeFile(sys.argv[2], str_out)
+    str_out = str_out.replace(NUM_NODES, str(len(all_words)))
+    str_out = str_out.replace(PASS_CODE, code_string)
+    writeFile(sys.argv[2]+'/grn_gpu.h', str_out)
 
     return
 
