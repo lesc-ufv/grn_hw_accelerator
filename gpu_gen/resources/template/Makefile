@@ -1,6 +1,8 @@
 # NVCC compiler options:
+
+SM:=sm_35
 NVCC=nvcc
-NVCC_FLAGS= -std=c++14 -arch=sm_70
+NVCC_FLAGS= -std=c++14 -arch=$(SM)
 NVCC_LIBS=
 
 main.exe: main.o

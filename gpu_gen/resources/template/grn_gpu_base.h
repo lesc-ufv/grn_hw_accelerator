@@ -3,7 +3,7 @@
 
 typedef unsigned int uint32_t;
 
-#define NUM_NOS #NUM_NOS
+#define NUM_NOS (#NUM_NOS)
 
 __device__
 bool state_comp(bool *s0, bool *s1){

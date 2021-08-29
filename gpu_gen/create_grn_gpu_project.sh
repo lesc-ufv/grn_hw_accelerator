@@ -11,6 +11,6 @@ out_dir=$2
 
 temp_files="$MYPATH/resources/template/"
 
-mkdir $out_dir
+mkdir -p $out_dir
 cp $temp_files/Makefile $temp_files/main.cu $temp_files/timer.h $out_dir
 python3 $MYPATH/src/grn_gpu_generator.py $grn_file $out_dir
