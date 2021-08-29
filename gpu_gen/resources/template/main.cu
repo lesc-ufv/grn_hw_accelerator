@@ -203,13 +203,13 @@ size_t read_input_file(std::string input_file,bool **initial_states){
 
         *initial_states = (bool *)malloc(sizeof(bool)*num_states*NUM_NOS);
         int num_nos_bytes = (int)ceil(NUM_NOS/8.0);
-        int j = 0;
+        size_t j = 0;
         while (getline(myfile, line)) {
             strtok((char *)line.c_str(), ",");
             char *init_state = strtok(NULL, ",");
             std::string init_state_str(init_state);
-            int cb = 0;
-            for(int i = 0,p = (num_nos_bytes*2)-2; i < num_nos_bytes;i++,p-=2){
+            size_t cb = 0;
+            for(int i = 0,p = (num_nos_bytes*2) - 2; i < num_nos_bytes;i++, p -= 2){
                 unsigned long v = std::stoul(init_state_str.substr(p,2), nullptr, 16);
                 for(int b = 0;b < 8;b++){
                     (*initial_states)[j*NUM_NOS + cb] = (v & (1 << b));
@@ -235,7 +235,7 @@ void write_output_file(std::string output_file, uint32_t * transients, uint32_t 
 
     std::ofstream myfile(output_file);
     unsigned char b = 0;
-    int cb = 0;
+    size_t cb = 0;
     for(unsigned long i = 0; i < num_states;i++){
             myfile <<  0 << "," << 0 <<  "," << periods[i] << "," <<  transients[i] <<  ",";
             for(int j=NUM_NOS-1; j >= 0 ;--j){
