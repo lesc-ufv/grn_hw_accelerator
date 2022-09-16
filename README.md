@@ -24,3 +24,15 @@ FPGAs are suitable to speed up gene regulatory network (GRN) algorithms with hig
 }
 
 ```
+### Usage:
+
+```
+python3 create_project.py -g <GRN descrition file> -c <Copies> -n <Project Name> -o <Project location>
+```
+
+### Dependencies
+
+- [Python 3](https://www.python.org/downloads/)
+- [Veriloggen](https://github.com/PyHDI/veriloggen) 
+
+
