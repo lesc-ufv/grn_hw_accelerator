@@ -1,8 +1,9 @@
 # An open-source cloud-fpga gene regulatory accelerator
 
 ### Abstract:
-
+<p align="justify">
 FPGAs are suitable to speed up gene regulatory network (GRN) algorithms with high throughput and energy efficiency. In addition, virtualizing FPGA using hardware generators and cloud resources increases the computing ability to achieve on-demand accelerations across multiple users. Recently, Amazon AWS provides high-performance Cloud's FPGAs. This work proposes an open source accelerator generator for Boolean gene regulatory networks. The generator automatically creates all hardware and software pieces from a high-level GRN description. We evaluate the accelerator performance and cost for CPU, GPU, and Cloud FPGA implementations by considering six GRN models proposed in the literature. As a result, the FPGA accelerator is at least 12x faster than the best GPU accelerator. Furthermore, the FPGA reaches the best performance per dollar in cloud services, at least 5x better than the best GPU accelerator.
+</p>
 
 ### Cite this:
 
