@@ -26,6 +26,8 @@ FPGAs are suitable to speed up gene regulatory network (GRN) algorithms with hig
 ```
 ### Usage:
 
+#### FPGA
+
 ```
 python3 create_project.py -g <GRN descrition file> -c <Copies> -n <Project Name> -o <Project location>
 ```
